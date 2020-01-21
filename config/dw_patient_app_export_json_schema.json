@@ -1,0 +1,21 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Schema for capturing database ETL logic query",
+    "type": "object",
+    "properties": {
+      "database":{"type": "string","minLength":1},
+      "table_info": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+                  "tablename":{"type": "string","minLength":1},
+                  "query":{"type": "string","minLength":1},
+                  "where_clause": {"type": "string"}
+          },
+          "required": ["query", "tablename"]
+        }
+      }
+    },
+    "required": ["table_info","database"]
+  }
