@@ -1,30 +1,30 @@
 import os
-# DB_CONFIG = {
-# "host": "localhost",
-# "user": "root",
-# "passwd": "root",
-# "staging_db": "healthscore_stg",
-# "dw_db":"healthscore_dw",
-# "port":"3306",
-# "auth_plugin":"mysql_native_password"
-#}
 DB_CONFIG = {
 "host": "localhost",
 "user": "root",
 "passwd": "root",
 "staging_db": "healthscore_stg",
 "dw_db":"healthscore_dw",
-"port":"3309",
+"port":"3306",
 "auth_plugin":"mysql_native_password"
 }
+# DB_CONFIG = {
+# "host": "localhost",
+# "user": "root",
+# "passwd": "root",
+# "staging_db": "healthscore_stg",
+# "dw_db":"healthscore_dw",
+# "port":"3309",
+# "auth_plugin":"mysql_native_password"
+# }
 
 DEBUG = True
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-#SRC_DATA_DIR = "/home/ubuntu/mysql-extract/dw_import/"
-SRC_DATA_DIR = "/Users/chiamala/mysql-extract/data/dw_import/"
+SRC_DATA_DIR = "/home/ubuntu/mysql-extract/dw_import/"
+#SRC_DATA_DIR = "/Users/chiamala/mysql-extract/data/dw_import/"
 # SRC_DATA_DIR = "/home/csoft-tech/Downloads/CSV/"
-#EXPORT_FILE_DIR="/home/ubuntu/mysql-extract/dw_export/"
-EXPORT_FILE_DIR="/Users/chiamala/mysql-extract/data/dw_export/"
+EXPORT_FILE_DIR="/home/ubuntu/mysql-extract/dw_export/"
+#EXPORT_FILE_DIR="/Users/chiamala/mysql-extract/data/dw_export/"
 # EXPORT_FILE_DIR="/home/csoft-tech/Downloads/CSV/"
 DB_SCRIPTS_DIR = "scripts/db/"
 CONFIG_DIR = "config/"
