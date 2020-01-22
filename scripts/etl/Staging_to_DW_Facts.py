@@ -40,7 +40,6 @@ def startETL(load_id):
 		sql="SELECT hospital_key,hospital_cd from healthscore_dw.dim_hospital"
 		cursor.execute(sql)
 		hospital_data=cursor.fetchall()
-		print(hospital_data)
 		table_info=data['insert_table_info']
 		no_of_hospital=len(hospital_data)
 		len_table_data=len(table_info)
@@ -49,17 +48,14 @@ def startETL(load_id):
     		range(0,len_table_data)
 			]
 		for h, t in product(*ranges):
-			print(h,t)
-			print(hospital_data[h])
 			table_name=f"{data['database']}.{table_info[t]['tablename']}"
-			if not Log.checkStatus(load_id,etl,table_info[t]["source_table"]+"-"+h+".insert",table_name,"Completed"):
+			if not Log.checkStatus(load_id,etl,table_info[t]["source_table"]+"-"+hospital_data[h][1]+".insert",table_name,"Completed"):
 			#if file has been processed for the given load id successfully, then, skip it
-				sub_log_id,data_start_ts,data_end_ts = Log.insert_log(load_id,etl,table_info[t]["source_table"]+"-"+".insert",table_name,"Started")
+				sub_log_id,data_start_ts,data_end_ts = Log.insert_log(load_id,etl,table_info[t]["source_table"]+"-"+hospital_data[h][1]+".insert",table_name,"Started")
 				sql = f"INSERT INTO  {table_name} ( {table_info[t]['fields']} ) "
-				sql += f"SELECT * FROM ({table_info[t]['insert_query']} {table_info[t]['where_clause']%h}) as src"					
+				sql += f"SELECT * FROM ({table_info[t]['insert_query']} WHERE {table_info[t]['where_clause']%hospital_data[h][0]}) as src"					
 				if table_info[t]['update_fields']:
 					sql = f"{sql} ON DUPLICATE KEY UPDATE {table_info[t]['update_fields']}"
-				print(sql)			
 				cursor.execute(sql)
 				affected_row_count = cursor.rowcount
 				conn.commit()

@@ -13,9 +13,10 @@
                   "source_table":{"type": "string","minLength":1},
                   "fields":{"type": "string","minLength":1},
                   "insert_query":{"type": "string","minLength":1},
+                  "where_clause":{"type": "string","minLength":1},
                   "update_fields":{"type": "string"}
           },
-          "required": ["source_table", "tablename", "fields","insert_query","update_fields"]
+          "required": ["source_table", "tablename", "fields","insert_query","where_clause","update_fields"]
         }
       }
     }
