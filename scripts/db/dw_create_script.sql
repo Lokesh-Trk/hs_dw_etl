@@ -456,8 +456,7 @@ CREATE TABLE healthscore_dw.dim_bill_items (
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,	
   PRIMARY KEY (bill_item_key),
-  UNIQUE uk_bill_item_key(hospital_key,bill_item_category_cd,bill_item_type,bill_item_cd,effective_from_ts,pkg_effective_from_ts,pkg_effective_to_ts,rate_category_nm),
-  UNIQUE uk_bill_item_id(hospital_key,bill_item_type,bill_item_id)
+  UNIQUE uk_bill_item_key(hospital_key,bill_item_category_cd,bill_item_type,bill_item_cd,effective_from_ts,pkg_effective_from_ts,pkg_effective_to_ts,rate_category_nm)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
  
 DROP TABLE IF EXISTS healthscore_dw.dim_hospital_wards;
