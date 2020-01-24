@@ -63,6 +63,7 @@ def startETL(load_id):
 		return 0
 		
 	except mysql.connector.Error as err:
+		Log.updateonerror(log_id,sub_log_id,err,sql)
 		print(err)
 		raise Exception
 
