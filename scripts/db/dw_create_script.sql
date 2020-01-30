@@ -71,7 +71,7 @@ CREATE TABLE healthscore_dw.dim_hospital(
   convenience_pct_flg tinyint(1),
   razorpay_account_id varchar(100),
   patient_app_flg tinyint(1),
-  created_by varchar(45) not null,
+  created_by varchar(45),
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
  PRIMARY KEY (hospital_key),
@@ -162,7 +162,7 @@ CREATE TABLE healthscore_dw.dim_patient_documents (
  PRIMARY KEY (patient_document_key),
  UNIQUE KEY uk_patient_document(patient_key,hospital_key,hospital_document_id)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
- 
+
 DROP TABLE IF EXISTS healthscore_dw.fact_patient_clinical_info;
 CREATE TABLE healthscore_dw.fact_patient_clinical_info (
   patient_clinical_info_key int(11) NOT NULL AUTO_INCREMENT,
@@ -175,6 +175,8 @@ CREATE TABLE healthscore_dw.fact_patient_clinical_info (
   active_flg bit DEFAULT 1,
   effective_from_ts datetime, -- capturing past history/family history since date, diagnosis date, allergy date
   effective_to_ts datetime,
+  recorded_date_key date NOT NULL,
+  recorded_time_key time NOT NULL,
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (patient_clinical_info_key),
@@ -201,6 +203,8 @@ CREATE TABLE fact_patient_medications (
   prescribed_ts datetime DEFAULT NULL,
   prescribed_patient_visit_key int(11) NOT NULL,
   created_by_staff_key int(11) not null,
+  prescribed_date_key date NOT NULL,
+  prescribed_time_key time NOT NULL,
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (patient_medication_key),
@@ -282,6 +286,7 @@ DROP TABLE IF EXISTS healthscore_dw.fact_patient_vitals;
   hospital_key bigint(50) DEFAULT NULL,
   hospital_doctor_key int(11) NOT NULL,
   schedule_date_key DATE not null,
+  schedule_created_ts datetime NOT NULL,
   schedule_start_time_key time NOT NULL,
   schedule_end_time_key time DEFAULT NULL,
   doctor_nm varchar(100) NOT NULL,
@@ -326,7 +331,10 @@ DROP TABLE IF EXISTS healthscore_dw.fact_patient_vitals;
  visit_bill_to_ts datetime , 
  visit_bill_comments varchar(100),
  visit_bill_adjusted_flg tinyint(1) default 0,
- visit_billed_ts datetime DEFAULT NULL,
+ visit_bill_created_ts datetime NOT NULL,
+ visit_bill_date_key date not null,
+ visit_bill_time_key time not null,
+ visit_billed_ts timestamp,
  created_by_staff_key int(11) not null,
  modified_by_staff_key int(11),
  source_cd varchar(20) NOT NULL,
@@ -497,6 +505,7 @@ DROP TABLE IF EXISTS healthscore_dw.fact_patient_visitbillitems;
  patient_visitbillitem_key int(11) NOT NULL AUTO_INCREMENT,
  patient_visitbill_key int(11) NOT NULL,
  visit_bill_item_type_name varchar(45) NOT NULL,
+ visit_bill_item_key int(11) NOT NULL,
  visit_bill_item_cd varchar(45) NOT NULL,
  visit_bill_item_qty int(11) NOT NULL,
  visit_bill_item_unit_amt decimal(10,2) NOT NULL,
@@ -506,6 +515,8 @@ DROP TABLE IF EXISTS healthscore_dw.fact_patient_visitbillitems;
  active_flg tinyint(1),
  pharmacy_item tinyint(1) NOT NULL,
  visit_bill_item_created_ts timestamp NOT NULL,
+ visit_bill_item_date_key date NOT NULL,
+ visit_bill_item_time_key time NOT NULL,
  payment_method_id int(11) ,
  tax_type_key int(11) DEFAULT NULL,
  visit_bill_item_total_tax decimal(10,2),
@@ -518,3 +529,62 @@ DROP TABLE IF EXISTS healthscore_dw.fact_patient_visitbillitems;
  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
  PRIMARY KEY (patient_visitbillitem_key)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+drop table healthscore_dw.fact_patient_dailyrate;
+create table healthscore_dw.fact_patient_dailyrate(
+patient_dailyrate_key int(11) NOT NULL auto_increment,
+patient_visit_key int(11) NOT NULL, 
+daily_rate int(11) NOT NULL, 
+effective_from_ts datetime,
+effective_to_ts datetime, 
+source_cd varchar(45) not null,
+primary key (patient_dailyrate_key),
+unique key patient_visit_key(patient_visit_key)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+DROP TABLE IF EXISTS healthscore_dw.fact_patient_order_details;
+CREATE TABLE healthscore_dw.fact_patient_order_details (
+patient_order_details_key int(11) NOT NULL AUTO_INCREMENT,
+patient_key int(11) not null,
+bill_item_key	int(11) not null,
+convenience_amt   double,
+bill_item_qty   int(11),
+total_amt   double,
+app_bill_flg   tinyint(1) NOT NULL,
+razorpay_transfer_flg   tinyint(1) NOT NULL,
+payment_status_nm varchar(400) NOT NULL,
+active_flg   tinyint(1) NOT NULL,
+created_by   varchar(45),
+modified_by   varchar(45),
+order_created_ts   datetime,
+order_date_key date NOT NULL,
+order_time_key time NOT NULL,
+order_modified_ts   datetime,
+hsapp_patient_order_id bigint(50) NOT NULL,
+inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (patient_order_details_key)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.fact_fhir_message;
+CREATE TABLE healthscore_dw.fact_fhir_message (
+fhir_message_key int(11) NOT NULL AUTO_INCREMENT,
+hsapp_message_id varchar(1000) NOT NULL,
+queue_nm varchar(100) DEFAULT NULL,
+resource_type  varchar(255) DEFAULT NULL,
+message_txt varchar(4000) DEFAULT NULL,
+failed_flg tinyint(1) DEFAULT '0',  
+error_msg varchar(4000) DEFAULT NULL,
+retry_cnt int(11) DEFAULT '0',
+created_by varchar(45) NOT NULL,
+recorded_created_ts datetime NOT NULL,
+recorded_date_key date NOT NULL,
+recorded_time_key time NOT NULL,
+modified_by varchar(45) DEFAULT NULL,
+recorded_modified_ts datetime DEFAULT NULL,
+fhir_message_id int(11) NOT NULL,
+source varchar(45) DEFAULT NULL,
+inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (fhir_message_key);
