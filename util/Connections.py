@@ -2,7 +2,6 @@ import os
 import sys
 import mysql.connector
 import json
-
 path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0,path)
 
@@ -26,51 +25,70 @@ def log_db_connect():
 def src_file_connect():
 	file_path = settings.SRC_DATA_DIR
 	files = sorted(os.listdir(file_path))
-	return file_path, files
+	return file_path,files
 
-def createStaging_file_connect():
-	file = open(settings.STG_CREATE_JSON, 'r')
+def get_etl_flow_settings_json():
+	file = open(settings.ETL_FLOW_SETTINGS,'r')
 	return file
 
-def getStagingDBName():
+def etl_file_json(element):
+	file_conn = get_etl_flow_settings_json()
+	with file_conn as json_file:
+		data = json.load(json_file)
+	etl_file_names = data["etl_file_names"]
+	for i in range(len(etl_file_names)):
+		if (etl_file_names[i]["element"]==element):
+			etl_required_file_names= etl_file_names[i]
+	return etl_required_file_names
+
+def create_staging_file_connect(element):
+	data = etl_file_json(element)
+	file_name = data['STG_CREATE_JSON']
+	file = open(file_name, 'r')
+	return file,file_name
+	
+def get_staging_db_name():
 	db_config = settings.DB_CONFIG
 	db = db_config["staging_db"]
 	return db
 
 def export_dir_connect():
-	file_path= settings.EXPORT_FILE_DIR
+	file_path = settings.EXPORT_FILE_DIR
 	return file_path
 
-def json_etl_schema_file_connect():
-	file = open(settings.JSON_ETL_SCHEMA, 'r')
-	file_name = settings.JSON_ETL_SCHEMA
-	return file,file_name
+def json_etl_stg_schema_file_connect():
+	file_name = settings.JSON_ETL_STG_SCHEMA
+	return file_name
+
+def json_etl_dim_schema_file_connect():
+	file_name = settings.JSON_ETL_DIM_SCHEMA
+	return file_name
 
 def json_etl_fact_schema_file_connect():
-	file = open(settings.JSON_ETL_FACT_SCHEMA, 'r')
 	file_name = settings.JSON_ETL_FACT_SCHEMA
+	return file_name
+
+def json_dim_load_file_connect(element):
+	data =etl_file_json(element)
+	file_name=data['JSON_DIM_LOAD']
+	file = open(file_name, 'r')
 	return file,file_name
 
-def json_dim_load_file_connect():
-	file = open(settings.JSON_DIM_LOAD, 'r')
-	file_name = settings.JSON_DIM_LOAD
-	return file,file_name
-
-def json_export_file_connect():
-	file = open(settings.DW_PATIENT_APP_EXPORT_JSON_FILE, 'r')
-	file_name = settings.DW_PATIENT_APP_EXPORT_JSON_FILE
+def json_export_file_connect(element):
+	data =etl_file_json(element)
+	file_name=data['DW_PATIENT_APP_EXPORT_JSON_FILE']
+	file = open(file_name, 'r')
 	return file,file_name
 
 def json_export_schema_file_connect():
-	file = open(settings.DW_PATIENT_APP_EXPORT_JSON_VALIDATE_FILE, 'r')
-	file_name = settings.DW_PATIENT_APP_EXPORT_JSON_VALIDATE_FILE
+	file_name =settings.DW_PATIENT_APP_EXPORT_JSON_VALIDATE_FILE
+	return file_name
+
+def json_fact_load_file_connect(element):
+	data =etl_file_json(element)
+	file_name=data['JSON_FACT_LOAD']
+	file = open(file_name, 'r')
 	return file,file_name
 
-def createStaging_file_connect():
-	file = open(settings.STG_CREATE_JSON, 'r')
-	return file
 
-def json_fact_load_file_connect():
-	file = open(settings.JSON_FACT_LOAD, 'r')
-	file_name = settings.JSON_FACT_LOAD
-	return file,file_name
+

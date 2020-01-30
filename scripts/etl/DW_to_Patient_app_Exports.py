@@ -6,9 +6,9 @@ import logging
 from pathlib import Path
 path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0,path)
-from util import Connections, Log, json_validate
+from util import Connections, Log, Load_Data
 
-def startETL(load_id):
+def start_etl(load_id,elements):
 	#log file metadata
 	etl = Path(__file__).stem
 	source = "DW"
@@ -20,7 +20,7 @@ def startETL(load_id):
 
 	try:
 		# if previous load failed, get the same load id and data date range, else skip
-		log_id, startTs,endTs = Log.checkCurrentStatus(etl,load_id,source,target)
+		log_id, start_ts,end_ts = Log.check_current_status(etl,load_id,source,target)
         #if completed, return to parent program
 		if log_id == "-1":
 			return 0
@@ -29,23 +29,17 @@ def startETL(load_id):
 		cursor = conn.cursor()
 
 		file_path= Connections.export_dir_connect()
-
-		json_schema_file_conn,json_schema_file_name=Connections.json_export_schema_file_connect()
-		export_schema_file_conn,export_schema_file_name = Connections.json_export_file_connect()
-
-		with export_schema_file_conn as json_file:
-				data = json.load(json_file)
-				data_dupe_check = True
-				json_validate.json_validate(data,json_schema_file_name,data_dupe_check)
+		#get table data for inserting
+		export_table_data = Load_Data.get_table_data(elements,'DW_to_Patient_app_Exports','export')
 		
 		# Insert new data created in the load date range
-		for table_data in data['table_info']:
+		for table_data in export_table_data:
 			table_name = table_data['tablename']
 			file_name=f"{file_path}{table_name}.csv"
 
 			#if file has been processed for the given load id successfully, then, skip it
-			if not Log.checkStatus(load_id,etl,"dw_data.export",file_name,"Completed"):
-				sub_log_id,data_start_ts,data_end_ts = Log.insert_log(load_id,etl,"dw_data.export",file_name,"Started","",startTs,endTs)
+			if not Log.check_status(load_id,etl,"dw_data.export",file_name,"Completed"):
+				sub_log_id,data_start_ts,data_end_ts = Log.insert_log(load_id,etl,"dw_data.export",file_name,"Started","",start_ts,end_ts)
 				sql=f"{table_data['query']} where "
 				sql=f"{sql} ((src.inserted_ts BETWEEN '{data_start_ts}' AND '{data_end_ts}') OR (src.updated_ts BETWEEN '{data_start_ts}' AND '{data_end_ts}'))"
 				
@@ -63,12 +57,12 @@ def startETL(load_id):
 		return 0
 		
 	except mysql.connector.Error as err:
-		Log.updateonerror(log_id,sub_log_id,err,sql)
+		Log.update_on_error(log_id,sub_log_id,err,sql)
 		print(err)
 		raise Exception
 
 	except Exception as err:
-		Log.updateonerror(log_id,sub_log_id,err,sql)
+		Log.update_on_error(log_id,sub_log_id,err,sql)
 		if conn is not None:
 			conn.rollback()
 		print(err)
