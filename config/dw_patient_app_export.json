@@ -25,6 +25,21 @@
   "tablename":"dim_hospital", 
   "query":"select 'hospital_cd','hospital_nm','hospital_addr_line1','hospital_addr_line2','hospital_addr_city_nm','hospital_addr_state_nm','hospital_addr_country_nm','hospital_phone_num','hospital_email_addr','hospital_logo','convenience_fee','convenience_pct_flg','razorpay_account_id','patient_app_flg' union all select src.hospital_cd,src.hospital_nm,src.hospital_addr_line1,src.hospital_addr_line2,src.hospital_addr_city_nm,src.hospital_addr_state_nm,src.hospital_addr_country_nm,src.hospital_phone_num,src.hospital_email_addr,src.hospital_logo,src.convenience_fee,src.convenience_pct_flg,src.razorpay_account_id,patient_app_flg  from healthscore_dw.dim_hospital src",
   "where_clause": "src.patient_app_flg = 1"
+  },
+  {
+  "tablename":"fact_patient_medications", 
+  "query":"select   'hospital_patient_cd','pharma_product_ref_id','pharma_product_ref_display_txt','pharma_brand_nm','dosage','drug_form_ref_id','drug_form_ref_display_txt','frequency','comments','start_dt','end_dt','active_flg','prescribed_by_doctor_nm','prescribed_hospital_cd','prescribed_ts' union all select mp.hospital_patient_cd,src.pharma_product_ref_id,src.pharma_product_ref_display_txt,src.pharma_brand_nm,src.dosage,src.drug_form_ref_id,src.drug_form_ref_display_txt,src.frequency,src.comments,src.start_dt,src.end_dt,src.active_flg,src.prescribed_by_doctor_nm,mp.hospital_cd,src.prescribed_ts from healthscore_dw.fact_patient_medications src join healthscore_dw.map_patient_hospital mp on mp.patient_key=src.patient_key and mp.hospital_key=src.prescribed_hospital_key join healthscore_dw.dim_hospital dim_h on dim_h.hospital_key=src.prescribed_hospital_key",
+  "where_clause": "dim_h.patient_app_flg = 1"
+  },
+  {
+  "tablename":"fact_patient_vitals", 
+  "query":"select 'hospital_patient_cd','vital_ref_component_id', 'vital_ref_display_txt', 'measurementunit_ref_component_id', 'measurementunit_ref_display_txt', 'patient_vital_value', 'vital_recorded_ts', 'biomedicaldevice_ref_id', 'recorded_hospital_cd', 'user_uploaded_flg', 'vital_created_ts', 'source_cd' union all select mp.hospital_patient_cd, src.vital_ref_component_id, src.vital_ref_display_txt, src.measurementunit_ref_component_id, src.measurementunit_ref_display_txt, src.patient_vital_value, src.vital_recorded_ts, src.biomedicaldevice_ref_id,dim_h.hospital_cd, src.user_uploaded_flg, src.vital_created_ts, src.source_cd from healthscore_dw.fact_patient_vitals src join healthscore_dw.map_patient_hospital mp on mp.patient_key=src.patient_key and mp.hospital_key=src.recorded_hospital_key join healthscore_dw.dim_hospital dim_h on dim_h.hospital_key=src.recorded_hospital_key",
+  "where_clause": "dim_h.patient_app_flg = 1"
+  },
+  {
+  "tablename":"fact_patient_visit_advice", 
+  "query":"select 'visit_note_type', 'hospital_patient_cd', 'visit_doctor_nm', 'visit_hospital_cd', 'advice_desc', 'active_flg', 'note_created_ts', 'note_modified_ts'  union all SELECT src.visit_note_type,mp.hospital_patient_cd,ds.hospital_staff_full_nm,dh.hospital_cd,src.advice_desc,src.active_flg,src.note_created_ts,src.note_modified_ts FROM healthscore_dw.fact_patient_visit_advice src join healthscore_dw.map_patient_hospital mp on mp.patient_key=src.patient_key and mp.hospital_key=src.visit_hospital_key join healthscore_dw.dim_hospital dh on dh.hospital_key= src.visit_hospital_key join healthscore_dw.dim_staff ds on ds.hospital_key=src.visit_hospital_key and ds.staff_key=src.visit_doctor_staff_key",
+  "where_clause": "dh.patient_app_flg = 1"
   }
  ]
 }

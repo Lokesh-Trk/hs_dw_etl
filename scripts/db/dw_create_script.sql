@@ -497,49 +497,36 @@ CREATE TABLE healthscore_dw.map_patient_visit_doctors(
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (map_patient_visit_doctor_key),
-  UNIQUE uk_map_patient_visit_doctor_key (patient_key,visit_hospital_key,patient_visit_key,visit_doctor_staff_key,hospital_visit_doctor_id)
+  UNIQUE uk_map_patient_visit_doctor_key (patient_key,visit_hospital_key,patient_visit_key,visit_doctor_staff_key,hospital_visit_doctor_id),
+  UNIQUE KEY uk_hospital_visit_doctor_id (hospital_visit_doctor_id,source_cd)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS healthscore_dw.fact_patient_visitbillitems;
- CREATE TABLE healthscore_dw.fact_patient_visitbillitems(
- patient_visitbillitem_key int(11) NOT NULL AUTO_INCREMENT,
- patient_visitbill_key int(11) NOT NULL,
- visit_bill_item_type_name varchar(45) NOT NULL,
- visit_bill_item_key int(11) NOT NULL,
- visit_bill_item_cd varchar(45) NOT NULL,
- visit_bill_item_qty int(11) NOT NULL,
- visit_bill_item_unit_amt decimal(10,2) NOT NULL,
- visit_bill_item_total_concession_amt decimal(10,2),
- visit_bill_item_final_amt decimal(10,2) NOT NULL,
- visit_bill_item_receipt_cd varchar(45),
- active_flg tinyint(1),
- pharmacy_item tinyint(1) NOT NULL,
- visit_bill_item_created_ts timestamp NOT NULL,
- visit_bill_item_date_key date NOT NULL,
- visit_bill_item_time_key time NOT NULL,
- payment_method_id int(11) ,
- tax_type_key int(11) DEFAULT NULL,
- visit_bill_item_total_tax decimal(10,2),
- stock_batch_key int(11) DEFAULT NULL,
- patient_care_plan_instruction_key int(11) DEFAULT NULL,
- returned_qty int(11),
- created_by_staff_key int(11) not null,
- modified_by_staff_key int(11),
- inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
- updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
- PRIMARY KEY (patient_visitbillitem_key)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
-
-drop table healthscore_dw.fact_patient_dailyrate;
-create table healthscore_dw.fact_patient_dailyrate(
-patient_dailyrate_key int(11) NOT NULL auto_increment,
-patient_visit_key int(11) NOT NULL, 
-daily_rate int(11) NOT NULL, 
-effective_from_ts datetime,
-effective_to_ts datetime, 
-source_cd varchar(45) not null,
-primary key (patient_dailyrate_key),
-unique key patient_visit_key(patient_visit_key)
+CREATE TABLE healthscore_dw.fact_patient_visitbillitems(
+patient_visitbillitem_key int(11) NOT NULL AUTO_INCREMENT,
+patient_visitbill_key int(11) NOT NULL,
+bill_item_key int(11) NOT NULL,
+vbi_date_key date NOT NULL,
+vbi_time_key time NOT NULL,
+vbi_created_staff_key int(11) not null,
+tax_type_key int(11) ,
+stock_batch_key int(11) ,
+patient_care_plan_instruction_key int(11) , 
+vbi_modified_staff_key int(11),
+bill_item_qty int(11) NOT NULL,
+bill_item_returned_qty int(11),
+bill_item_unit_amt decimal(10,2) NOT NULL,
+bill_item_total_concession_amt decimal(10,2),
+bill_item_final_amt decimal(10,2) NOT NULL,
+bill_item_receipt_cd varchar(45),
+bill_item_total_tax decimal(10,2),
+active_flg tinyint(1),
+pharmacy_item_flg tinyint(1) NOT NULL,
+vbi_created_ts timestamp NOT NULL,
+payment_method_id int(11) ,
+inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (patient_visitbillitem_key)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
@@ -587,4 +574,23 @@ fhir_message_id int(11) NOT NULL,
 source varchar(45) DEFAULT NULL,
 inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
 updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
-PRIMARY KEY (fhir_message_key);
+PRIMARY KEY (fhir_message_key)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.fact_patient_visit_advice;
+CREATE TABLE healthscore_dw.fact_patient_visit_advice (
+patient_visit_advice_key int(11) NOT NULL AUTO_INCREMENT,
+visit_note_type varchar(45) NOT NULL,
+patient_key int(11) NOT NULL,
+visit_doctor_staff_key int(11) NOT NULL,
+visit_hospital_key int(11) NOT NULL,
+advice_desc varchar(4000) DEFAULT NULL,
+active_flg tinyint(1) DEFAULT '1',
+note_created_ts datetime not null,
+note_modified_ts datetime,
+created_by_staff_key int(11) NOT NULL,
+modified_by_staff_key int(11) ,
+inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+updated_ts timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (patient_visit_advice_key)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

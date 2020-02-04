@@ -269,6 +269,18 @@
   {
   "tablename":"vw_ext_int_doctors_master",
   "fields": "hospital_staff_id int(11) default NULL, hospital_staff_full_nm varchar(100) DEFAULT NULL,hospital_staff_cd varchar(45) DEFAULT NULL,hospital_id int(11) DEFAULT NULL,hospital_nm varchar(400) DEFAULT NULL,active_flg tinyint(1) DEFAULT NULL"
+  },
+  {
+  "tablename":"hs_patient_visit_actions",
+  "fields": "visit_action_id bigint(50) NOT NULL, visit_note_id bigint(11) , visit_doctor_id bigint(50), action_category_ref_component_id bigint(50) NOT NULL, action_desc varchar(4000) , visit_action_ref_id_json varchar(4000), active_flg tinyint(1) , continue_flg tinyint(1) , deactivation_comment varchar(255) , created_ts datetime, modified_ts datetime, created_by varchar(45), modified_by varchar(45), generated_visit_actions varchar(4000), processed_ts datetime"
+  },
+  {
+  "tablename":"hs_patient_visit_notes",
+  "fields": "patient_visit_note_id bigint(11) NOT NULL, patient_visit_doctor_id bigint(11), patient_visit_note_ts datetime,patient_visit_note_title varchar(100), patient_visit_note_template_id int(11), created_ts datetime, created_by varchar(100), modified_ts datetime, modified_by varchar(45) "
+  },
+  {
+  "tablename":"hs_note_template_master",
+  "fields": "  template_id int(11) NOT NULL,template_name varchar(45), template_path varchar(145), template_code varchar(45), active_flg tinyint(4), created_by varchar(45), created_ts datetime, modified_ts datetime, modified_by varchar(45)"
   }
  ]
 }
