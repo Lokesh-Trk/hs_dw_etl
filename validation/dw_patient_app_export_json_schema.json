@@ -4,7 +4,7 @@
     "type": "object",
     "properties": {
       "database":{"type": "string","minLength":1},
-      "table_info": {
+      "export_table_info": {
         "type": "array",
         "items": {
           "type": "object",
@@ -17,5 +17,5 @@
         }
       }
     },
-    "required": ["table_info","database"]
+    "required": ["export_table_info","database"]
   }
