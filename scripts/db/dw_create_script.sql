@@ -529,18 +529,6 @@ updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
 PRIMARY KEY (patient_visitbillitem_key)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-drop table healthscore_dw.fact_patient_dailyrate;
-create table healthscore_dw.fact_patient_dailyrate(
-patient_dailyrate_key int(11) NOT NULL auto_increment,
-patient_visit_key int(11) NOT NULL, 
-daily_rate int(11) NOT NULL, 
-effective_from_ts datetime,
-effective_to_ts datetime, 
-source_cd varchar(45) not null,
-primary key (patient_dailyrate_key),
-unique key patient_visit_key(patient_visit_key)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 
 DROP TABLE IF EXISTS healthscore_dw.fact_patient_order_details;
 CREATE TABLE healthscore_dw.fact_patient_order_details (
