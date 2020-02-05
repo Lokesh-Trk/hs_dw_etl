@@ -189,7 +189,7 @@ CREATE TABLE fact_patient_medications (
   patient_key int(11) NOT NULL,
   pharma_product_ref_id bigint(50) DEFAULT NULL,
   pharma_product_ref_display_txt varchar(238) DEFAULT NULL,
-  pharma_brand_nm varchar(500) DEFAULT NULL,
+  pharma_brand_nm varchar(100) DEFAULT NULL,
   dosage varchar(100) DEFAULT NULL,
   drug_form_ref_id bigint(50) DEFAULT NULL,
   drug_form_ref_display_txt varchar(4000) DEFAULT NULL,
@@ -208,7 +208,8 @@ CREATE TABLE fact_patient_medications (
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (patient_medication_key),
-  UNIQUE KEY uk_patient_medication_key (patient_key,pharma_brand_nm,start_dt)
+  UNIQUE KEY uk_patient_medication_key (patient_key,pharma_brand_nm,start_dt),
+  UNIQUE KEY uk_patient_medication_details (patient_key,pharma_brand_nm,dosage,frequency,comments,start_dt,end_dt,active_flg)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 Drop table if exists healthscore_dw.fact_patient_visits;
@@ -580,7 +581,6 @@ PRIMARY KEY (fhir_message_key)
 DROP TABLE IF EXISTS healthscore_dw.fact_patient_visit_advice;
 CREATE TABLE healthscore_dw.fact_patient_visit_advice (
 patient_visit_advice_key int(11) NOT NULL AUTO_INCREMENT,
-visit_note_type varchar(45) NOT NULL,
 patient_key int(11) NOT NULL,
 visit_doctor_staff_key int(11) NOT NULL,
 visit_hospital_key int(11) NOT NULL,
