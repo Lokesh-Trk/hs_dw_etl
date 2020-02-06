@@ -38,7 +38,7 @@
   },
   {
   "tablename":"fact_patient_visit_advice", 
-  "query":"select 'visit_note_type', 'hospital_patient_cd', 'visit_doctor_nm', 'visit_hospital_cd', 'advice_desc', 'active_flg', 'note_created_ts', 'note_modified_ts'  union all SELECT src.visit_note_type,mp.hospital_patient_cd,ds.hospital_staff_full_nm,dh.hospital_cd,src.advice_desc,src.active_flg,src.note_created_ts,src.note_modified_ts FROM healthscore_dw.fact_patient_visit_advice src join healthscore_dw.map_patient_hospital mp on mp.patient_key=src.patient_key and mp.hospital_key=src.visit_hospital_key join healthscore_dw.dim_hospital dh on dh.hospital_key= src.visit_hospital_key join healthscore_dw.dim_staff ds on ds.hospital_key=src.visit_hospital_key and ds.staff_key=src.visit_doctor_staff_key",
+  "query":"select 'hospital_patient_cd', 'visit_doctor_nm', 'visit_hospital_cd', 'advice_desc', 'active_flg', 'note_created_ts', 'note_modified_ts'  union all SELECT mp.hospital_patient_cd,ds.hospital_staff_full_nm,dh.hospital_cd,src.advice_desc,src.active_flg,src.note_created_ts,src.note_modified_ts FROM healthscore_dw.fact_patient_visit_advice src join healthscore_dw.map_patient_hospital mp on mp.patient_key=src.patient_key and mp.hospital_key=src.visit_hospital_key join healthscore_dw.dim_hospital dh on dh.hospital_key= src.visit_hospital_key join healthscore_dw.dim_staff ds on ds.hospital_key=src.visit_hospital_key and ds.staff_key=src.visit_doctor_staff_key",
   "where_clause": "dh.patient_app_flg = 1"
   }
  ]
