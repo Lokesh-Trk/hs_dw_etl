@@ -2,7 +2,7 @@
 "etl_flow_settings": [
     {
     "data_source_cd":"hs_shared",
-    "elements": ["common","myhsapp"],
+    "elements": ["common"],
     "etl_stages": {
         "etl_stage0":"Staging_Refresh_DB",
         "etl_stage1":"Staging_from_CSV",

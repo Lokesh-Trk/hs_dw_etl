@@ -198,7 +198,7 @@ CREATE TABLE fact_patient_medications (
   start_dt datetime NOT NULL,
   end_dt datetime DEFAULT NULL,
   active_flg tinyint(1) NOT NULL,
-  prescribed_by_doctor_nm varchar(100) NOT NULL,
+  prescribed_doctor_staff_key int(11) not null,
   prescribed_hospital_key int(11) NOT NULL,
   prescribed_ts datetime DEFAULT NULL,
   prescribed_patient_visit_key int(11) NOT NULL,
@@ -208,7 +208,7 @@ CREATE TABLE fact_patient_medications (
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (patient_medication_key),
-  UNIQUE KEY uk_patient_medication_key (patient_key,prescribed_hospital_key,prescribed_patient_visit_key,prescribed_ts,prescribed_by_doctor_nm)
+  UNIQUE KEY uk_patient_medication_key (patient_key,prescribed_hospital_key,prescribed_patient_visit_key,pharma_brand_nm,prescribed_doctor_staff_key)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 Drop table if exists healthscore_dw.fact_patient_visits;
