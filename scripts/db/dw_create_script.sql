@@ -121,6 +121,7 @@ CREATE TABLE healthscore_dw.dim_patient (
   contact_addr_city_nm varchar(100) DEFAULT NULL,
   contact_addr_state_nm varchar(100) DEFAULT NULL,
   contact_addr_country_nm varchar(100) DEFAULT NULL,
+  zipcode varchar(20) DEFAULT NULL,
   contact_home_phone_num varchar(45) DEFAULT NULL,
   contact_mobile_phone_num varchar(45) DEFAULT NULL,
   patient_alternate_phone_num varchar(45) DEFAULT NULL,
