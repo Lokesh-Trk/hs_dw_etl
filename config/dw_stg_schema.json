@@ -281,6 +281,10 @@
   {
   "tablename":"hs_note_template_master",
   "fields": "  template_id int(11) NOT NULL,template_name varchar(45), template_path varchar(145), template_code varchar(45), active_flg tinyint(4), created_by varchar(45), created_ts datetime, modified_ts datetime, modified_by varchar(45)"
+  },
+  {
+  "tablename":"hs_ext_hospital_doctors_master",
+  "fields": "doctor_id int(11) NOT NULL ,external_hospital_nm varchar(200) DEFAULT NULL,external_doctor_nm varchar(100) NOT NULL,effective_from_ts datetime DEFAULT NULL,effective_to_ts datetime DEFAULT NULL,active_flg tinyint(1) NOT NULL DEFAULT '1',created_by varchar(45) DEFAULT NULL,created_ts datetime DEFAULT NULL,modified_by varchar(45) DEFAULT NULL,modified_ts datetime DEFAULT NULL,department_nm varchar(200) DEFAULT NULL,mobile_no varchar(45) DEFAULT NULL,email_addr varchar(100) DEFAULT NULL,hospital_id int(11) NOT NULL,hospital_location_id bigint(20) DEFAULT NULL"
   }
  ]
 }

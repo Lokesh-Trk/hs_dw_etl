@@ -29,12 +29,11 @@ def main(data_source_cd):
         settings=data["etl_flow_settings"]
         for i in range(len(settings)):
             if settings[i]["data_source_cd"]==data_source_cd:
-                elements=settings[i]['elements']
                 etl_stages=settings[i]['etl_stages']
         for i in range(len(etl_stages)):
             value="etl_stage"+str(i)
             module=etl_stages[value]
-            success_flg = eval(module).start_etl(load_id,elements)
+            success_flg = eval(module).start_etl(load_id,data_source_cd)
             if success_flg == -1:
                 raise Exception(module+" failed")
 

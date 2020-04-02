@@ -19,7 +19,7 @@
   {
   "tablename":"hs_package_items_master", 
   "query":"select 'hospital_cd','package_cd','bill_item_cd','bill_item_nm','bill_item_amt','active_flg','effective_from_ts','effective_to_ts','display_seq_no' union all select dim_h.hospital_cd, src.bill_item_category_cd as package_cd,src.bill_item_cd,src.bill_item_nm, src.bill_item_amt, src.active_flg, src.effective_from_ts, src.effective_to_ts,src.display_seq_no from healthscore_dw.dim_bill_items src  join healthscore_dw.dim_hospital dim_h on src.hospital_key = dim_h.hospital_key ",
-  "where_clause": "src.bill_item_type = 'bill_package_app_subscription' and dim_h.patient_app_flg = 1"
+  "where_clause": "src.bill_item_type = 'bill_package_app_subscription' and dim_h.patient_app_flg = 1 and src.bill_item_cd!='NO_PKG_ITEM'"
   },
   {
   "tablename":"dim_hospital", 
