@@ -8,7 +8,7 @@ path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 sys.path.insert(0,path)
 from util import Connections, Log, Load_Data
 
-def start_etl(load_id,elements):
+def start_etl(load_id,data_source_cd):
 	#log file metadata
 	etl = Path(__file__).stem
 	source = "DW"
@@ -30,7 +30,7 @@ def start_etl(load_id,elements):
 
 		file_path= Connections.export_dir_connect()
 		#get table data for inserting
-		export_table_data = Load_Data.get_table_data(elements,'DW_to_Patient_app_Exports','export')
+		export_table_data = Load_Data.get_table_data(data_source_cd,'DW_to_Patient_app_Exports','export')
 		
 		# Insert new data created in the load date range
 		for table_data in export_table_data:

@@ -9,7 +9,7 @@ path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 sys.path.insert(0,path)
 from util import Connections, Log, Load_Data
 
-def start_etl(load_id, elements):
+def start_etl(load_id, data_source_cd):
 	#log file metadata
 	etl = Path(__file__).stem
 	source = ""
@@ -27,7 +27,7 @@ def start_etl(load_id, elements):
 		if log_id == "-1":
 			return 0
 		#get table schema
-		target_database_nm, stg_table_schema = Load_Data.get_table_data(elements,'Staging_Refresh_DB','create')
+		target_database_nm, stg_table_schema = Load_Data.get_table_data(data_source_cd,'Staging_Refresh_DB','create')
         #drop and create staging db
 		if not Log.check_status(load_id,etl,"","Refresh_Staging_DB","Completed"):
 			sub_log_id,start_ts,end_ts = Log.insert_log(load_id,etl,"","Refresh_Staging_DB","Started")

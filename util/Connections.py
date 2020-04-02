@@ -31,18 +31,18 @@ def get_etl_flow_settings_json():
 	file = open(settings.ETL_FLOW_SETTINGS,'r')
 	return file
 
-def etl_file_json(element):
+def etl_file_json(data_source_cd):
 	file_conn = get_etl_flow_settings_json()
 	with file_conn as json_file:
 		data = json.load(json_file)
 	etl_file_names = data["etl_file_names"]
 	for i in range(len(etl_file_names)):
-		if (etl_file_names[i]["element"]==element):
+		if (etl_file_names[i]["data_source_cd"]==data_source_cd):
 			etl_required_file_names= etl_file_names[i]
 	return etl_required_file_names
 
-def create_staging_file_connect(element):
-	data = etl_file_json(element)
+def create_staging_file_connect(data_source_cd):
+	data = etl_file_json(data_source_cd)
 	file_name = data['STG_CREATE_JSON']
 	file = open(file_name, 'r')
 	return file,file_name
@@ -68,14 +68,14 @@ def json_etl_fact_schema_file_connect():
 	file_name = settings.JSON_ETL_FACT_SCHEMA
 	return file_name
 
-def json_dim_load_file_connect(element):
-	data =etl_file_json(element)
+def json_dim_load_file_connect(data_source_cd):
+	data =etl_file_json(data_source_cd)
 	file_name=data['JSON_DIM_LOAD']
 	file = open(file_name, 'r')
 	return file,file_name
 
-def json_export_file_connect(element):
-	data =etl_file_json(element)
+def json_export_file_connect(data_source_cd):
+	data =etl_file_json(data_source_cd)
 	file_name=data['DW_PATIENT_APP_EXPORT_JSON_FILE']
 	file = open(file_name, 'r')
 	return file,file_name
@@ -84,8 +84,8 @@ def json_export_schema_file_connect():
 	file_name =settings.DW_PATIENT_APP_EXPORT_JSON_VALIDATE_FILE
 	return file_name
 
-def json_fact_load_file_connect(element):
-	data =etl_file_json(element)
+def json_fact_load_file_connect(data_source_cd):
+	data =etl_file_json(data_source_cd)
 	file_name=data['JSON_FACT_LOAD']
 	file = open(file_name, 'r')
 	return file,file_name

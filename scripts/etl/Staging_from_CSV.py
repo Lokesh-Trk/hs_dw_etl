@@ -9,7 +9,7 @@ path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 sys.path.insert(0,path)
 from util import Connections, Log
 
-def start_etl(load_id,elements):
+def start_etl(load_id,data_source_cd):
     #log file metadata
     etl = Path(__file__).stem
     source = "CSV"

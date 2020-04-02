@@ -144,7 +144,7 @@ CREATE TABLE hs_health_assessment_scale_result_items_master (
   health_assessment_scale_id int(11) NOT NULL,
   default_value_txt varchar(1000) DEFAULT NULL,
   sequence_no int(11) DEFAULT NULL,
-  sub_items varchar(50) DEFAULT NULL,
+  sub_items varchar(500) DEFAULT NULL,
   active_flg tinyint(1) DEFAULT '1',
   created_by varchar(45) DEFAULT NULL,
   modified_by varchar(45) DEFAULT NULL,
@@ -1092,5 +1092,25 @@ CREATE TABLE hs_product_master (
   schedule_type_cd varchar(10),
   PRIMARY KEY (product_master_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS hs_ext_hospital_doctors_master;
+CREATE TABLE hs_ext_hospital_doctors_master (
+  doctor_id int(11) NOT NULL ,
+  external_hospital_nm varchar(200) DEFAULT NULL,
+  external_doctor_nm varchar(100) NOT NULL,
+  effective_from_ts datetime DEFAULT NULL,
+  effective_to_ts datetime DEFAULT NULL,
+  active_flg tinyint(1) NOT NULL DEFAULT '1',
+  created_by varchar(45) DEFAULT NULL,
+  created_ts datetime DEFAULT NULL,
+  modified_by varchar(45) DEFAULT NULL,
+  modified_ts datetime DEFAULT NULL,
+  department_nm varchar(200) DEFAULT NULL,
+  mobile_no varchar(45) DEFAULT NULL,
+  email_addr varchar(100) DEFAULT NULL,
+  hospital_id int(11) NOT NULL,
+  hospital_location_id bigint(20) DEFAULT NULL,
+  PRIMARY KEY (doctor_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 SET SESSION group_concat_max_len = 1000000;
