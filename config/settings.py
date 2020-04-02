@@ -1,8 +1,8 @@
 import os
 DB_CONFIG = {
 "host": "localhost",
-"user": "root",
-"passwd": "r00!r00T",
+"user": "dw_user",
+"passwd": "d33W$er99",
 "staging_db": "healthscore_stg",
 "dw_db":"healthscore_dw",
 "port":"3306",
