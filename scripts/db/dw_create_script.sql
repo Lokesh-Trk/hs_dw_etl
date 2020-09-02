@@ -73,7 +73,7 @@ CREATE TABLE healthscore_dw.dim_hospital(
   razorpay_account_id varchar(100),
   patient_app_flg tinyint(1),
   created_by varchar(45),
-  etl_load_id int(11) DEFAULT NULL,
+  etl_load_id int(11) NOT NULL,
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
  PRIMARY KEY (hospital_key),
@@ -92,7 +92,7 @@ CREATE TABLE healthscore_dw.map_patient_hospital(
   payment_provider varchar(100) DEFAULT NULL,
   patient_referred_by varchar(100) DEFAULT NULL,
   default_rate_category_nm varchar(45) DEFAULT NULL,
- etl_load_id int(11) DEFAULT NULL,
+  etl_load_id int(11) NOT NULL,
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
  PRIMARY KEY (map_patient_hospital_key),
@@ -138,7 +138,7 @@ CREATE TABLE healthscore_dw.dim_patient (
   effective_from_ts datetime DEFAULT NULL,
   effective_to_ts datetime DEFAULT NULL,
   created_by_staff_key int(11) not null,
-  etl_load_id int(11) DEFAULT NULL,
+  etl_load_id int(11) NOT NULL,
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (patient_key),
@@ -162,7 +162,7 @@ CREATE TABLE healthscore_dw.dim_patient_documents (
   user_uploaded_flg tinyint(1) DEFAULT 0,
   active_flg tinyint(1) default null,
   uploaded_patient_visit_key int(11) default null,
-  etl_load_id int(11) DEFAULT NULL,
+  etl_load_id int(11) NOT NULL,
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
  PRIMARY KEY (patient_document_key),
@@ -183,7 +183,7 @@ CREATE TABLE healthscore_dw.fact_patient_clinical_info (
   effective_to_ts datetime,
   recorded_date_key date NOT NULL,
   recorded_time_key time NOT NULL,
-  etl_load_id int(11) DEFAULT NULL,
+  etl_load_id int(11) NOT NULL,
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (patient_clinical_info_key),
@@ -212,7 +212,7 @@ CREATE TABLE fact_patient_medications (
   created_by_staff_key int(11) not null,
   prescribed_date_key date NOT NULL,
   prescribed_time_key time NOT NULL,
-  etl_load_id int(11) default 0,
+  etl_load_id int(11) NOT NULL,
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (patient_medication_key),
@@ -252,7 +252,7 @@ CREATE TABLE healthscore_dw.fact_patient_visits (
   source_cd varchar(45) NOT NULL,
   created_by_staff_key int(11) not null,
   patient_visit_cd varchar(45) NOT NULL,
-  etl_load_id int(11) DEFAULT 0,
+  etl_load_id int(11) NOT NULL,
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (patient_visit_key),
@@ -280,7 +280,7 @@ DROP TABLE IF EXISTS healthscore_dw.fact_patient_vitals;
   vital_created_ts datetime not NULL,
   created_by_staff_key int(11),
   source_cd varchar(20) NOT NULL,
-  etl_load_id int(11) DEFAULT NULL,
+  etl_load_id int(11) NOT NULL,
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (patient_vital_key),
@@ -300,29 +300,11 @@ DROP TABLE IF EXISTS healthscore_dw.fact_patient_vitals;
   schedule_end_time_key time DEFAULT NULL,
   doctor_nm varchar(100) NOT NULL,
   duration int(11) DEFAULT NULL, 
-  etl_load_id int(11) DEFAULT NULL,
+  etl_load_id int(11) NOT NULL,
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (patient_appt_key),
   UNIQUE uk_patient_appointments_key(patient_key,hospital_doctor_key,schedule_date_key,schedule_end_time_key)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
- 
- DROP TABLE IF EXISTS healthscore_dw.fact_patient_assessments;
- CREATE TABLE healthscore_dw.fact_patient_assessments(
-  patient_assmt_key int(11) NOT NULL AUTO_INCREMENT,
-  patient_key int(11) NOT NULL,
-  visit_hospital_key int(11) DEFAULT NULL,
-  patient_visit_key int(11) default null,
-  health_assessment_scale_desc varchar(45) NOT NULL,
-  assessment_results_json VARCHAR(1000) NOT NULL, -- seq_no, component_reference_range_txt, result_item_nm, assessment_scale_result_value
-  assessed_date_key date not null,
-  assessed_time_key time not null,
-  assessed_ts datetime not null,
-  etl_load_id int(11) DEFAULT NULL,
-  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
-  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (patient_assmt_key),
-  UNIQUE uk_patient_assessments_key(patient_key,health_assessment_scale_desc,assessed_date_key,assessed_time_key)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
  DROP TABLE IF EXISTS healthscore_dw.fact_patient_visitbills;
@@ -352,7 +334,7 @@ DROP TABLE IF EXISTS healthscore_dw.fact_patient_vitals;
  source_cd varchar(20) NOT NULL,
  previous_bill_balance_amt decimal(10,2) default NULL,
  previous_visit_bill_key int(11) default NULL,
- etl_load_id int(11) DEFAULT NULL,
+ etl_load_id int(11) NOT NULL,
  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
  PRIMARY KEY (patient_visitbill_key),
@@ -372,7 +354,7 @@ CREATE TABLE healthscore_dw.fact_patient_careplans -- show to do list by date
  todo_time_key time not null,
  todo_ts datetime not null ,
  careplan_instruction_json JSON NOT NULL,  -- instruction with status - pending , missed,  completed
- etl_load_id int(11) DEFAULT NULL,
+ etl_load_id int(11) NOT NULL,
  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,	
  PRIMARY KEY (patient_careplan_key),
@@ -393,7 +375,7 @@ CREATE TABLE healthscore_dw.fact_patient_investigations
  investigation_results_json JSON NULL,  
  investigation_results_pdf_url VARCHAR(1000) NULL,
  user_uploaded_flg tinyint(1) DEFAULT 0,  
- etl_load_id int(11) DEFAULT NULL,
+ etl_load_id int(11) NOT NULL,
  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,	
  PRIMARY KEY (patient_investigation_key),
@@ -427,7 +409,7 @@ CREATE TABLE healthscore_dw.etl_load_details(
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,	
   PRIMARY KEY (etl_load_id)
-)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4; 
 
 DROP TABLE IF EXISTS healthscore_dw.dim_staff;
 CREATE TABLE healthscore_dw.dim_staff (
@@ -446,7 +428,7 @@ CREATE TABLE healthscore_dw.dim_staff (
   country_cd varchar(6) DEFAULT NULL,
   active_flg tinyint(1) DEFAULT NULL,
   created_by_user_nm varchar(45),
-  etl_load_id int(11) DEFAULT NULL,
+  etl_load_id int(11) NOT NULL,
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,	
   PRIMARY KEY (staff_key),
@@ -479,7 +461,7 @@ CREATE TABLE healthscore_dw.dim_bill_items (
   rate_category_nm varchar(45) DEFAULT 'Default',
   active_flg tinyint(1),
   display_seq_no int(11) DEFAULT NULL,
-  etl_load_id int(11) DEFAULT NULL,
+  etl_load_id int(11) NOT NULL,
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,	
   PRIMARY KEY (bill_item_key),
@@ -496,7 +478,7 @@ CREATE TABLE healthscore_dw.dim_hospital_wards (
   hospital_ward_floor_no varchar(45),
   hospital_ward_bedcount_no varchar(45),
   active_flg tinyint(1),
-  etl_load_id int(11) DEFAULT NULL,
+  etl_load_id int(11) NOT NULL,
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,	
   PRIMARY KEY (hospital_ward_key),
@@ -514,7 +496,7 @@ CREATE TABLE healthscore_dw.map_patient_visit_doctors(
   hospital_patient_visit_id int(11) NOT NULL,
   patient_visit_doctor_ts datetime not null,
   source_cd varchar(45) NOT NULL,
-  etl_load_id int(11) DEFAULT NULL,
+  etl_load_id int(11) NOT NULL,
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (map_patient_visit_doctor_key),
@@ -544,7 +526,7 @@ active_flg tinyint(1),
 pharmacy_item_flg tinyint(1) NOT NULL,
 vbi_created_ts timestamp NOT NULL,
 payment_method_id int(11) ,
-etl_load_id int(11) DEFAULT NULL,
+etl_load_id int(11) NOT NULL,
 inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
 updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
 PRIMARY KEY (patient_visitbillitem_key)
@@ -570,7 +552,7 @@ order_date_key date NOT NULL,
 order_time_key time NOT NULL,
 order_modified_ts   datetime,
 hsapp_patient_order_id bigint(50) NOT NULL,
-etl_load_id int(11) DEFAULT NULL,
+etl_load_id int(11) NOT NULL,
 inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
 updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
 PRIMARY KEY (patient_order_details_key)
@@ -594,7 +576,7 @@ modified_by varchar(45) DEFAULT NULL,
 recorded_modified_ts datetime DEFAULT NULL,
 fhir_message_id int(11) NOT NULL,
 source varchar(45) DEFAULT NULL,
-etl_load_id int(11) DEFAULT NULL,
+etl_load_id int(11) NOT NULL,
 inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
 updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
 PRIMARY KEY (fhir_message_key)
@@ -641,10 +623,33 @@ CREATE TABLE healthscore_dw.fact_active_visits (
   total_billed_amt decimal(12,2) default 0.0, 
   current_balance_amt decimal(10,2) default 0,
   source_cd varchar(45) NOT NULL,
-  etl_load_id int(11) DEFAULT NULL,
+  etl_load_id int(11) NOT NULL,
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,	
   PRIMARY KEY (active_visits_key),
   UNIQUE KEY uk_active_visits_key(as_of_date_key,patient_visit_key,patient_visitbill_key)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
+ DROP TABLE IF EXISTS healthscore_dw.fact_patient_assessments;
+ CREATE TABLE healthscore_dw.fact_patient_assessments(
+  patient_assmt_key int(11) NOT NULL AUTO_INCREMENT,
+  patient_key int(11) NOT NULL,
+  visit_hospital_key int(11) DEFAULT NULL,
+  patient_visit_key int(11) default null,
+  health_assessment_scale_desc varchar(45) NOT NULL,
+  hospital_dept_nm varchar(45) NOT NULL,
+  assessment_result_item_seq_no int(11),
+  assessment_result_item_ref_range_txt varchar(1000),
+  assessment_result_item_display_txt varchar(100),
+  assessment_result_item_value varchar(1000),
+  assessed_date_key date not null,
+  assessed_time_key time not null,
+  assessed_ts datetime not null,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (patient_assmt_key),
+  UNIQUE uk_patient_assessments_key(patient_key,health_assessment_scale_desc,assessment_result_item_display_txt,assessed_date_key,assessed_time_key)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE  healthscore_dw.dim_staff ADD COLUMN hospital_staff_dept_nm varchar(45) DEFAULT NULL;

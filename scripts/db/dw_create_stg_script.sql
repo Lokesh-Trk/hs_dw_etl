@@ -115,45 +115,6 @@ CREATE TABLE hs_consultation_type_master (
   PRIMARY KEY (consultation_type_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Consultation types specific to the hospital';
 
-
-DROP TABLE IF EXISTS hs_health_assessment_scale_master; 
-CREATE TABLE hs_health_assessment_scale_master (
-  health_assessment_scale_id int(11) NOT NULL ,
-  health_assessment_scale_desc varchar(45) DEFAULT NULL,
-  dept_id int(11) NOT NULL,
-  report_type varchar(45) DEFAULT NULL,
-  active_flg tinyint(1) DEFAULT '1',
-  created_by varchar(45) DEFAULT NULL,
-  modified_by varchar(45) DEFAULT NULL,
-  created_ts datetime DEFAULT NULL,
-  modified_ts datetime DEFAULT NULL,
-  assessment_scale_type_id int(11) DEFAULT NULL,
-  display_seq_no int(11) DEFAULT NULL,
-  hospital_id int(11) DEFAULT NULL,
-  PRIMARY KEY (health_assessment_scale_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
- 
-
-DROP TABLE IF EXISTS hs_health_assessment_scale_result_items_master; 
-CREATE TABLE hs_health_assessment_scale_result_items_master (
-  assessment_scale_result_item_id bigint(11) NOT NULL,
-  ref_component_id bigint(11) DEFAULT NULL,
-  ref_display_txt varchar(100) DEFAULT NULL,
-  component_reference_range_txt varchar(1000) DEFAULT NULL,
-  result_type_id int(11) DEFAULT NULL,
-  health_assessment_scale_id int(11) NOT NULL,
-  default_value_txt varchar(1000) DEFAULT NULL,
-  sequence_no int(11) DEFAULT NULL,
-  sub_items varchar(500) DEFAULT NULL,
-  active_flg tinyint(1) DEFAULT '1',
-  created_by varchar(45) DEFAULT NULL,
-  modified_by varchar(45) DEFAULT NULL,
-  created_ts datetime DEFAULT NULL,
-  modified_ts datetime DEFAULT NULL,
-  PRIMARY KEY (assessment_scale_result_item_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; 
-
-
 DROP TABLE IF EXISTS hs_hospital_master; 
 CREATE TABLE hs_hospital_master (
   hospital_id int(11) NOT NULL,
@@ -1112,5 +1073,77 @@ CREATE TABLE hs_ext_hospital_doctors_master (
   hospital_location_id bigint(20) DEFAULT NULL,
   PRIMARY KEY (doctor_id)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS hs_patient_assessment;
+CREATE TABLE hs_patient_assessment (
+  hs_patient_assessment_id bigint(50),
+  health_assessment_scale_id bigint(50),
+  patient_visit_id bigint(50),
+  visit_note_id bigint(50),
+  patient_id bigint(50),
+  hospital_id int(11),
+  hospital_staff_id int(11),
+  visit_assessment_status_flg tinyint(2),
+  deactivation_comment varchar(3000),
+  assessed_ts datetime,
+  created_ts timestamp ,
+  created_by varchar(45),
+  modified_by varchar(45),
+  modified_ts timestamp,
+  active_flg tinyint(1),
+  PRIMARY KEY (hs_patient_assessment_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS hs_patient_assessment_scale_results;
+CREATE TABLE hs_patient_assessment_scale_results (
+  hs_patient_assessment_scale_result_id bigint(50),
+  hs_patient_assessment_id bigint(50),
+  assessment_scale_result_item_id bigint(11),
+  assessment_scale_result_value varchar(2000),
+  created_ts timestamp,
+  created_by varchar(45),
+  modified_by varchar(45),
+  modified_ts timestamp,
+  active_flg tinyint(1),
+  PRIMARY KEY (hs_patient_assessment_scale_result_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS hs_health_assessment_scale_master;
+CREATE TABLE hs_health_assessment_scale_master (
+  health_assessment_scale_id int(11),
+  health_assessment_scale_desc varchar(45),
+  dept_id int(11),
+  report_type varchar(45),
+  active_flg tinyint(1),
+  created_by varchar(45),
+  modified_by varchar(45),
+  created_ts datetime,
+  modified_ts datetime,
+  assessment_scale_type_id int(11),
+  display_seq_no int(11),
+  hospital_id int(11),
+  PRIMARY KEY (health_assessment_scale_id) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS hs_health_assessment_scale_result_items_master;
+CREATE TABLE hs_health_assessment_scale_result_items_master (
+  assessment_scale_result_item_id bigint(11),
+  ref_component_id bigint(11),
+  ref_display_txt varchar(100),
+  component_reference_range_txt varchar(1000),
+  result_type_id int(11),
+  health_assessment_scale_id int(11),
+  default_value_txt varchar(1000),
+  sequence_no int(11),
+  sub_items varchar(50),
+  active_flg tinyint(1),
+  created_by varchar(45),
+  modified_by varchar(45),
+  created_ts datetime,
+  modified_ts datetime,
+  PRIMARY KEY (assessment_scale_result_item_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+ 
+
 
 SET SESSION group_concat_max_len = 1000000;

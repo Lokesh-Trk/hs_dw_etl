@@ -1,56 +1,69 @@
 {
-"etl_flow_settings": [
-    {
-    "data_source_cd":"hs_shared",
-    "etl_stages": {
-        "etl_stage0":"Staging_Refresh_DB",
-        "etl_stage1":"Staging_from_CSV",
-        "etl_stage2":"Staging_to_DW_Dimensions",
-        "etl_stage3":"Staging_to_DW_Facts",
-        "etl_stage4":"DW_to_Patient_app_Exports"
-        }
-    },
-    {
-    "data_source_cd":"myhsapp",
-    "etl_stages": {
-        "etl_stage0":"Staging_Refresh_DB",
-        "etl_stage1":"Staging_from_CSV",
-        "etl_stage2":"Staging_to_DW_Dimensions",
-        "etl_stage3":"Staging_to_DW_Facts",
-        "etl_stage4":"DW_to_Patient_app_Exports"
-        }
-    
-    },
-    {
-        "data_source_cd":"suvitas",
-        "etl_stages": {
-            "etl_stage0":"Staging_Refresh_DB",
-            "etl_stage1":"Staging_from_CSV",
-            "etl_stage2":"Staging_to_DW_Dimensions",
-            "etl_stage3":"Staging_to_DW_Facts"
-            }		
-        }
-
- ],
- "etl_file_names":[
-    {
-    "data_source_cd":"hs_shared",
-    "DW_PATIENT_APP_EXPORT_JSON_FILE" : "config/dw_patient_app_export.json",
-    "JSON_DIM_LOAD" : "config/dw_dim_schema.json",
-    "STG_CREATE_JSON" : "config/dw_stg_schema.json",
-    "JSON_FACT_LOAD" : "config/dw_fact_schema.json"
-    },
-    {
-    "data_source_cd":"myhsapp",
-    "JSON_DIM_LOAD" : "config/myhsapp_dw_dim_schema.json",
-    "STG_CREATE_JSON" : "config/myhsapp_dw_stg_schema.json",
-    "JSON_FACT_LOAD" : "config/dw_fact_schema.json"
-    },
-    {
-    "data_source_cd":"suvitas",
-     "JSON_DIM_LOAD" : "config/suvitas_dw_dim_schema.json",
-      "STG_CREATE_JSON" : "config/suvitas_dw_stg_schema.json",
-     "JSON_FACT_LOAD" : "config/suvitas_dw_fact_schema.json"
-     }
- ]
+	"etl_flow_settings": [
+		{
+			"data_source_cd": "hs_shared",
+			"etl_stages": {
+				"etl_stage0": "Staging_Refresh_DB",
+				"etl_stage1": "Staging_from_CSV",
+				"etl_stage2": "Staging_to_DW_Dimensions",
+				"etl_stage3": "Staging_to_DW_Facts",
+				"etl_stage4": "DW_to_Patient_app_Exports"
+			}
+		},
+		{
+			"data_source_cd": "myhsapp",
+			"etl_stages": {
+				"etl_stage0": "Staging_Refresh_DB",
+				"etl_stage1": "Staging_from_CSV",
+				"etl_stage2": "Staging_to_DW_Dimensions",
+				"etl_stage3": "Staging_to_DW_Facts",
+				"etl_stage4": "DW_to_Patient_app_Exports"
+			}
+		},
+		{
+			"data_source_cd": "suvitas",
+			"etl_stages": {
+				"etl_stage0": "Staging_Refresh_DB",
+				"etl_stage1": "Staging_from_CSV",
+				"etl_stage2": "Staging_to_DW_Dimensions",
+				"etl_stage3": "Staging_to_DW_Facts"
+			}
+		},
+		{
+			"data_source_cd": "hs_az",
+			"etl_stages": {
+				"etl_stage0": "Staging_Refresh_DB",
+				"etl_stage1": "Staging_from_CSV",
+				"etl_stage2": "Staging_to_DW_Dimensions",
+				"etl_stage3": "Staging_to_DW_Facts"
+			}
+		}
+	],
+	"etl_file_names": [
+		{
+			"data_source_cd": "hs_shared",
+			"DW_PATIENT_APP_EXPORT_JSON_FILE": "config/hs_shared/dw_patient_app_export.json",
+			"JSON_DIM_LOAD": "config/hs_shared/dw_dim_schema.json",
+			"STG_CREATE_JSON": "config/hs_shared/dw_stg_schema.json",
+			"JSON_FACT_LOAD": "config/hs_shared/dw_fact_schema.json"
+		},
+		{
+			"data_source_cd": "myhsapp",
+			"JSON_DIM_LOAD": "config/myhsapp/dw_dim_schema.json",
+			"STG_CREATE_JSON": "config/myhsapp/dw_stg_schema.json",
+			"JSON_FACT_LOAD": "config/hs_shared/dw_fact_schema.json"
+		},
+		{
+			"data_source_cd": "suvitas",
+			"JSON_DIM_LOAD": "config/suvitas/dw_dim_schema.json",
+			"STG_CREATE_JSON": "config/suvitas/dw_stg_schema.json",
+			"JSON_FACT_LOAD": "config/suvitas/dw_fact_schema.json"
+		},
+		{
+			"data_source_cd": "hs_az",
+			"JSON_DIM_LOAD": "config/hs_az/dw_dim_schema.json",
+			"STG_CREATE_JSON": "config/hs_az/dw_stg_schema.json",
+			"JSON_FACT_LOAD": "config/hs_az/dw_fact_schema.json"
+		}
+	]
 }

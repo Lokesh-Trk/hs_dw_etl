@@ -1,6 +1,8 @@
 __pycache__
+__pycache__/
 build
 config/__pycache__
 scripts/etl/__pycache__
 util/__pycache__
+etl/__pycache__
 .vscode/
