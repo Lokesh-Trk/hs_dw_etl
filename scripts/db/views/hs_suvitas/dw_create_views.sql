@@ -52,8 +52,8 @@ join healthscore_dw.suvitas_hospital_master_view hm
 on fpa.visit_hospital_key = hm.hospital_key
 ;
 
-DROP VIEW IF EXISTS healthscore_dw.az_hospital_staff_master_view;
-CREATE VIEW healthscore_dw.az_hospital_staff_master_view as
+DROP VIEW IF EXISTS healthscore_dw.suvitas_hospital_staff_master_view;
+CREATE VIEW healthscore_dw.suvitas_hospital_staff_master_view as
 select ds.hospital_key, ds.hospital_staff_cd, ds.hospital_staff_full_nm,hospital_staff_user_nm,hospital_staff_gender,hospital_staff_type_nm,hospital_staff_kmc_reg_no,hospital_staff_dept_nm
 from 
   healthscore_dw.dim_staff ds
