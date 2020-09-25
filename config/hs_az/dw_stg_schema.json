@@ -195,7 +195,7 @@
 		{
 			"tablename": "hs_patient_schedule_master",
 			"fields": "patient_schedule_id bigint(50) NOT NULL ,  hospital_id int(11) NOT NULL,  patient_id int(11) NOT NULL,  visit_id int(50) NOT NULL,  schedule_dt date NOT NULL,  schedule_hour_id int(11) NOT NULL,  schedule_minute_id int(11) NOT NULL,  schedule_end_hour_id int(11) DEFAULT NULL,  duration int(11) DEFAULT NULL,  schedule_end_minute_id int(11) DEFAULT NULL,  active_flg tinyint(1) DEFAULT '1',  created_by varchar(45) DEFAULT NULL,  created_ts datetime DEFAULT NULL,  modified_by varchar(45) DEFAULT NULL,  modified_ts datetime DEFAULT NULL",
-			"primary_key": "schedule_dt"
+			"primary_key": "patient_schedule_id"
 		},
 		{
 			"tablename": "hs_patient_visit_bill",

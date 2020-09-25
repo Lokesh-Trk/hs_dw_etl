@@ -51,7 +51,8 @@ CREATE TABLE hs_bill_items_master (
   concession_pct decimal(10,2) DEFAULT NULL,
   inv_package_flg tinyint(1) DEFAULT '0',
   display_seq_no int(11) DEFAULT NULL,
-  PRIMARY KEY (bill_item_id)
+  renewal_item_flg tinyint(1) DEFAULT '0', 
+  PRIMARY KEY (bill_item_id) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Standard Bill items specific to the hospital';
 
 DROP TABLE IF EXISTS hs_bill_items_package_map_master; 

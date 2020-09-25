@@ -21,7 +21,7 @@
 			}
 		},
 		{
-			"data_source_cd": "suvitas",
+			"data_source_cd": "hs_suvitas",
 			"etl_stages": {
 				"etl_stage0": "Staging_Refresh_DB",
 				"etl_stage1": "Staging_from_CSV",
@@ -54,10 +54,10 @@
 			"JSON_FACT_LOAD": "config/hs_shared/dw_fact_schema.json"
 		},
 		{
-			"data_source_cd": "suvitas",
-			"JSON_DIM_LOAD": "config/suvitas/dw_dim_schema.json",
-			"STG_CREATE_JSON": "config/suvitas/dw_stg_schema.json",
-			"JSON_FACT_LOAD": "config/suvitas/dw_fact_schema.json"
+			"data_source_cd": "hs_suvitas",
+			"JSON_DIM_LOAD": "config/hs_suvitas/dw_dim_schema.json",
+			"STG_CREATE_JSON": "config/hs_suvitas/dw_stg_schema.json",
+			"JSON_FACT_LOAD": "config/hs_suvitas/dw_fact_schema.json"
 		},
 		{
 			"data_source_cd": "hs_az",
