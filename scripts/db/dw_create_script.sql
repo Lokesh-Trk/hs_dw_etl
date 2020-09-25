@@ -216,7 +216,7 @@ CREATE TABLE fact_patient_medications (
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (patient_medication_key),
-  UNIQUE KEY uk_patient_medication_key (patient_key,prescribed_hospital_key,prescribed_patient_visit_key,pharma_brand_nm,prescribed_doctor_staff_key)
+  UNIQUE KEY uk_patient_medication_key (patient_key,prescribed_hospital_key,pharma_brand_nm,prescribed_doctor_staff_key,prescribed_ts)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 Drop table if exists healthscore_dw.fact_patient_visits;
@@ -341,25 +341,6 @@ DROP TABLE IF EXISTS healthscore_dw.fact_patient_vitals;
  UNIQUE uk_patient_visitbills_key(visit_hospital_key,patient_visit_key,visit_bill_cd),
  UNIQUE uk_patient_visitbills_id(visit_bill_id,source_cd)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
-
-DROP TABLE IF EXISTS healthscore_dw.fact_patient_careplans;
-CREATE TABLE healthscore_dw.fact_patient_careplans -- show to do list by date 
-(
- patient_careplan_key int(11) NOT NULL AUTO_INCREMENT,
- patient_key int(11) NOT NULL,
- visit_hospital_key int(11) NOT NULL,
- patient_visit_key int(11) default null,
- careteam_desc varchar(1000) NOT NULL, -- list of all doctor names
- todo_date_key date not null,
- todo_time_key time not null,
- todo_ts datetime not null ,
- careplan_instruction_json JSON NOT NULL,  -- instruction with status - pending , missed,  completed
- etl_load_id int(11) NOT NULL,
- inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
- updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,	
- PRIMARY KEY (patient_careplan_key),
- UNIQUE uk_patient_careplan_key(patient_key,todo_date_key,todo_time_key)
-)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS healthscore_dw.fact_patient_investigations;
 CREATE TABLE healthscore_dw.fact_patient_investigations
@@ -636,7 +617,7 @@ CREATE TABLE healthscore_dw.fact_active_visits (
   patient_key int(11) NOT NULL,
   visit_hospital_key int(11) DEFAULT NULL,
   patient_visit_key int(11) default null,
-  health_assessment_scale_desc varchar(45) NOT NULL,
+  health_assessment_scale_desc varchar(60) NOT NULL,
   hospital_dept_nm varchar(45) NOT NULL,
   assessment_result_item_seq_no int(11),
   assessment_result_item_ref_range_txt varchar(1000),
@@ -653,3 +634,72 @@ CREATE TABLE healthscore_dw.fact_active_visits (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 ALTER TABLE  healthscore_dw.dim_staff ADD COLUMN hospital_staff_dept_nm varchar(45) DEFAULT NULL;
+
+DROP TABLE IF EXISTS healthscore_dw.fact_patient_careplans;
+CREATE TABLE healthscore_dw.fact_patient_careplans  
+(
+ patient_careplan_key int(11) NOT NULL AUTO_INCREMENT,
+ patient_key int(11) NOT NULL,
+ visit_hospital_key int(11) NOT NULL,
+ created_visit_key int(11) NOT NULL,
+ careplan_status_cd varchar(45) ,
+ careplan_status_nm varchar(45) ,
+ careplan_summary varchar(500),
+ active_flg tinyint(1) not null default 1,
+ created_by_staff_key varchar(45),
+ modified_by_staff_key varchar(45),
+ careplan_created_date_key date not null,
+ careplan_created_time_key time not null,
+ careplan_created_ts datetime not null,
+ careplan_modified_date_key date ,
+ careplan_modified_time_key time ,
+ careplan_modified_ts datetime ,
+ etl_load_id int(11) NOT NULL,
+ inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+ updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP, 
+ PRIMARY KEY (patient_careplan_key),
+ UNIQUE uk_patient_careplan_key(patient_key,visit_hospital_key,careplan_created_date_key,careplan_created_time_key)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.fact_patient_careplan_instructions;
+CREATE TABLE healthscore_dw.fact_patient_careplan_instructions 
+(
+ patient_care_plan_instruction_key bigint(20) NOT NULL AUTO_INCREMENT,
+ patient_key int(11) NOT NULL,
+ visit_hospital_key int(11) NOT NULL,
+ careplan_instruction_desc varchar(2000) ,
+ careplan_instruction_type_cd varchar(10) ,
+ careplan_instruction_type_nm varchar(255) ,
+ careplan_instruction_dept_cd varchar(10) ,
+ careplan_instruction_dept_nm varchar(45) ,
+ freq_mode_cd varchar(10) ,
+ freq_mode_nm varchar(255) ,
+ careplan_ins_status_cd varchar(45) ,
+ careplan_ins_status_nm varchar(45) ,
+ freq_num int(11) ,
+ ins_started_ts datetime ,
+ ins_ended_ts datetime ,
+ comments varchar(545) ,
+ created_by_staff_key int(11) null,
+ modified_by_staff_key int(11),
+ bill_item_key int(11), 
+ feed_qty double,
+ total_feed double,
+ interval_no int(11),
+ feed_increase_qty decimal(10,2),
+ feed_increase_freq_in_hrs decimal(10,2),
+ first_feed_ins_start_ts datetime,
+ stopped_flg tinyint(1),
+ active_flg tinyint(1),
+ ventilation_ins_detail JSON, 
+ patient_medication_key int(11), 
+ patient_careplan_key int(11) not null,
+ ins_created_date_key date not null,
+ ins_created_time_key time not null,
+ ins_created_ts datetime not null,
+ etl_load_id int(11) NOT NULL,
+ inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+ updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP, 
+ PRIMARY KEY (patient_care_plan_instruction_key)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
