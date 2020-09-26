@@ -39,7 +39,7 @@ def start_etl(load_id,data_source_cd):
 			if not Log.check_status(load_id,etl,table_data["source_table"]+".insert",table_name,"Completed"):
 		         
 				sub_log_id,data_start_ts,data_end_ts = Log.insert_log(load_id,etl,table_data["source_table"]+".insert",table_name,"Started")
-				sql = f"INSERT INTO {table_name} ( {table_data['fields']}) SELECT * FROM ({table_data['insert_query'].format(load_id)}) as src "
+				sql = f"INSERT INTO {table_name} ( {table_data['fields']}) SELECT * FROM ({table_data['insert_query'].format(load_id,data_source_cd)}) as src "
 				sql = f"{sql} ON DUPLICATE KEY UPDATE {table_data['update_fields']}"
 										
 				cursor.execute(sql)

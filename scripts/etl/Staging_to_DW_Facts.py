@@ -31,7 +31,7 @@ def start_etl(load_id,data_source_cd):
 		cursor = conn.cursor()
 		target_database_nm, insert_fact_table_data = Load_Data.get_table_data(data_source_cd,'Staging_to_DW_Facts','insert')
 	#	Insert new data created in the load date range
-		sql="SELECT hospital_key,hospital_cd from healthscore_dw.dim_hospital"
+		sql=f"SELECT hospital_key,hospital_cd from healthscore_dw.dim_hospital where source_cd='{data_source_cd}'"
 		cursor.execute(sql)
 		hospital_data=cursor.fetchall()
 		ranges = get_ranges(hospital_data, insert_fact_table_data)

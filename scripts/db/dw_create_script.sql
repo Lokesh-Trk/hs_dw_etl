@@ -703,3 +703,4 @@ CREATE TABLE healthscore_dw.fact_patient_careplan_instructions
  PRIMARY KEY (patient_care_plan_instruction_key)
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
+ALTER TABLE healthscore_dw.dim_hospital ADD COLUMN source_cd varchar(45) DEFAULT NULL;
