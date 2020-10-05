@@ -635,6 +635,30 @@ CREATE TABLE healthscore_dw.fact_active_visits (
 
 ALTER TABLE  healthscore_dw.dim_staff ADD COLUMN hospital_staff_dept_nm varchar(45) DEFAULT NULL;
 
+ALTER TABLE healthscore_dw.dim_hospital ADD COLUMN source_cd varchar(45) DEFAULT NULL;
+
+-- to be executed as of 30-09-2020-- from below
+
+DROP TABLE IF EXISTS healthscore_dw.fact_careplan_instruction_master;
+CREATE TABLE healthscore_dw.fact_careplan_instruction_master 
+(
+ careplan_instruction_master_key int(11) NOT NULL AUTO_INCREMENT,
+ hospital_key int(11) NOT NULL,
+ careplan_instruction_desc varchar(2000) ,
+ careplan_instruction_type_cd varchar(10) ,
+ careplan_instruction_type_nm varchar(255) ,
+ careplan_instruction_dept_cd varchar(10) ,
+ careplan_instruction_dept_nm varchar(45) ,
+ active_flg tinyint(1) DEFAULT NULL,
+ created_by_staff_key int(11) NOT NULL,
+ created_ts datetime not null,
+ etl_load_id int(11) NOT NULL,
+ inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+ updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP, 
+ PRIMARY KEY (careplan_instruction_master_key)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+
 DROP TABLE IF EXISTS healthscore_dw.fact_patient_careplans;
 CREATE TABLE healthscore_dw.fact_patient_careplans  
 (
@@ -646,8 +670,8 @@ CREATE TABLE healthscore_dw.fact_patient_careplans
  careplan_status_nm varchar(45) ,
  careplan_summary varchar(500),
  active_flg tinyint(1) not null default 1,
- created_by_staff_key varchar(45),
- modified_by_staff_key varchar(45),
+ created_by_staff_key int(11) NOT NULL,
+ modified_by_staff_key int(11)  ,
  careplan_created_date_key date not null,
  careplan_created_time_key time not null,
  careplan_created_ts datetime not null,
@@ -658,20 +682,17 @@ CREATE TABLE healthscore_dw.fact_patient_careplans
  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP, 
  PRIMARY KEY (patient_careplan_key),
- UNIQUE uk_patient_careplan_key(patient_key,visit_hospital_key,careplan_created_date_key,careplan_created_time_key)
+ UNIQUE uk_patient_careplan_key(patient_key,visit_hospital_key,careplan_created_ts)
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS healthscore_dw.fact_patient_careplan_instructions;
 CREATE TABLE healthscore_dw.fact_patient_careplan_instructions 
 (
- patient_care_plan_instruction_key bigint(20) NOT NULL AUTO_INCREMENT,
+ patient_careplan_instruction_key bigint(20) NOT NULL AUTO_INCREMENT,
  patient_key int(11) NOT NULL,
  visit_hospital_key int(11) NOT NULL,
- careplan_instruction_desc varchar(2000) ,
- careplan_instruction_type_cd varchar(10) ,
- careplan_instruction_type_nm varchar(255) ,
- careplan_instruction_dept_cd varchar(10) ,
- careplan_instruction_dept_nm varchar(45) ,
+ patient_careplan_key int(11) not null,
+ careplan_instruction_master_key int(11) NOT NULL ,
  freq_mode_cd varchar(10) ,
  freq_mode_nm varchar(255) ,
  careplan_ins_status_cd varchar(45) ,
@@ -680,8 +701,8 @@ CREATE TABLE healthscore_dw.fact_patient_careplan_instructions
  ins_started_ts datetime ,
  ins_ended_ts datetime ,
  comments varchar(545) ,
- created_by_staff_key int(11) null,
- modified_by_staff_key int(11),
+ created_by_staff_key int(11) NOT NULL,
+ modified_by_staff_key int(11) ,
  bill_item_key int(11), 
  feed_qty double,
  total_feed double,
@@ -693,14 +714,14 @@ CREATE TABLE healthscore_dw.fact_patient_careplan_instructions
  active_flg tinyint(1),
  ventilation_ins_detail JSON, 
  patient_medication_key int(11), 
- patient_careplan_key int(11) not null,
  ins_created_date_key date not null,
  ins_created_time_key time not null,
  ins_created_ts datetime not null,
  etl_load_id int(11) NOT NULL,
  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP, 
- PRIMARY KEY (patient_care_plan_instruction_key)
+ PRIMARY KEY (patient_careplan_instruction_key),
+ UNIQUE uk_patient_careplan_instruction(patient_careplan_key,careplan_instruction_master_key,ins_started_ts)
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
-ALTER TABLE healthscore_dw.dim_hospital ADD COLUMN source_cd varchar(45) DEFAULT NULL;
+
