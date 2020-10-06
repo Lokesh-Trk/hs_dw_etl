@@ -71,5 +71,6 @@ JOIN healthscore_dw.fact_patient_careplans fcp
 ON fcp.patient_careplan_key = fcpi.patient_careplan_key
 JOIN healthscore_dw.fact_careplan_instruction_master fcim 
 ON fcim.careplan_instruction_master_key = fcpi.careplan_instruction_master_key
-JOIN healthscore_dw.suvitas_hospital_master_view hm ON fcpi.visit_hospital_key = hm.hospital_key;
+JOIN healthscore_dw.suvitas_hospital_master_view hm ON fcpi.visit_hospital_key = hm.hospital_key
+where fcpi.active_flg=1 and fcp.active_flg=1;
 
