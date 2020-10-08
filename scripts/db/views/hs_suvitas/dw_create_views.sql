@@ -65,12 +65,12 @@ on fpv.visit_hospital_key = hm.hospital_key;
 
 DROP VIEW IF EXISTS healthscore_dw.suvitas_patient_careplan_instructions_view;
 CREATE VIEW healthscore_dw.suvitas_patient_careplan_instructions_view AS
-SELECT fcpi.patient_careplan_key,fcpi.patient_key,fcpi.visit_hospital_key hospital_key,careplan_status_nm,careplan_summary,careplan_instruction_desc,careplan_instruction_type_nm,careplan_instruction_dept_nm,careplan_ins_status_nm,freq_num,freq_mode_nm,ins_started_ts,ins_ended_ts,comments,bill_item_key,patient_medication_key,stopped_flg,ins_created_date_key,ins_created_time_key,ins_created_ts,fcpi.active_flg
+SELECT fcpi.patient_careplan_key,fcp.patient_key,fcp.visit_hospital_key hospital_key,careplan_status_nm,careplan_summary,careplan_instruction_desc,careplan_instruction_type_nm,careplan_instruction_dept_nm,careplan_ins_status_nm,freq_num,freq_mode_nm,ins_started_ts,ins_ended_ts,comments,bill_item_key,patient_medication_key,stopped_flg,ins_created_date_key,ins_created_time_key,ins_created_ts,fcpi.active_flg
 FROM healthscore_dw.fact_patient_careplan_instructions fcpi
 JOIN healthscore_dw.fact_patient_careplans fcp 
 ON fcp.patient_careplan_key = fcpi.patient_careplan_key
-JOIN healthscore_dw.fact_careplan_instruction_master fcim 
+JOIN healthscore_dw.dim_careplan_instruction_master fcim 
 ON fcim.careplan_instruction_master_key = fcpi.careplan_instruction_master_key
-JOIN healthscore_dw.suvitas_hospital_master_view hm ON fcpi.visit_hospital_key = hm.hospital_key
+JOIN healthscore_dw.suvitas_hospital_master_view hm ON fcp.visit_hospital_key = hm.hospital_key
 where fcpi.active_flg=1 and fcp.active_flg=1;
 
