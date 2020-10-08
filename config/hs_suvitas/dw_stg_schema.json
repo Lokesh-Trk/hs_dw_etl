@@ -321,14 +321,6 @@
 			"fields":"status_id int(11),status_cd varchar(45), status_nm varchar(45), active_flg tinyint(1)"
 		},
 		{
-			"tablename":"hs_patient_feed_route_master",
-			"fields":"feed_route_id int(11),hospital_id int(11), feed_route_cd varchar(10),feed_route_nm varchar(100), active_flg tinyint(1)"
-		},
-		{
-			"tablename":"hs_patient_input_output_type_master",
-			"fields":"input_output_type_id int(11),hospital_id int(11), input_output_type_cd varchar(10),input_output_type_nm varchar(100),input_output_type_ref_id bigint(50),input_output_type_measurement_ref_id bigint(50),input_output_type_measurement_ref_text varchar(45),input_output_type_category varchar(45), active_flg tinyint(1)"
-		},
-		{
 			"tablename":"hs_patient_visit_care_plan",
 			"fields":"care_plan_id bigint(20),care_plan_status_id int(11), created_visit_id bigint(20),active_flg tinyint(1),created_by varchar(45),created_ts datetime,modified_by varchar(45),modified_ts datetime, careplan_summary varchar(500),patient_id bigint(50)"
 		},
@@ -347,11 +339,7 @@
 		{
 			"tablename":"hs_care_plan_status",
 			"fields":"care_plan_status_id int(11),care_plan_status_cd varchar(10),care_plan_status_nm varchar(255), active_flg tinyint(1)"
-		},
-		{
-			"tablename":"hs_drug_administration_route_master",
-			"fields":"drug_route_id int(11),drug_route_cd varchar(45),drug_route_nm varchar(100),administrationroute_ref_component_id bigint(50), active_flg tinyint(1)"
-    	}
+		}
 
 	]
 }
