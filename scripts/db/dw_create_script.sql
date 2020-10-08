@@ -639,6 +639,13 @@ ALTER TABLE healthscore_dw.dim_hospital ADD COLUMN source_cd varchar(45) DEFAULT
 
 -- to be executed as of 30-09-2020-- from below
 
+ALTER TABLE healthscore_dw.fact_patient_medications
+DROP INDEX uk_patient_medication_key;
+ALTER TABLE healthscore_dw.fact_patient_medications
+ADD CONSTRAINT uk_patient_medication_key UNIQUE (patient_key,prescribed_hospital_key,pharma_brand_nm,prescribed_doctor_staff_key,prescribed_ts);
+
+ALTER TABLE healthscore_dw.fact_patient_assessments MODIFY health_assessment_scale_desc varchar(100);
+
 DROP TABLE IF EXISTS healthscore_dw.fact_careplan_instruction_master;
 CREATE TABLE healthscore_dw.fact_careplan_instruction_master 
 (
