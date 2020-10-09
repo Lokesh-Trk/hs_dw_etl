@@ -295,6 +295,51 @@
 		{
 			"tablename": "hs_hospital_primary_dept_master",
 			"fields": " dept_id int(11) , hospital_id varchar(10) , dept_cd varchar(10) , dept_name varchar(45) , dept_phone_num varchar(45) , dept_email_addr varchar(45) , active_flg tinyint(1) , created_by varchar(45) , created_ts datetime , modified_by varchar(45) , modified_ts datetime "
+		},
+		{
+			"tablename": "hs_patient_visit_care_plan_instructions",
+			"fields": "care_plan_instruction_id bigint(20) ,care_plan_id bigint(20) , instruction_master_id int(11), freq_mode_id int(11), status_id int(11), freq_num int(11), started_ts datetime, ended_ts datetime, comments varchar(545),active_flg tinyint(1),created_by varchar(45),created_ts datetime,modified_by varchar(45),modified_ts datetime,bill_item_id bigint(50),con_charge_id bigint(50),bill_item_qty int(11),bill_item_unit_price decimal(10,2) ,medication_details_id int(11),feed_qty decimal(10,2) ,total_feed decimal(10,2),interval_no int(11),ventilator_mode_id int(11),feed_increase_qty decimal(10,2),feed_increase_freq_in_hrs decimal(10,2),feed_route_ids varchar(45),feed_type_ids varchar(45),first_feed_ins_start_ts datetime,stopped_flg tinyint(1)"
+		},
+		{
+			"tablename":"hs_patient_visit_careplan_ventilator_details",
+			"fields":"careplan_ventilator_details_id bigint(20) ,care_plan_instruction_id bigint(20), ventilator_mode_id int(11), ventilator_settings_id int(11), ventilator_settings_value varchar(50), active_flg tinyint(1), created_ts datetime, created_by varchar(45), modified_ts datetime ,modified_by varchar(45)"
+		},
+		{
+			"tablename":"hs_care_plan_instruction_master",
+			"fields":"instruction_id int(11),instruction_desc varchar(2000), department_id int(11), active_flg tinyint(1), hospital_id int(11), created_by varchar(45), created_ts datetime, modified_by varchar(45), modified_ts datetime,careplan_instruction_type_id int(11)"
+		},
+		{
+			"tablename":"hs_careplan_instruction_type_master",
+			"fields":"careplan_instruction_type_id int(11),careplan_instruction_type_cd varchar(10), careplan_instruction_type_nm varchar(255), active_flg tinyint(1)"
+		},
+		{
+			"tablename":"hs_frequency_mode_master",
+			"fields":"freq_mode_id int(11),freq_mode_cd varchar(10), freq_mode_nm varchar(255), active_flg tinyint(1),interval_no int(11)"
+		},
+		{
+			"tablename":"hs_care_plan_instruction_status",
+			"fields":"status_id int(11),status_cd varchar(45), status_nm varchar(45), active_flg tinyint(1)"
+		},
+		{
+			"tablename":"hs_patient_visit_care_plan",
+			"fields":"care_plan_id bigint(20),care_plan_status_id int(11), created_visit_id bigint(20),active_flg tinyint(1),created_by varchar(45),created_ts datetime,modified_by varchar(45),modified_ts datetime, careplan_summary varchar(500),patient_id bigint(50)"
+		},
+		{
+			"tablename":"hs_ventilator_mode_master",
+			"fields":"ventilator_mode_id int(11),ventilator_mode_cd varchar(10), ventilator_mode_nm varchar(100),display_seq_no int(11),hospital_id int(11),active_flg tinyint(1)"
+		},
+		{
+			"tablename":"hs_ventilator_settings_master",
+			"fields":"ventilator_settings_id int(11),ventilator_settings_nm varchar(100), refMeasureDisplayTxt varchar(45),refMeasureId bigint(50),hospital_id int(11),active_flg tinyint(1),allowed_lower_limit decimal(10,2),allowed_upper_limit decimal(10,2),reconfirm_lower_limit decimal(10,2),reconfirm_upper_limit decimal(10,2),allow_decimal_flg tinyint(1)"
+		},
+		{
+			"tablename":"hs_drug_form_master",
+			"fields":"drug_form_id int(11),drug_form_desc varchar(255), active_flg tinyint(1),frequency varchar(45),comments varchar(500),no_of_days int(11),hospital_id int(11),dose double,dose_measurementunit_ref_component_id bigint(50),dose_measurementunit_ref_display_txt varchar(255),administration_rule varchar(500),drug_route_id int(11),frequency_no varchar(45),freq_mode_id int(11),fluid_rate double,fluid_rate_measurementunit_ref_component_id bigint(50),fluid_rate_measurementunit_ref_display_txt varchar(255),drug_concentration varchar(500),dosage_range varchar(200),vial_concentartion double,diluent varchar(500),time_mg_correction_factor double,infusion_duration varchar(45),drug_category_nm varchar(200),associated_drug_form_id int(11),end_ts_need_flg tinyint(1),include_to_report_flg tinyint(1),drug_ref_id bigint(50),allowed_lower_limit decimal(10,2),allowed_upper_limit decimal(10,2),reconfirm_lower_limit decimal(10,2),reconfirm_upper_limit decimal(10,2),allow_decimal_flg tinyint(1)"
+		},
+		{
+			"tablename":"hs_care_plan_status",
+			"fields":"care_plan_status_id int(11),care_plan_status_cd varchar(10),care_plan_status_nm varchar(255), active_flg tinyint(1)"
 		}
+
 	]
 }

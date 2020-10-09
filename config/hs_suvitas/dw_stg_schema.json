@@ -8,7 +8,7 @@
 		},
 		{
 			"tablename": "hs_bill_items_master",
-			"fields": "bill_item_id bigint(50) NOT NULL , hospital_id int(11) NOT NULL DEFAULT '1', bill_category_id bigint(50) NOT NULL, citizenship_type_id int(11) DEFAULT NULL, lab_category_cd varchar(45) DEFAULT NULL, bill_item_cd varchar(45) NOT NULL, bill_item_nm varchar(400) NOT NULL, bill_item_amt decimal(10,2) NOT NULL, active_flg tinyint(4) NOT NULL DEFAULT '1', editable_flg tinyint(4) NOT NULL DEFAULT '0', transaction_type_cd varchar(10) NOT NULL DEFAULT 'DR', effective_from_ts timestamp NULL DEFAULT NULL, effective_to_ts timestamp NULL DEFAULT NULL, tax_type_id int(11) DEFAULT NULL, inventory_flg tinyint(4) DEFAULT '0', hsn_code varchar(45) DEFAULT NULL, sac_code varchar(45) DEFAULT NULL, rate_category_id int(11) NOT NULL, default_flg tinyint(1) DEFAULT NULL, package_flg tinyint(1) DEFAULT '0', created_ts datetime NOT NULL, created_by varchar(45) NOT NULL, modified_by varchar(45) DEFAULT NULL, modified_ts timestamp NULL DEFAULT NULL, concession_flg tinyint(1) DEFAULT '0', concession_pct decimal(10,2) DEFAULT NULL, inv_package_flg tinyint(1) DEFAULT '0', display_seq_no int(11) DEFAULT NULL, renewal_item_flg TINYINT(1) NULL DEFAULT '0'",
+			"fields": "bill_item_id bigint(50) NOT NULL , hospital_id int(11) NOT NULL DEFAULT '1', bill_category_id bigint(50) NOT NULL, citizenship_type_id int(11) DEFAULT NULL, lab_category_cd varchar(45) DEFAULT NULL, bill_item_cd varchar(45) NOT NULL, bill_item_nm varchar(400) NOT NULL, bill_item_amt decimal(10,2) NOT NULL, active_flg tinyint(4) NOT NULL DEFAULT '1', editable_flg tinyint(4) NOT NULL DEFAULT '0', transaction_type_cd varchar(10) NOT NULL DEFAULT 'DR', effective_from_ts timestamp NULL DEFAULT NULL, effective_to_ts timestamp NULL DEFAULT NULL, tax_type_id int(11) DEFAULT NULL, inventory_flg tinyint(4) DEFAULT '0', hsn_code varchar(45) DEFAULT NULL, sac_code varchar(45) DEFAULT NULL, rate_category_id int(11) NOT NULL, default_flg tinyint(1) DEFAULT NULL, package_flg tinyint(1) DEFAULT '0', created_ts datetime NOT NULL, created_by varchar(45) NOT NULL, modified_by varchar(45) DEFAULT NULL, modified_ts timestamp NULL DEFAULT NULL, concession_flg tinyint(1) DEFAULT '0', concession_pct decimal(10,2) DEFAULT NULL, inv_package_flg tinyint(1) DEFAULT '0', display_seq_no int(11) DEFAULT NULL,renewal_item_flg TINYINT(1) NULL DEFAULT '0'",
 			"primary_key": "bill_item_id"
 		},
 		{
@@ -28,7 +28,7 @@
 		},
 		{
 			"tablename": "hs_hospital_master",
-			"fields": "hospital_id int(11) NOT NULL, hospital_nm varchar(400) DEFAULT NULL, hs_hospital_cd_guid varchar(45) DEFAULT NULL, hospital_addr_line1 varchar(45) DEFAULT NULL, hospital_addr_line2 varchar(45) DEFAULT NULL, hospital_location_id int(11) DEFAULT NULL, hospital_phone_num varchar(45) DEFAULT NULL, hospital_email_addr varchar(100) DEFAULT NULL, hospital_sub_title varchar(150) DEFAULT NULL, hospital_logo varchar(400) DEFAULT NULL, hospital_lab_nm varchar(400) DEFAULT NULL, hospital_lab_sub_title varchar(150) DEFAULT NULL, hospital_lab_phone_num varchar(45) DEFAULT NULL, active_flg tinyint(1) NOT NULL DEFAULT '1', main_branch_id int(11) DEFAULT '0', setting_flg tinyint(1) NOT NULL DEFAULT '0', is_default_color_category_flg tinyint(1) DEFAULT '1', hospital_tax_id varchar(100) DEFAULT NULL, created_ts datetime DEFAULT NULL, created_by varchar(45) DEFAULT NULL, modified_ts datetime DEFAULT NULL, modified_by varchar(45) DEFAULT NULL, hospital_pharmacy_nm varchar(400) DEFAULT NULL, hospital_pharmacy_license varchar(200) DEFAULT NULL, hospital_pharmacy_gst varchar(200) DEFAULT NULL, hospital_pharmacy_return_period_end_date date DEFAULT NULL, default_checkin_type_id int(11) NOT NULL, tally_account_nm varchar(250) DEFAULT NULL,  convenience_fee decimal(10,2) DEFAULT NULL,convenience_pct_flg tinyint(1) DEFAULT '0',razorpay_account_id varchar(100),patient_app_flg tinyint(1)",
+			"fields": "hospital_id int(11) NOT NULL, hospital_nm varchar(400) DEFAULT NULL, hs_hospital_cd_guid varchar(45) DEFAULT NULL, hospital_addr_line1 varchar(45) DEFAULT NULL, hospital_addr_line2 varchar(45) DEFAULT NULL, hospital_location_id int(11) DEFAULT NULL, hospital_phone_num varchar(45) DEFAULT NULL, hospital_email_addr varchar(100) DEFAULT NULL, hospital_sub_title varchar(150) DEFAULT NULL, hospital_logo varchar(400) DEFAULT NULL, hospital_lab_nm varchar(400) DEFAULT NULL, hospital_lab_sub_title varchar(150) DEFAULT NULL, hospital_lab_phone_num varchar(45) DEFAULT NULL, active_flg tinyint(1) NOT NULL DEFAULT '1', main_branch_id int(11) DEFAULT '0', setting_flg tinyint(1) NOT NULL DEFAULT '0', is_default_color_category_flg tinyint(1) DEFAULT '1', hospital_tax_id varchar(100) DEFAULT NULL, created_ts datetime DEFAULT NULL, created_by varchar(45) DEFAULT NULL, modified_ts datetime DEFAULT NULL, modified_by varchar(45) DEFAULT NULL, hospital_pharmacy_nm varchar(400) DEFAULT NULL, hospital_pharmacy_license varchar(200) DEFAULT NULL, hospital_pharmacy_gst varchar(200) DEFAULT NULL, hospital_pharmacy_return_period_end_date date DEFAULT NULL, default_checkin_type_id int(11) NOT NULL, tally_account_nm varchar(250) DEFAULT NULL, convenience_fee decimal(10,2) DEFAULT NULL, convenience_pct_flg tinyint(1) DEFAULT '0', razorpay_account_id varchar(100), patient_app_flg tinyint(1)",
 			"primary_key": "hospital_id"
 		},
 		{
@@ -38,7 +38,7 @@
 		},
 		{
 			"tablename": "hs_patient_package_master",
-			"fields": "patient_package_master_id int(11) NOT NULL ,patient_id int(11) DEFAULT NULL,visit_bill_item_id int(11) DEFAULT NULL,start_dt date DEFAULT NULL,end_dt date DEFAULT NULL,duration int(11) DEFAULT NULL,active_flg tinyint(1) DEFAULT NULL,created_by varchar(45) DEFAULT NULL,created_ts datetime DEFAULT NULL,modified_by varchar(45) DEFAULT NULL,modified_ts datetime DEFAULT NULL,store_id bigint(20) DEFAULT '0',indent_id bigint(20) DEFAULT '0'",
+			"fields": "patient_package_master_id int(11) NOT NULL AUTO_INCREMENT,patient_id int(11) DEFAULT NULL,visit_bill_item_id int(11) DEFAULT NULL,start_dt date DEFAULT NULL,end_dt date DEFAULT NULL,duration int(11) DEFAULT NULL,active_flg tinyint(1) DEFAULT NULL,created_by varchar(45) DEFAULT NULL,created_ts datetime DEFAULT NULL,modified_by varchar(45) DEFAULT NULL,modified_ts datetime DEFAULT NULL,store_id bigint(20) DEFAULT '0',indent_id bigint(20) DEFAULT '0',effective_from_ts datetime DEFAULT NULL,effective_to_ts datetime DEFAULT NULL",
 			"primary_key": "patient_package_master_id"
 		},
 		{
@@ -96,16 +96,6 @@
 			"tablename": "hs_location_master",
 			"fields": "location_master_id bigint(20) NOT NULL, zipcode varchar(20) NOT NULL, area varchar(100) DEFAULT NULL, taluk varchar(100) DEFAULT NULL, city varchar(100) DEFAULT NULL, state varchar(100) DEFAULT NULL, country varchar(50) DEFAULT 'India', country_code varchar(10) DEFAULT 'IND', latitude varchar(45) DEFAULT NULL, longitude varchar(45) DEFAULT NULL",
 			"primary_key": "location_master_id"
-		},
-		{
-			"tablename": "hs_health_assessment_scale_master",
-			"fields": "health_assessment_scale_id int(11) NOT NULL ,  health_assessment_scale_desc varchar(55) DEFAULT NULL,  dept_id int(11) NOT NULL,  report_type varchar(45) DEFAULT NULL,  active_flg tinyint(1) DEFAULT '1',  created_by varchar(45) DEFAULT NULL,  modified_by varchar(45) DEFAULT NULL,  created_ts datetime DEFAULT NULL,  modified_ts datetime DEFAULT NULL,  assessment_scale_type_id int(11) DEFAULT NULL,  display_seq_no int(11) DEFAULT NULL,  hospital_id int(11) DEFAULT NULL",
-			"primary_key": "health_assessment_scale_id"
-		},
-		{
-			"tablename": "hs_health_assessment_scale_result_items_master",
-			"fields": "assessment_scale_result_item_id bigint(11) NOT NULL,  ref_component_id bigint(11) DEFAULT NULL,  ref_display_txt varchar(110) DEFAULT NULL,  component_reference_range_txt varchar(1000) DEFAULT NULL,  result_type_id int(11) DEFAULT NULL,  health_assessment_scale_id int(11) NOT NULL,  default_value_txt varchar(1000) DEFAULT NULL,  sequence_no int(11) DEFAULT NULL,  sub_items varchar(60) DEFAULT NULL,  active_flg tinyint(1) DEFAULT '1',  created_by varchar(45) DEFAULT NULL,  modified_by varchar(45) DEFAULT NULL,  created_ts datetime DEFAULT NULL,  modified_ts datetime DEFAULT NULL",
-			"primary_key": "assessment_scale_result_item_id"
 		},
 		{
 			"tablename": "hs_hospital_patient_color_category_master",
@@ -287,6 +277,22 @@
 			"fields": "doctor_id int(11) NOT NULL ,external_hospital_nm varchar(200) DEFAULT NULL,external_doctor_nm varchar(100) NOT NULL,effective_from_ts datetime DEFAULT NULL,effective_to_ts datetime DEFAULT NULL,active_flg tinyint(1) NOT NULL DEFAULT '1',created_by varchar(45) DEFAULT NULL,created_ts datetime DEFAULT NULL,modified_by varchar(45) DEFAULT NULL,modified_ts datetime DEFAULT NULL,department_nm varchar(200) DEFAULT NULL,mobile_no varchar(45) DEFAULT NULL,email_addr varchar(100) DEFAULT NULL,hospital_id int(11) NOT NULL,hospital_location_id bigint(20) DEFAULT NULL"
 		},
 		{
+			"tablename": "hs_patient_assessment",
+			"fields": " hs_patient_assessment_id bigint(50), health_assessment_scale_id bigint(50), patient_visit_id bigint(50), visit_note_id bigint(50), patient_id bigint(50), hospital_id int(11), hospital_staff_id int(11), visit_assessment_status_flg tinyint(2), deactivation_comment varchar(3000), assessed_ts datetime, created_ts timestamp , created_by varchar(45), modified_by varchar(45), modified_ts timestamp, active_flg tinyint(1)"
+		},
+		{
+			"tablename": "hs_patient_assessment_scale_results",
+			"fields": "hs_patient_assessment_scale_result_id bigint(50), hs_patient_assessment_id bigint(50), assessment_scale_result_item_id bigint(11), assessment_scale_result_value varchar(2000), created_ts timestamp, created_by varchar(45), modified_by varchar(45), modified_ts timestamp , active_flg tinyint(1)"
+		},
+		{
+			"tablename": "hs_health_assessment_scale_master",
+			"fields": "health_assessment_scale_id int(11), health_assessment_scale_desc varchar(50), dept_id int(11), report_type varchar(45), active_flg tinyint(1), created_by varchar(45), modified_by varchar(45), created_ts datetime, modified_ts datetime, assessment_scale_type_id int(11), display_seq_no int(11), hospital_id int(11)"
+		},
+		{
+			"tablename": "hs_health_assessment_scale_result_items_master",
+			"fields": " assessment_scale_result_item_id bigint(11), ref_component_id bigint(11), ref_display_txt varchar(300), component_reference_range_txt varchar(2000), result_type_id int(11), health_assessment_scale_id int(11), default_value_txt varchar(1000), sequence_no int(11), sub_items varchar(500), active_flg tinyint(1), created_by varchar(45), modified_by varchar(45), created_ts datetime, modified_ts datetime"
+		},
+		{
 			"tablename": "hs_hospital_primary_dept_master",
 			"fields": " dept_id int(11) , hospital_id varchar(10) , dept_cd varchar(10) , dept_name varchar(45) , dept_phone_num varchar(45) , dept_email_addr varchar(45) , active_flg tinyint(1) , created_by varchar(45) , created_ts datetime , modified_by varchar(45) , modified_ts datetime "
 		},
@@ -315,14 +321,6 @@
 			"fields":"status_id int(11),status_cd varchar(45), status_nm varchar(45), active_flg tinyint(1)"
 		},
 		{
-			"tablename":"hs_patient_feed_route_master",
-			"fields":"feed_route_id int(11),hospital_id int(11), feed_route_cd varchar(10),feed_route_nm varchar(100), active_flg tinyint(1)"
-		},
-		{
-			"tablename":"hs_patient_input_output_type_master",
-			"fields":"input_output_type_id int(11),hospital_id int(11), input_output_type_cd varchar(10),input_output_type_nm varchar(100),input_output_type_ref_id bigint(50),input_output_type_measurement_ref_id bigint(50),input_output_type_measurement_ref_text varchar(45),input_output_type_category varchar(45), active_flg tinyint(1)"
-		},
-		{
 			"tablename":"hs_patient_visit_care_plan",
 			"fields":"care_plan_id bigint(20),care_plan_status_id int(11), created_visit_id bigint(20),active_flg tinyint(1),created_by varchar(45),created_ts datetime,modified_by varchar(45),modified_ts datetime, careplan_summary varchar(500),patient_id bigint(50)"
 		},
@@ -341,11 +339,7 @@
 		{
 			"tablename":"hs_care_plan_status",
 			"fields":"care_plan_status_id int(11),care_plan_status_cd varchar(10),care_plan_status_nm varchar(255), active_flg tinyint(1)"
-		},
-		{
-			"tablename":"hs_drug_administration_route_master",
-			"fields":"drug_route_id int(11),drug_route_cd varchar(45),drug_route_nm varchar(100),administrationroute_ref_component_id bigint(50), active_flg tinyint(1)"
-    	}
+		}
 
 	]
 }
