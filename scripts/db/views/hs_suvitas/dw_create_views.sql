@@ -24,16 +24,6 @@ join healthscore_dw.map_patient_hospital mph
 on mph.patient_key = dp.patient_key
 where mph.hospital_cd in ('SUVH','SUVB','SUVV');
 
-DROP VIEW IF EXISTS healthscore_dw.suvitas_patient_visit_view;
-CREATE VIEW healthscore_dw.suvitas_patient_visit_view as
-select patient_visit_key,fpv.patient_key,fpv.visit_hospital_key as hospital_key,visit_date_key,visit_time_key,patient_visit_cd,visit_doctor_staff_key,primary_doctor_staff_key,reference_doctor_staff_key,checkin_ts,checkout_ts,checkout_type, delivery_ts, outcome_type, condition_at_discharge, discharge_ts,case when visit_type = 1 then 'IN' else 'OUT' end as visit_type,visit_reason, visit_rate_category_nm, visit_ip_nbr,admission_method, cancel_reason, ward_nm, referral_source
-,(case when pm.first_visit_date = date(fpv.checkin_ts) then 1 else 0 end) as first_visit_flg
-from healthscore_dw.fact_patient_visits fpv
-join healthscore_dw.suvitas_patient_master_view pm
-on fpv.patient_key = pm.patient_key
-join healthscore_dw.suvitas_hospital_master_view hm
-on fpv.visit_hospital_key = hm.hospital_key;
-
 DROP VIEW IF EXISTS healthscore_dw.suvitas_patient_medications_view;
 CREATE VIEW healthscore_dw.suvitas_patient_medications_view as
 SELECT patient_medication_key, pm.patient_key, pharma_product_ref_id, pharma_product_ref_display_txt, pharma_brand_nm, dosage, drug_form_ref_id, drug_form_ref_display_txt, frequency, comments, start_dt, end_dt, active_flg, prescribed_doctor_staff_key, prescribed_hospital_key, prescribed_ts, prescribed_patient_visit_key,  prescribed_date_key, prescribed_time_key
@@ -61,3 +51,26 @@ from
   join healthscore_dw.dim_hospital dh
   on ds.hospital_key = dh.hospital_key
   where hospital_cd in ('SUVH','SUVB','SUVV');
+
+   DROP VIEW IF EXISTS healthscore_dw.suvitas_patient_visit_view;
+CREATE VIEW healthscore_dw.suvitas_patient_visit_view as
+select patient_visit_key,fpv.patient_key,fpv.visit_hospital_key as hospital_key,visit_date_key,visit_time_key,patient_visit_cd,visit_doctor_staff_key,primary_doctor_staff_key,reference_doctor_staff_key,checkin_ts,checkout_ts,checkout_type, delivery_ts, outcome_type, condition_at_discharge, discharge_ts,case when visit_type = 1 then 'IN' else 'OUT' end as visit_type,visit_reason, visit_rate_category_nm, visit_ip_nbr,admission_method, cancel_reason, ward_nm, referral_source
+,(case when pm.first_visit_date = date(fpv.checkin_ts) then 1 else 0 end) as first_visit_flg
+, round(datediff(fpv.checkin_ts,pm.patient_birth_dt)/365,2) age_at_visit
+from healthscore_dw.fact_patient_visits fpv
+join healthscore_dw.suvitas_patient_master_view pm
+on fpv.patient_key = pm.patient_key
+join healthscore_dw.suvitas_hospital_master_view hm
+on fpv.visit_hospital_key = hm.hospital_key;
+
+DROP VIEW IF EXISTS healthscore_dw.suvitas_patient_careplan_instructions_view;
+CREATE VIEW healthscore_dw.suvitas_patient_careplan_instructions_view AS
+SELECT fcpi.patient_careplan_key,fcp.patient_key,fcp.visit_hospital_key hospital_key,careplan_status_nm,careplan_summary,careplan_instruction_desc,careplan_instruction_type_nm,careplan_instruction_dept_nm,careplan_ins_status_nm,freq_num,freq_mode_nm,ins_started_ts,ins_ended_ts,comments,bill_item_key,patient_medication_key,stopped_flg,ins_created_date_key,ins_created_time_key,ins_created_ts,fcpi.active_flg
+FROM healthscore_dw.fact_patient_careplan_instructions fcpi
+JOIN healthscore_dw.fact_patient_careplans fcp 
+ON fcp.patient_careplan_key = fcpi.patient_careplan_key
+JOIN healthscore_dw.dim_careplan_instruction_master fcim 
+ON fcim.careplan_instruction_master_key = fcpi.careplan_instruction_master_key
+JOIN healthscore_dw.suvitas_hospital_master_view hm ON fcp.visit_hospital_key = hm.hospital_key
+where fcpi.active_flg=1 and fcp.active_flg=1;
+
