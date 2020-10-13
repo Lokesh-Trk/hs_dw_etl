@@ -611,11 +611,14 @@ ALTER TABLE healthscore_dw.dim_hospital ADD COLUMN source_cd varchar(45) DEFAULT
 
 -- to be executed as of 30-09-2020-- from below
 
+<<<<<<< HEAD
 -- ALTER TABLE healthscore_dw.fact_patient_medications
 -- DROP INDEX uk_patient_medication_key;
 -- ALTER TABLE healthscore_dw.fact_patient_medications
 -- ADD CONSTRAINT uk_patient_medication_key UNIQUE (patient_key,prescribed_hospital_key,pharma_brand_nm,prescribed_doctor_staff_key,prescribed_ts);
 
+=======
+>>>>>>> master
 ALTER TABLE healthscore_dw.fact_patient_assessments MODIFY health_assessment_scale_desc varchar(100);
 
 DROP TABLE IF EXISTS healthscore_dw.fact_patient_medications;
@@ -737,4 +740,22 @@ CREATE TABLE healthscore_dw.fact_patient_careplan_instructions
  UNIQUE uk_patient_careplan_instruction(patient_careplan_key,care_plan_instruction_id)
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
+-- to be executed as of 13-10-2020-- from below
 
+DROP TABLE IF EXISTS healthscore_dw.fact_hospital_daily_statistics;
+CREATE TABLE healthscore_dw.fact_hospital_daily_statistics 
+(
+  hospital_daily_statistics_key bigint(50) NOT NULL AUTO_INCREMENT,
+ hospital_key int(11) NOT NULL,
+ in_patient_cnt int(11) ,
+ out_patient_cnt int(11),
+ in_patient_admission_cnt int(11),
+ in_patient_checkout_cnt int(11),
+ out_patient_checkout_cnt int(11),
+ in_patient_avg_stay decimal(10,2),
+ as_of_date date,
+ etl_load_id int(11) NOT NULL,
+ inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+ updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP, 
+ PRIMARY KEY (hospital_daily_statistics_key)
+ )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
