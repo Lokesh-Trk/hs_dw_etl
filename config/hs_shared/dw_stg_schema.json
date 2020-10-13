@@ -339,6 +339,10 @@
 		{
 			"tablename":"hs_care_plan_status",
 			"fields":"care_plan_status_id int(11),care_plan_status_cd varchar(10),care_plan_status_nm varchar(255), active_flg tinyint(1)"
+		},
+		{
+			"tablename":"hs_hospital_daily_statistics",
+			"fields":"daily_statistics_id bigint(50) ,hospital_master_id bigint(20),in_patient_cnt int(11),out_patient_cnt int(11),in_patient_admission_cnt int(11),in_patient_checkout_cnt int(11),out_patient_checkout_cnt int(11),as_of_date date,in_patient_avg_stay decimal(10,2),created_ts timestamp"
 		}
 
 	]

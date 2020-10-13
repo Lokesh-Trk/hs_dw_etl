@@ -74,3 +74,21 @@ ON fcim.careplan_instruction_master_key = fcpi.careplan_instruction_master_key
 JOIN healthscore_dw.suvitas_hospital_master_view hm ON fcp.visit_hospital_key = hm.hospital_key
 where fcpi.active_flg=1 and fcp.active_flg=1;
 
+DROP VIEW IF EXISTS healthscore_dw.suvitas_bill_items_master_view;
+CREATE VIEW healthscore_dw.suvitas_bill_items_master_view
+as select dbi.hospital_key, bill_item_key,bill_item_type,bill_item_category_cd,bill_item_category_nm,bill_item_category_desc,bill_item_cd,bill_item_nm,bill_item_amt,transaction_type_cd,pkg_effective_from_ts,pkg_effective_to_ts
+,renewal_item_flg,effective_from_ts,effective_to_ts,rate_category_nm,dbi.active_flg
+ from healthscore_dw.dim_bill_items dbi
+join healthscore_dw.suvitas_hospital_master_view dh
+on dbi.hospital_key = dh.hospital_key
+;
+
+DROP VIEW IF EXISTS healthscore_dw.suvitas_vist_bill_items_view;
+CREATE VIEW healthscore_dw.suvitas_vist_bill_items_view AS
+SELECT  patient_visitbillitem_key,bill_item_key,vbi_date_key AS transaction_date_key,vbi_time_key AS transaction_time_key,vbi_created_staff_key,bill_item_qty,bill_item_returned_qty,bill_item_unit_amt,bill_item_total_concession_amt,bill_item_final_amt,
+bill_item_receipt_cd,bill_item_total_tax,pharmacy_item_flg,vbi_created_ts,vbv.patient_key,vbv.visit_hospital_key,vbv.patient_visit_key,visit_bill_cd,visit_bill_from_ts,visit_bill_to_ts,visit_bill_comments,visit_bill_created_ts
+FROM healthscore_dw.fact_patient_visitbillitems fvbi
+JOIN healthscore_dw.fact_patient_visitbills vbv ON vbv.patient_visitbill_key = fvbi.patient_visitbill_key
+JOIN healthscore_dw.suvitas_patient_visit_view pvv ON pvv.patient_visit_key = vbv.patient_visit_key
+WHERE fvbi.active_flg = 1;
+        
