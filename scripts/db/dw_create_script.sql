@@ -751,3 +751,8 @@ CREATE TABLE healthscore_dw.fact_hospital_daily_statistics
  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP, 
  PRIMARY KEY (hospital_daily_statistics_key)
  )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+ 
+ -- to be executed after 21/10/2020
+
+  
+  ALTER TABLE healthscore_dw.dim_patient ADD COLUMN color_category_code varchar(10) DEFAULT NULL,Add column color_category_nm varchar(50) DEFAULT NULL, Add column color_hex_code_desc varchar(10) DEFAULT NULL;
