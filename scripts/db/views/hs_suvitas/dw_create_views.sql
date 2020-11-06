@@ -54,20 +54,17 @@ from
 
    DROP VIEW IF EXISTS healthscore_dw.suvitas_patient_visit_view;
 CREATE VIEW healthscore_dw.suvitas_patient_visit_view as
-select patient_visit_key,fpv.patient_key,fpv.visit_hospital_key as hospital_key,visit_date_key,visit_time_key,patient_visit_cd,visit_doctor_staff_key,primary_doctor_staff_key,reference_doctor_staff_key,checkin_ts,checkout_ts,checkout_type, delivery_ts, outcome_type, condition_at_discharge, discharge_ts,case when visit_type = 1 then 'IN' else 'OUT' end as visit_type,visit_reason, visit_rate_category_nm, visit_ip_nbr,admission_method, cancel_reason, ward_nm, referral_source
+select fpv.patient_visit_key,fpv.patient_key,fpv.visit_hospital_key as hospital_key,visit_date_key,visit_time_key,patient_visit_cd,visit_doctor_staff_key,primary_doctor_staff_key,reference_doctor_staff_key,checkin_ts,checkout_ts,checkout_type, delivery_ts, outcome_type, condition_at_discharge, discharge_ts,case when visit_type = 1 then 'IN' else 'OUT' end as visit_type,visit_reason, visit_rate_category_nm, visit_ip_nbr,admission_method, cancel_reason, ward_nm, referral_source
 ,(case when pm.first_visit_date = date(fpv.checkin_ts) then 1 else 0 end) as first_visit_flg
 , round(datediff(fpv.checkin_ts,pm.patient_birth_dt)/365,2) age_at_visit
-, fpva.visit_diagnosis, fpva.prev_hospital_duration_of_stay,fpva.spl_req,avg_daily_rate
+, fpva.visit_diagnosis, fpva.prev_hospital_duration_of_stay,fpva.spl_req 
 from healthscore_dw.fact_patient_visits fpv
 join healthscore_dw.suvitas_patient_master_view pm
 on fpv.patient_key = pm.patient_key
 join healthscore_dw.suvitas_hospital_master_view hm
 on fpv.visit_hospital_key = hm.hospital_key
 left join healthscore_dw.fact_patient_visit_admission fpva 
-on fpv.patient_visit_key = fpva.patient_visit_key
-left join 
-(select patient_visit_key, avg(daily_rate) as avg_daily_rate from healthscore_dw.fact_active_visits where source_cd= 'hs_suvitas' group by patient_visit_key)fav 
-on fpv.patient_visit_key = fav.patient_visit_key;
+on fpv.patient_visit_key = fpva.patient_visit_key  ;
 
 DROP VIEW IF EXISTS healthscore_dw.suvitas_patient_careplan_instructions_view;
 CREATE VIEW healthscore_dw.suvitas_patient_careplan_instructions_view AS
@@ -110,7 +107,7 @@ join healthscore_dw.suvitas_hospital_master_view hm ON fhds.hospital_key = hm.ho
 
 DROP view if exists healthscore_dw.suvitas_active_visits_view;
 CREATE VIEW healthscore_dw.suvitas_active_visits_view AS
-SELECT as_of_date_key,patient_visit_key,patient_key,hospital_key,daily_rate,billed_days,ward_nm,admitted_days,total_paid_amt,total_refund_amt,total_waived_amt,total_billed_amt,unbilled_consumables_amt,unbilled_canteen_amt,previous_bill_balance_amt,current_balance_amt
+SELECT as_of_date_key,patient_visit_key,patient_key,fav.hospital_key,daily_rate,billed_days,ward_nm,admitted_days,total_paid_amt,total_refund_amt,total_waived_amt,total_billed_amt,unbilled_consumables_amt,unbilled_canteen_amt,previous_bill_balance_amt,current_balance_amt
 FROM healthscore_dw.fact_active_visits fav
 join healthscore_dw.suvitas_hospital_master_view hm ON fav.hospital_key = hm.hospital_key;
 
