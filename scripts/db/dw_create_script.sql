@@ -131,10 +131,11 @@ CREATE TABLE healthscore_dw.dim_patient (
   patient_emerg_contact_nm varchar(100) DEFAULT NULL,
   patient_emerg_contact_num varchar(45) DEFAULT NULL,
   patient_relation varchar(100) DEFAULT NULL,
-  patient_occupation varchar(100) DEFAULT NULL,
+  patient_occupation_status varchar(100) DEFAULT NULL,
   patient_marital_status varchar(100) DEFAULT NULL,
   patient_religion varchar(100) DEFAULT NULL,
   patient_spouse_occupation varchar(100) DEFAULT NULL,
+  patient_socio_economic_status varchar(100) DEFAULT NULL,
   effective_from_ts datetime DEFAULT NULL,
   effective_to_ts datetime DEFAULT NULL,
   created_by_staff_key int(11) not null,
@@ -773,4 +774,23 @@ CREATE TABLE healthscore_dw.fact_active_visits (
   updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,	
   PRIMARY KEY (active_visits_key),
   UNIQUE KEY uk_active_visits_key(as_of_date_key,patient_visit_key)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+
+Drop table if exists healthscore_dw.fact_patient_visit_admission;
+CREATE TABLE healthscore_dw.fact_patient_visit_admission (
+  patient_visit_admission_key int(11) NOT NULL AUTO_INCREMENT,
+  patient_visit_key int(11) NOT NULL,
+  patient_key int(11) NOT NULL,
+  visit_hospital_key int(11) NOT NULL,
+  visit_diagnosis varchar(1000) DEFAULT NULL,  
+  prev_hospital_duration_of_stay int(11) , 
+  spl_req varchar(1000) DEFAULT NULL, 
+  admission_note LONGTEXT DEFAULT NULL,
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (patient_visit_admission_key),
+  UNIQUE KEY uk_patient_visit_admission_key (patient_visit_key)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;

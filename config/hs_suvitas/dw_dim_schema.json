@@ -84,9 +84,16 @@
 		{
 			"tablename": "dim_patient",
 			"source_table": "hs_patient_secondary_attribute_relation",
-			"fields": "patient_occupation=src.occupation,patient_marital_status=src.marital_status,patient_religion=src.religion,patient_spouse_occupation=src.spouse_occupation",
+			"fields": "patient_occupation_status=src.occupation,patient_marital_status=src.marital_status,patient_religion=src.religion,patient_spouse_occupation=src.spouse_occupation,patient_socio_economic_status=src.socio_economic_status",
 			"on_clause": "dim.patient_unique_id = src.patient_cd AND dim.patient_unique_id_type='hospital_patient_cd'",
-			"join_query": "SELECT r.religion,r.occupation,r.marital_status,r.spouse_occupation,pm.patient_cd FROM (SELECT sr.patient_id,  max(case when attribute_name = 'Religion' then description else null end) as religion,max(case when attribute_name = 'Occupation' then description else null end) as occupation,max(case when attribute_name = 'Marital Status' then description else null end) as marital_status,max(case when attribute_name = 'Spouse Occupation' then description else null end) as spouse_occupation FROM healthscore_stg.hs_patient_secondary_attribute_relation AS sr INNER JOIN healthscore_stg.hs_patient_secondary_attribute_master AS sm ON sr.secondry_attribute_master_id = sm.patient_secondary_attribute_id and sr.description is not null WHERE sm.attribute_name in ( 'Religion','Occupation','Marital Status','Spouse Occupation') group by sr.patient_id ) r join healthscore_stg.hs_patient_master pm on r.patient_id = pm.patient_id"
+			"join_query": "SELECT r.religion,r.occupation,r.marital_status,r.spouse_occupation,pm.patient_cd,r.socio_economic_status FROM (SELECT sr.patient_id,  max(case when attribute_name = 'Religion' then description else null end) as religion,max(case when attribute_name = 'Occupation' then description else null end) as occupation,max(case when attribute_name = 'Marital Status' then description else null end) as marital_status,max(case when attribute_name = 'Spouse Occupation' then description else null end) as spouse_occupation,max(case when attribute_name = 'Socio Economic Status' then description else null end) as socio_economic_status FROM healthscore_stg.hs_patient_secondary_attribute_relation AS sr INNER JOIN healthscore_stg.hs_patient_secondary_attribute_master AS sm ON sr.secondry_attribute_master_id = sm.patient_secondary_attribute_id and sr.description is not null WHERE sm.attribute_name in ( 'Religion','Occupation','Marital Status','Spouse Occupation','Socio Economic Status') group by sr.patient_id ) r join healthscore_stg.hs_patient_master pm on r.patient_id = pm.patient_id"
+		},
+		{
+			"tablename": "dim_patient",
+			"source_table": "hs_patient_occupational_history_details",
+			"fields": "patient_occupation_status=src.occupation_status",
+			"on_clause": "dim.patient_unique_id = src.patient_cd AND dim.patient_unique_id_type='hospital_patient_cd'",
+			"join_query": "SELECT r.occupation_status,pm.patient_cd FROM  healthscore_stg.hs_patient_occupational_history_details r join healthscore_stg.hs_patient_master pm on r.patient_id = pm.patient_id where r.active_flg=1"
 		},
 		{
 			"tablename": "dim_patient",
