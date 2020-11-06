@@ -92,7 +92,8 @@ SELECT  patient_visitbillitem_key,fvbi.bill_item_key,vbi_date_key AS transaction
 bill_item_receipt_cd,bill_item_total_tax,pharmacy_item_flg,vbi_created_ts,vbv.patient_key,vbv.visit_hospital_key,vbv.patient_visit_key,visit_bill_cd,visit_bill_from_ts,visit_bill_to_ts,visit_bill_comments,visit_bill_created_ts,
 case when bill_item_cd = 'PYR' then bill_item_final_amt else 0 end as payment_amt,
 case when bill_item_cd = 'PRF' then bill_item_final_amt else 0 end as refund_amt,
-case when bill_item_receipt_cd is null then bill_item_final_amt else 0 end as bill_amt
+case when bill_item_receipt_cd is null then bill_item_final_amt else 0 end as bill_amt,
+payment_method_desc
 FROM healthscore_dw.fact_patient_visitbillitems fvbi
 JOIN healthscore_dw.fact_patient_visitbills vbv ON vbv.patient_visitbill_key = fvbi.patient_visitbill_key
 JOIN healthscore_dw.suvitas_patient_visit_view pvv ON pvv.patient_visit_key = vbv.patient_visit_key
