@@ -10,7 +10,14 @@
 			"where_clause": "p.hospital_key=%i",
 			"update_fields": " visit_doctor_staff_key = src.visit_doctor_staff_key, checkin_ts=src.checkin_ts, checkout_ts=src.checkout_ts, checkout_type=src.checkout_type, delivery_ts=src.delivery_ts, outcome_type=src.outcome_type, condition_at_discharge=src.condition_at_discharge, discharge_ts=src.discharge_ts, visit_type=src.visit_type, visit_reason=src.visit_reason, visit_rate_category_nm=src.rate_category_nm, visit_ip_nbr=src.ip_nbr, admission_method=src.admission_method, cancel_reason=src.cancel_reason, ward_nm=src.hospital_ward_nm, referral_source=src.referral_source, created_by_staff_key=src.staff_key,patient_visit_cd=src.patient_visit_cd, pharmacy_checkin_flg=src.pharmacy_checkin_flg, primary_doctor_staff_key= src.primary_doctor_staff_key, reference_doctor_staff_key=src.reference_doctor_staff_key"
 		},
-
+		{
+			"tablename": "fact_patient_visit_admission",
+			"source_table": "vw_patient_visit_sql_admission_details",
+			"fields": "patient_visit_key,patient_key,visit_hospital_key,visit_diagnosis,prev_hospital_duration_of_stay,spl_req,admission_note,source_cd,etl_load_id",
+			"insert_query": "select fpv.patient_visit_key,fpv.patient_key,fpv.visit_hospital_key, diagnosis,prev_hospital_duration_of_stay,spl_req,admission_note,'{0}',{1} from healthscore_stg.vw_patient_visit_spl_admission_details vad join healthscore_dw.fact_patient_visits fpv on fpv.hospital_patient_visit_id = vad.patient_visit_id and fpv.source_cd = '{0}'",
+			"where_clause": "fpv.visit_hospital_key=%i",
+			"update_fields": "visit_diagnosis=src.diagnosis,prev_hospital_duration_of_stay=src.prev_hospital_duration_of_stay,spl_req =src.spl_req,admission_note=src.admission_note"
+		},
 		{
 			"tablename": "map_patient_visit_doctors",
 			"source_table": "hs_patient_visit_doctors",
