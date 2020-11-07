@@ -343,6 +343,22 @@
 		{
 			"tablename": "hs_hospital_daily_statistics",
 			"fields": "daily_statistics_id bigint(50) ,hospital_master_id bigint(20),in_patient_cnt int(11),out_patient_cnt int(11),in_patient_admission_cnt int(11),in_patient_checkout_cnt int(11),out_patient_checkout_cnt int(11),as_of_date date,in_patient_avg_stay decimal(10,2),created_ts timestamp"
+		},
+		{
+			"tablename": "hs_hospital_payment_methods_master",
+			"fields": "payment_method_id int(11) ,payment_method_cd varchar(45) ,payment_method_desc varchar(100) ,active_flg tinyint(1) ,hospital_id int(11) ,service_charge_in_per double ,default_flg tinyint(1) ,created_by varchar(45) ,created_ts datetime ,modified_by varchar(45) ,modified_ts datetime"
+		},
+		{
+			"tablename": "hs_tax_type_master",
+			"fields": " tax_type_id int(11),hospital_id bigint(50),tax_type_nm varchar(45),tax_value_in_per decimal(6,3),active_flg tinyint(4)  ,created_ts timestamp ,created_by varchar(45),modified_by varchar(45),modified_ts timestamp ,is_tax_group_flg tinyint(1) ,is_default_tax tinyint(1)"
+		},
+		{
+			"tablename": "vw_patient_active_visits",
+			"fields": " as_of_date datetime,hospital_id bigint(50),patient_visit_id bigint(50) DEFAULT NULL,  ward_nm varchar(45) NOT NULL,daily_rate decimal(10,2) DEFAULT NULL,billed_days int(11),admitted_days int(11), total_paid_amt decimal(10,2), total_billed_amt decimal(12,2),total_refund_amt decimal(10,2),total_waived_amt decimal(10,2),unbilled_consumable decimal(10,2),unbilled_canteen decimal(10,2),bill_balance_amt decimal(10,2)"
+		},
+		{
+			"tablename": "vw_patient_visit_spl_admission_details",
+			"fields": "patient_visit_id int(11) NOT NULL , diagnosis varchar(1000) , prev_hospital_duration_of_stay  int(11) , spl_req varchar(1000) ,admission_note longtext, created_ts datetime , modified_ts datetime"
 		}
 	]
 }

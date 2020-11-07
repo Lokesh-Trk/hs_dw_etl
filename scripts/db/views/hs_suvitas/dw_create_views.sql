@@ -18,7 +18,7 @@ where hospital_cd in ('SUVH','SUVB','SUVV')
 DROP VIEW IF EXISTS healthscore_dw.suvitas_patient_master_view;
 CREATE VIEW healthscore_dw.suvitas_patient_master_view as
 SELECT mph.hospital_key,dp.patient_key,patient_unique_id,patient_nm,patient_first_nm,patient_middle_nm,patient_last_nm,patient_gender,patient_birth_dt,patient_death_ts,patient_mother_nm
-,patient_father_nm,blood_group,contact_addr_city_nm,contact_addr_state_nm,contact_addr_country_nm,contact_addr_zipcode, date(mph.hospital_registration_ts) as first_visit_date
+,patient_father_nm,blood_group,contact_addr_city_nm,contact_addr_state_nm,contact_addr_country_nm,contact_addr_zipcode, date(mph.hospital_registration_ts) as first_visit_date, mph.color_category_nm as patient_category, patient_socio_economic_status,patient_occupation_status,patient_marital_status,patient_religion,patient_spouse_occupation
  FROM healthscore_dw.dim_patient dp
 join healthscore_dw.map_patient_hospital mph
 on mph.patient_key = dp.patient_key
@@ -54,14 +54,17 @@ from
 
    DROP VIEW IF EXISTS healthscore_dw.suvitas_patient_visit_view;
 CREATE VIEW healthscore_dw.suvitas_patient_visit_view as
-select patient_visit_key,fpv.patient_key,fpv.visit_hospital_key as hospital_key,visit_date_key,visit_time_key,patient_visit_cd,visit_doctor_staff_key,primary_doctor_staff_key,reference_doctor_staff_key,checkin_ts,checkout_ts,checkout_type, delivery_ts, outcome_type, condition_at_discharge, discharge_ts,case when visit_type = 1 then 'IN' else 'OUT' end as visit_type,visit_reason, visit_rate_category_nm, visit_ip_nbr,admission_method, cancel_reason, ward_nm, referral_source
+select fpv.patient_visit_key,fpv.patient_key,fpv.visit_hospital_key as hospital_key,visit_date_key,visit_time_key,patient_visit_cd,visit_doctor_staff_key,primary_doctor_staff_key,reference_doctor_staff_key,checkin_ts,checkout_ts,checkout_type, delivery_ts, outcome_type, condition_at_discharge, discharge_ts,case when visit_type = 1 then 'IN' else 'OUT' end as visit_type,visit_reason, visit_rate_category_nm, visit_ip_nbr,admission_method, cancel_reason, ward_nm, referral_source
 ,(case when pm.first_visit_date = date(fpv.checkin_ts) then 1 else 0 end) as first_visit_flg
 , round(datediff(fpv.checkin_ts,pm.patient_birth_dt)/365,2) age_at_visit
+, fpva.visit_diagnosis, fpva.prev_hospital_duration_of_stay,fpva.spl_req 
 from healthscore_dw.fact_patient_visits fpv
 join healthscore_dw.suvitas_patient_master_view pm
 on fpv.patient_key = pm.patient_key
 join healthscore_dw.suvitas_hospital_master_view hm
-on fpv.visit_hospital_key = hm.hospital_key;
+on fpv.visit_hospital_key = hm.hospital_key
+left join healthscore_dw.fact_patient_visit_admission fpva 
+on fpv.patient_visit_key = fpva.patient_visit_key  ;
 
 DROP VIEW IF EXISTS healthscore_dw.suvitas_patient_careplan_instructions_view;
 CREATE VIEW healthscore_dw.suvitas_patient_careplan_instructions_view AS
@@ -85,10 +88,27 @@ on dbi.hospital_key = dh.hospital_key
 
 DROP VIEW IF EXISTS healthscore_dw.suvitas_vist_bill_items_view;
 CREATE VIEW healthscore_dw.suvitas_vist_bill_items_view AS
-SELECT  patient_visitbillitem_key,bill_item_key,vbi_date_key AS transaction_date_key,vbi_time_key AS transaction_time_key,vbi_created_staff_key,bill_item_qty,bill_item_returned_qty,bill_item_unit_amt,bill_item_total_concession_amt,bill_item_final_amt,
-bill_item_receipt_cd,bill_item_total_tax,pharmacy_item_flg,vbi_created_ts,vbv.patient_key,vbv.visit_hospital_key,vbv.patient_visit_key,visit_bill_cd,visit_bill_from_ts,visit_bill_to_ts,visit_bill_comments,visit_bill_created_ts
+SELECT  patient_visitbillitem_key,fvbi.bill_item_key,vbi_date_key AS transaction_date_key,vbi_time_key AS transaction_time_key,vbi_created_staff_key,bill_item_qty,bill_item_returned_qty,bill_item_unit_amt,bill_item_total_concession_amt,bill_item_final_amt,
+bill_item_receipt_cd,bill_item_total_tax,pharmacy_item_flg,vbi_created_ts,vbv.patient_key,vbv.visit_hospital_key,vbv.patient_visit_key,visit_bill_cd,visit_bill_from_ts,visit_bill_to_ts,visit_bill_comments,visit_bill_created_ts,
+case when bill_item_cd = 'PYR' then bill_item_final_amt else 0 end as payment_amt,
+case when bill_item_cd = 'PRF' then bill_item_final_amt else 0 end as refund_amt,
+case when bill_item_receipt_cd is null then bill_item_final_amt else 0 end as bill_amt,
+payment_method_desc
 FROM healthscore_dw.fact_patient_visitbillitems fvbi
 JOIN healthscore_dw.fact_patient_visitbills vbv ON vbv.patient_visitbill_key = fvbi.patient_visitbill_key
 JOIN healthscore_dw.suvitas_patient_visit_view pvv ON pvv.patient_visit_key = vbv.patient_visit_key
+JOIN healthscore_dw.suvitas_bill_items_master_view bim ON fvbi.bill_item_key = bim.bill_item_key
 WHERE fvbi.active_flg = 1;
-        
+
+DROP view if exists healthscore_dw.suvitas_hospital_daily_statistics_view;
+CREATE VIEW healthscore_dw.suvitas_hospital_daily_statistics_view AS
+SELECT as_of_date as transaction_date_key,fhds.hospital_key,in_patient_cnt,out_patient_cnt,in_patient_admission_cnt,in_patient_checkout_cnt,out_patient_checkout_cnt,in_patient_avg_stay
+FROM healthscore_dw.fact_hospital_daily_statistics fhds 
+join healthscore_dw.suvitas_hospital_master_view hm ON fhds.hospital_key = hm.hospital_key;
+
+DROP view if exists healthscore_dw.suvitas_active_visits_view;
+CREATE VIEW healthscore_dw.suvitas_active_visits_view AS
+SELECT as_of_date_key,patient_visit_key,patient_key,fav.hospital_key,daily_rate,billed_days,ward_nm,admitted_days,total_paid_amt,total_refund_amt,total_waived_amt,total_billed_amt,unbilled_consumables_amt,unbilled_canteen_amt,previous_bill_balance_amt,current_balance_amt
+FROM healthscore_dw.fact_active_visits fav
+join healthscore_dw.suvitas_hospital_master_view hm ON fav.hospital_key = hm.hospital_key;
+

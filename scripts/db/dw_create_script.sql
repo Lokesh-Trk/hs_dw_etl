@@ -131,10 +131,11 @@ CREATE TABLE healthscore_dw.dim_patient (
   patient_emerg_contact_nm varchar(100) DEFAULT NULL,
   patient_emerg_contact_num varchar(45) DEFAULT NULL,
   patient_relation varchar(100) DEFAULT NULL,
-  patient_occupation varchar(100) DEFAULT NULL,
+  patient_occupation_status varchar(100) DEFAULT NULL,
   patient_marital_status varchar(100) DEFAULT NULL,
   patient_religion varchar(100) DEFAULT NULL,
   patient_spouse_occupation varchar(100) DEFAULT NULL,
+  patient_socio_economic_status varchar(100) DEFAULT NULL,
   effective_from_ts datetime DEFAULT NULL,
   effective_to_ts datetime DEFAULT NULL,
   created_by_staff_key int(11) not null,
@@ -256,7 +257,7 @@ DROP TABLE IF EXISTS healthscore_dw.fact_patient_vitals;
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (patient_vital_key),
-  UNIQUE uk_patient_vitals_key(patient_key,vital_ref_component_id,vital_recorded_date_key,vital_recorded_time_key)
+  UNIQUE uk_patient_vitals_key(patient_key,vital_ref_component_id,vital_created_ts)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
   
  DROP TABLE IF EXISTS healthscore_dw.fact_patient_appointments;
@@ -554,35 +555,6 @@ PRIMARY KEY (patient_visit_advice_key),
 UNIQUE KEY uk_visit_advice_key(patient_key, visit_hospital_key,visit_doctor_staff_key,note_created_ts)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-DROP TABLE IF EXISTS healthscore_dw.fact_active_visits;
-CREATE TABLE healthscore_dw.fact_active_visits (
-  active_visits_key int(11) NOT NULL AUTO_INCREMENT,
-  as_of_date_key datetime NOT NULL, 
-  patient_visit_key int(11) NOT NULL, 
-  patient_key int(11) NOT NULL, 
-  hospital_key int(11) NOT NULL, 
-  visit_date_key date NOT NULL, 
-  patient_visitbill_key int(11) NOT NULL,
-  daily_rate decimal(10,2) default 0, 
-  daily_rate_updated_by varchar(45) default NULL , 
-  billed_days int(11) DEFAULT NULL, 
-  ward_nm varchar(255) DEFAULT NULL,
-  referred_by varchar(45) DEFAULT NULL,
-  primary_hospital_nm varchar(200) DEFAULT NULL,
-  admitted_days int(11) DEFAULT NULL, 
-  total_paid_amt decimal(10,2) default 0, 
-  total_refund_amt decimal(10,2) default 0, 
-  total_waived_amt decimal(10,2) default 0, 
-  total_billed_amt decimal(12,2) default 0.0, 
-  current_balance_amt decimal(10,2) default 0,
-  source_cd varchar(45) NOT NULL,
-  etl_load_id int(11) NOT NULL,
-  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
-  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,	
-  PRIMARY KEY (active_visits_key),
-  UNIQUE KEY uk_active_visits_key(as_of_date_key,patient_visit_key,patient_visitbill_key)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
-
  DROP TABLE IF EXISTS healthscore_dw.fact_patient_assessments;
  CREATE TABLE healthscore_dw.fact_patient_assessments(
   patient_assmt_key int(11) NOT NULL AUTO_INCREMENT,
@@ -611,14 +583,6 @@ ALTER TABLE healthscore_dw.dim_hospital ADD COLUMN source_cd varchar(45) DEFAULT
 
 -- to be executed as of 30-09-2020-- from below
 
-<<<<<<< HEAD
--- ALTER TABLE healthscore_dw.fact_patient_medications
--- DROP INDEX uk_patient_medication_key;
--- ALTER TABLE healthscore_dw.fact_patient_medications
--- ADD CONSTRAINT uk_patient_medication_key UNIQUE (patient_key,prescribed_hospital_key,pharma_brand_nm,prescribed_doctor_staff_key,prescribed_ts);
-
-=======
->>>>>>> master
 ALTER TABLE healthscore_dw.fact_patient_assessments MODIFY health_assessment_scale_desc varchar(100);
 
 DROP TABLE IF EXISTS healthscore_dw.fact_patient_medications;
@@ -759,3 +723,74 @@ CREATE TABLE healthscore_dw.fact_hospital_daily_statistics
  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP, 
  PRIMARY KEY (hospital_daily_statistics_key)
  )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+ 
+ -- to be executed after 21/10/2020
+  ALTER TABLE  healthscore_dw.dim_staff ADD COLUMN (hospital_staff_join_dt datetime,hospital_staff_resignation_dt datetime);
+  
+  ALTER TABLE healthscore_dw.map_patient_hospital ADD COLUMN color_category_code varchar(10) DEFAULT NULL,Add column color_category_nm varchar(50) DEFAULT NULL, Add column color_hex_code_desc varchar(10) DEFAULT NULL;
+  ALTER TABLE  healthscore_dw.dim_bill_items DROP INDEX uk_bill_item_key;
+  ALTER TABLE  healthscore_dw.dim_bill_items ADD CONSTRAINT uk_bill_item_key UNIQUE (hospital_key,bill_item_type,bill_item_id,effective_from_ts,pkg_effective_from_ts);
+  ALTER TABLE  healthscore_dw.fact_patient_vitals DROP INDEX uk_patient_vitals_key;
+  ALTER TABLE  healthscore_dw.fact_patient_vitals ADD CONSTRAINT uk_patient_vitals_key UNIQUE (patient_key,vital_ref_component_id,vital_created_ts);
+  ALTER TABLE  healthscore_dw.fact_patient_visitbills DROP INDEX uk_patient_visitbills_key;
+  ALTER TABLE  healthscore_dw.fact_patient_medications ADD COLUMN source_cd varchar(50) DEFAULT NULL;
+  ALTER TABLE  healthscore_dw.fact_patient_medications DROP INDEX uk_patient_medication_key;
+  ALTER TABLE  healthscore_dw.fact_patient_medications ADD CONSTRAINT uk_patient_medication_key UNIQUE (patient_key,medication_details_id,source_cd);
+  ALTER TABLE  healthscore_dw.fact_patient_clinical_info DROP COLUMN active_flg;
+  ALTER TABLE  healthscore_dw.fact_patient_clinical_info ADD COLUMN active_flg tinyint(1);
+  ALTER TABLE  healthscore_dw.fact_patient_clinical_info ADD COLUMN source_cd varchar(50) DEFAULT NULL;
+  ALTER TABLE  healthscore_dw.fact_patient_careplan_instructions ADD COLUMN source_cd varchar(50) DEFAULT NULL;
+  ALTER TABLE  healthscore_dw.fact_patient_visitbillitems ADD COLUMN (source_cd varchar(50) DEFAULT NULL,prior_visit_bill_id BIGINT(50),payment_comments varchar(105),non_editable_comments varchar(105), payment_method_desc VARCHAR(100),tax_type_nm varchar(45),tax_value_in_per decimal(6,3),src_visit_bill_item_id BIGINT(50));
+  ALTER TABLE  healthscore_dw.fact_patient_visitbillitems ADD CONSTRAINT uk_vbi_key UNIQUE (src_visit_bill_item_id,source_cd);
+  ALTER TABLE  healthscore_dw.fact_patient_visitbillitems DROP COLUMN tax_type_key;
+  ALTER TABLE  healthscore_dw.fact_patient_visitbillitems DROP COLUMN payment_method_id;
+  ALTER TABLE  healthscore_dw.fact_patient_visit_advice ADD COLUMN source_cd varchar(50) DEFAULT NULL;
+  ALTER TABLE  healthscore_dw.fact_patient_assessments ADD COLUMN source_cd varchar(50) DEFAULT NULL;
+  ALTER TABLE  healthscore_dw.fact_hospital_daily_statistics ADD COLUMN source_cd varchar(50) DEFAULT NULL;
+  ALTER TABLE  healthscore_dw.fact_hospital_daily_statistics ADD CONSTRAINT uk_daily_statistics UNIQUE (as_of_date,hospital_key);
+
+DROP TABLE IF EXISTS healthscore_dw.fact_active_visits;
+CREATE TABLE healthscore_dw.fact_active_visits (
+  active_visits_key int(11) NOT NULL AUTO_INCREMENT,
+  as_of_date_key datetime NOT NULL, 
+  patient_visit_key int(11) NOT NULL, 
+  patient_key int(11) NOT NULL, 
+  hospital_key int(11) NOT NULL, 
+  daily_rate decimal(10,2) default 0.0, 
+  billed_days int(11) DEFAULT NULL, 
+  ward_nm varchar(255) DEFAULT NULL,
+  admitted_days int(11) DEFAULT NULL, 
+  total_paid_amt decimal(10,2) default 0, 
+  total_refund_amt decimal(10,2) default 0, 
+  total_waived_amt decimal(10,2) default 0, 
+  total_billed_amt decimal(12,2) default 0.0, 
+  unbilled_consumables_amt decimal(10,2) default 0.0, 
+  unbilled_canteen_amt decimal(10,2) default 0.0, 
+  previous_bill_balance_amt decimal(10,2) default 0.0,
+  current_balance_amt decimal(10,2) default 0.0,
+  source_cd varchar(50) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,	
+  PRIMARY KEY (active_visits_key),
+  UNIQUE KEY uk_active_visits_key(as_of_date_key,patient_visit_key)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+
+Drop table if exists healthscore_dw.fact_patient_visit_admission;
+CREATE TABLE healthscore_dw.fact_patient_visit_admission (
+  patient_visit_admission_key int(11) NOT NULL AUTO_INCREMENT,
+  patient_visit_key int(11) NOT NULL,
+  patient_key int(11) NOT NULL,
+  visit_hospital_key int(11) NOT NULL,
+  visit_diagnosis varchar(1000) DEFAULT NULL,  
+  prev_hospital_duration_of_stay int(11) , 
+  spl_req varchar(1000) DEFAULT NULL, 
+  admission_note LONGTEXT DEFAULT NULL,
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (patient_visit_admission_key),
+  UNIQUE KEY uk_patient_visit_admission_key (patient_visit_key)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
