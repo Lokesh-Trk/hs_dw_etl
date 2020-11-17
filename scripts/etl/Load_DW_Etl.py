@@ -37,14 +37,14 @@ def main(data_source_cd):
             if success_flg == -1:
                 raise Exception(module+" failed")
 
-        Log.update_load_details(load_id,'Completed','')
+        Log.update_load_details(load_id,data_source_cd,'Completed','')
 
     except mysql.connector.Error as err:
         raise Exception("Mysql connection error: ",err.msg)
 
     except Exception as e:
         if load_id is not None:
-            Log.update_load_details(load_id,'Failed',str(e))
+            Log.update_load_details(load_id,data_source_cd,'Failed',str(e))
         print (str(e))
         return -1
         

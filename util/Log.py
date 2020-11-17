@@ -5,9 +5,9 @@ import sys
 # Local application import
 from . import Connections
 
-def insert_log(load_id, etl, source, target,status, message=None,data_start_ts=None,data_end_ts=None):
+def insert_log(load_id, etl, source, target,status, message=None,data_start_ts=None,data_end_ts=None,data_source_cd=""):
     #connecting to db
-    conn = Connections.log_db_connect()
+    conn = Connections.log_db_connect(data_source_cd)
     # default times
     if data_start_ts is None:
         data_start_ts = '1900-01-01 00:00:00'
@@ -23,7 +23,7 @@ def insert_log(load_id, etl, source, target,status, message=None,data_start_ts=N
             etl_log_id = row[0] 
 
     if etl_log_id:
-        update_log(etl_log_id,'Started','Restarted')
+        update_log(etl_log_id,'Started','Restarted',data_source_cd)
     else:
         lastload_sql = f"select data_end_ts FROM etl_log where etl_log_id = (SELECT max(etl_log_id) FROM etl_log WHERE etl = '{etl}' and source = '{source}' and target = '{target}' and status = 'Completed')"
         cursor.execute(lastload_sql)
@@ -40,18 +40,18 @@ def insert_log(load_id, etl, source, target,status, message=None,data_start_ts=N
     conn.close()
     return etl_log_id,data_start_ts,data_end_ts
 
-def update_log(log_id,status,message):
+def update_log(log_id,status,message,data_source_cd):
     #connecting to db
-    conn = Connections.log_db_connect()
+    conn = Connections.log_db_connect(data_source_cd)
     cursor = conn.cursor()
     sql = f'update etl_log set status = "{status}", message = "{message}" where etl_log_id={log_id}'
     cursor.execute(sql) 
     conn.commit()
     conn.close()
 
-def check_status(load_id,etl,source,target,status):
+def check_status(load_id,etl,source,target,status,data_source_cd):
     #connecting to db
-    conn = Connections.log_db_connect()
+    conn = Connections.log_db_connect(data_source_cd)
     cursor = conn.cursor() 
     sql = f"select count(*) from etl_log where load_id={load_id} and etl='{etl}' and source='{source}' and target='{target}' and status='{status}'"
     cursor.execute(sql)
@@ -62,7 +62,7 @@ def check_status(load_id,etl,source,target,status):
 
 def insert_load_details(source_cd):
     #connecting to db
-    conn = Connections.log_db_connect()
+    conn = Connections.log_db_connect(source_cd)
     cursor = conn.cursor() 
     status = 'Started'
     sql = f"insert into etl_load_details(source_cd,status) VALUES ('{source_cd}','{status}')"
@@ -72,9 +72,9 @@ def insert_load_details(source_cd):
     conn.close()
     return etl_load_id
 
-def update_load_details(load_id,status,message):
+def update_load_details(load_id,data_source_cd,status,message):
      #connecting to db
-    conn = Connections.log_db_connect()
+    conn = Connections.log_db_connect(data_source_cd)
     cursor = conn.cursor() 
     sql = f"update etl_load_details set status = '{status}', message = '{message}' where etl_load_id = {load_id}"
     cursor.execute(sql)
@@ -83,7 +83,7 @@ def update_load_details(load_id,status,message):
 
 def check_current_load_details(source):
     #connecting to db
-    conn = Connections.log_db_connect()
+    conn = Connections.log_db_connect(source)
     cursor = conn.cursor() 
     status = 'Failed'
     sql = f"select etl_load_id from etl_load_details where source_cd = '{source}' and status = '{status}'"
@@ -104,9 +104,9 @@ def check_current_load_details(source):
                 load_id= str(row[0])
     return load_id, status
 
-def check_current_status(etl,load_id,source,target):
+def check_current_status(etl,load_id,source,target,data_source_cd):
     #connecting to db
-    conn = Connections.log_db_connect()
+    conn = Connections.log_db_connect(data_source_cd)
     cursor = conn.cursor() 
     start_ts = None
     end_ts= None
@@ -124,7 +124,7 @@ def check_current_status(etl,load_id,source,target):
 
     # if previous load did not fail, create a new load id
     if etl_log_id == None:
-        etl_log_id,start_ts,end_ts = insert_log(load_id,etl,source,target,"Started")
+        etl_log_id,start_ts,end_ts = insert_log(load_id,etl,source,target,"Started",None,None,None,data_source_cd)
     else:
         if status == "Started":
             etl_log_id = None
@@ -135,8 +135,8 @@ def check_current_status(etl,load_id,source,target):
             end_ts= None
     return etl_log_id,start_ts,end_ts
 
-def update_on_error(log_id,sub_log_id,error,sql):
+def update_on_error(log_id,sub_log_id,error,sql,data_source_cd):
     if log_id:
-        update_log(log_id,"Failed",format(error))
+        update_log(log_id,"Failed",format(error),data_source_cd)
     if sub_log_id != -1:
-        update_log(sub_log_id,"Failed",sql)
+        update_log(sub_log_id,"Failed",sql,data_source_cd)

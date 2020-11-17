@@ -20,12 +20,12 @@ def start_etl(load_id,data_source_cd):
 
 	try:
 		# if previous load failed, get the same load id and data date range, else skip
-		log_id, start_ts,end_ts = Log.check_current_status(etl,load_id,source,target)
+		log_id, start_ts,end_ts = Log.check_current_status(etl,load_id,source,target,data_source_cd)
         #if completed, return to parent program
 		if log_id == "-1":
 			return 0
 		
-		conn = Connections.dw_db_connect()
+		conn = Connections.dw_db_connect(data_source_cd)
 		cursor = conn.cursor()
 
 		file_path= Connections.export_dir_connect()
@@ -38,8 +38,8 @@ def start_etl(load_id,data_source_cd):
 			file_name=f"{file_path}{table_name}.csv"
 
 			#if file has been processed for the given load id successfully, then, skip it
-			if not Log.check_status(load_id,etl,"dw_data.export",file_name,"Completed"):
-				sub_log_id,data_start_ts,data_end_ts = Log.insert_log(load_id,etl,"dw_data.export",file_name,"Started","",start_ts,end_ts)
+			if not Log.check_status(load_id,etl,"dw_data.export",file_name,"Completed",data_source_cd):
+				sub_log_id,data_start_ts,data_end_ts = Log.insert_log(load_id,etl,"dw_data.export",file_name,"Started","",start_ts,end_ts,data_source_cd)
 				sql=f"{table_data['query']} where "
 				sql=f"{sql} ((src.inserted_ts BETWEEN '{data_start_ts}' AND '{data_end_ts}') OR (src.updated_ts BETWEEN '{data_start_ts}' AND '{data_end_ts}'))"
 				
@@ -51,18 +51,18 @@ def start_etl(load_id,data_source_cd):
 				cursor.execute(sql)
 				#subtracting 1 for the header 
 				exported_row_count = cursor.rowcount-1
-				Log.update_log(sub_log_id,"Completed",exported_row_count)
+				Log.update_log(sub_log_id,"Completed",exported_row_count,data_source_cd)
 
-		Log.update_log(log_id,"Completed","")
+		Log.update_log(log_id,"Completed","",data_source_cd)
 		return 0
 		
 	except mysql.connector.Error as err:
-		Log.update_on_error(log_id,sub_log_id,err,sql)
+		Log.update_on_error(log_id,sub_log_id,err,sql,data_source_cd)
 		print(err)
 		raise Exception
 
 	except Exception as err:
-		Log.update_on_error(log_id,sub_log_id,err,sql)
+		Log.update_on_error(log_id,sub_log_id,err,sql,data_source_cd)
 		if conn is not None:
 			conn.rollback()
 		print(err)

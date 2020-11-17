@@ -1,4 +1,4 @@
-INSERT INTO healthscore_dw.dim_location
+INSERT INTO dim_location
 (
 zipcode,
 area_nm,

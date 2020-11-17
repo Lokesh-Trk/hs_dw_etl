@@ -20,7 +20,7 @@ def start_etl(load_id,data_source_cd):
     sql = ""
     try:
         # if previous load failed, get the same load id and data date range, else skip
-        log_id,start_ts,end_ts = Log.check_current_status(etl,load_id,source,target)
+        log_id,start_ts,end_ts = Log.check_current_status(etl,load_id,source,target,data_source_cd)
         #if completed, return to parent program
         if log_id == "-1":
             return 0
@@ -33,8 +33,8 @@ def start_etl(load_id,data_source_cd):
                 table_name,start_ts,end_ts = get_table_details(f,start_ts,end_ts)
                 file_name_with_path = f'{src_file_path}/{f}'
                 #if file has been processed for the given load id successfully, then, skip it
-                if not Log.check_status(load_id,etl,f,table_name,"Completed"):
-                    sub_log_id,start_ts,end_ts = Log.insert_log(load_id,etl,f,table_name,"Started","",start_ts,end_ts)
+                if not Log.check_status(load_id,etl,f,table_name,"Completed",data_source_cd):
+                    sub_log_id,start_ts,end_ts = Log.insert_log(load_id,etl,f,table_name,"Started","",start_ts,end_ts,data_source_cd)
                     conn = Connections.stg_db_connect()
                     cursor = conn.cursor(buffered=True)
                     check_sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = '{stg_database_name}' AND table_name = '{table_name}' LIMIT 1;"
@@ -48,23 +48,23 @@ def start_etl(load_id,data_source_cd):
                         cursor.execute(sql)
                         affected_row_count = cursor.rowcount
                         conn.commit()
-                        Log.update_log(sub_log_id,"Completed",affected_row_count)
+                        Log.update_log(sub_log_id,"Completed",affected_row_count,data_source_cd)
                         #reset so that future errors dont attribute to this sub-load
                         sub_log_id = -1
                         cursor.close()
                       #  os.remove(file_name_with_path)
                     else:
-                        Log.update_log(sub_log_id,"Skipped","Table does not exist")                   
+                        Log.update_log(sub_log_id,"Skipped","Table does not exist",data_source_cd)                   
 
-        Log.update_log(log_id,"Completed","")
+        Log.update_log(log_id,"Completed","",data_source_cd)
         return 0
 
     except mysql.connector.Error as err:
-        Log.update_on_error(log_id,sub_log_id,err,sql)
+        Log.update_on_error(log_id,sub_log_id,err,sql,data_source_cd)
         raise Exception
 
     except Exception as err:
-        Log.update_on_error(log_id,sub_log_id,err,sql)
+        Log.update_on_error(log_id,sub_log_id,err,sql,data_source_cd)
         print(err)
         # Rollback in case there is any error
         if conn is not None:

@@ -20,11 +20,11 @@ DB_CONFIG = {
 CONFIG_DIR = "config/"
 DEBUG = True
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SRC_DATA_DIR = "/home/ubuntu/mysql-extract/dw_import/"
-#SRC_DATA_DIR = "/Users/chiamala/mysql-extract/data/dw_import/"
+#SRC_DATA_DIR = "/home/ubuntu/mysql-extract/dw_import/"
+SRC_DATA_DIR = "/Users/chiamala/mysql-extract/data/dw_import/"
 #SRC_DATA_DIR = "/home/csoft-tech/Downloads/CSV/"
-EXPORT_FILE_DIR="/home/ubuntu/mysql-extract/dw_export/"
-#EXPORT_FILE_DIR="/Users/chiamala/mysql-extract/data/dw_export/"
+#EXPORT_FILE_DIR="/home/ubuntu/mysql-extract/dw_export/"
+EXPORT_FILE_DIR="/Users/chiamala/mysql-extract/data/dw_export/"
 #EXPORT_FILE_DIR="/home/csoft-tech/Downloads/CSV/"
 DB_SCRIPTS_DIR = "scripts/db/"
 

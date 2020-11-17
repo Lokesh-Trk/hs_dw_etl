@@ -12,14 +12,22 @@ def stg_db_connect():
 	conn = mysql.connector.connect(host=db_config["host"], port=db_config["port"], user=db_config["user"], passwd=db_config["passwd"], db=db_config["staging_db"],auth_plugin=db_config["auth_plugin"])
 	return conn
 
-def dw_db_connect():
+def dw_db_connect(data_source_cd):
 	db_config = settings.DB_CONFIG
-	conn = mysql.connector.connect(host=db_config["host"], port=db_config["port"], user=db_config["user"], passwd=db_config["passwd"], db=db_config["dw_db"],auth_plugin=db_config["auth_plugin"])
+	db_name= db_config["dw_db"]
+	# below two lines are needed if we have multiple dw databases
+	# if data_source_cd:
+	# 	db_name= db_config["dw_db"]+data_source_cd[2:]
+	conn = mysql.connector.connect(host=db_config["host"], port=db_config["port"], user=db_config["user"], passwd=db_config["passwd"], db=db_name,auth_plugin=db_config["auth_plugin"])
 	return conn
 
-def log_db_connect():
+def log_db_connect(data_source_cd):
 	db_config = settings.DB_CONFIG
-	conn = mysql.connector.connect(host=db_config["host"], port=db_config["port"], user=db_config["user"], passwd=db_config["passwd"], db=db_config["dw_db"],auth_plugin=db_config["auth_plugin"])
+	db_name= db_config["dw_db"]
+	# below two lines are needed if we have multiple dw databases
+	# if data_source_cd:
+	# 	db_name= db_config["dw_db"]+data_source_cd[2:]
+	conn = mysql.connector.connect(host=db_config["host"], port=db_config["port"], user=db_config["user"], passwd=db_config["passwd"], db=db_name,auth_plugin=db_config["auth_plugin"])
 	return conn
 
 def src_file_connect():
