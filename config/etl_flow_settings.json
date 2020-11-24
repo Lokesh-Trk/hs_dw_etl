@@ -37,6 +37,15 @@
 				"etl_stage2": "Staging_to_DW_Dimensions",
 				"etl_stage3": "Staging_to_DW_Facts"
 			}
+		},
+		{
+			"data_source_cd": "hs_nucleus",
+			"etl_stages": {
+				"etl_stage0": "Staging_Refresh_DB",
+				"etl_stage1": "Staging_from_CSV",
+				"etl_stage2": "Staging_to_DW_Dimensions",
+				"etl_stage3": "Staging_to_DW_Facts"
+			}
 		}
 	],
 	"etl_file_names": [
@@ -64,6 +73,12 @@
 			"JSON_DIM_LOAD": "config/hs_az/dw_dim_schema.json",
 			"STG_CREATE_JSON": "config/hs_az/dw_stg_schema.json",
 			"JSON_FACT_LOAD": "config/hs_az/dw_fact_schema.json"
+		},
+		{
+			"data_source_cd": "hs_nucleus",
+			"JSON_DIM_LOAD": "config/hs_nucleus/dw_dim_schema.json",
+			"STG_CREATE_JSON": "config/hs_nucleus/dw_stg_schema.json",
+			"JSON_FACT_LOAD": "config/hs_nucleus/dw_fact_schema.json"
 		}
 	]
 }
