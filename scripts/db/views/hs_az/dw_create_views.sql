@@ -81,3 +81,14 @@ SELECT mph.hospital_key,dp.patient_key,patient_unique_id,patient_nm,patient_firs
 join healthscore_dw.map_patient_hospital mph
 on mph.patient_key = dp.patient_key
 where mph.hospital_cd in ('CHWDH','SDHARV');
+
+-- CREATE USER az_db_viewer@localhost IDENTIFIED BY <PWD>;
+GRANT SELECT ON `healthscore_dw`.`healthscore_dw.az_bill_items_master_view` TO 'az_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`healthscore_dw.az_hospital_master_view` TO 'az_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`healthscore_dw.az_patient_master_view` TO 'az_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`healthscore_dw.az_patient_visit_view` TO 'az_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`healthscore_dw.az_patient_medications_view` TO 'az_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`healthscore_dw.az_patient_assessments_view` TO 'az_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`healthscore_dw.az_hospital_staff_master_view` TO 'az_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`healthscore_dw.az_patient_visit_view` TO 'az_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`healthscore_dw.az_patient_master_view` TO 'az_db_viewer'@'localhost' ; 

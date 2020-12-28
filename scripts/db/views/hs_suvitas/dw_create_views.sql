@@ -1,3 +1,4 @@
+
 DROP VIEW IF EXISTS healthscore_dw.suvitas_bill_items_master_view;
 CREATE VIEW healthscore_dw.suvitas_bill_items_master_view
 as select dbi.hospital_key, bill_item_type,bill_item_category_cd,bill_item_category_nm,bill_item_category_desc,bill_item_cd,bill_item_nm,bill_item_amt,transaction_type_cd,pkg_effective_from_ts,pkg_effective_to_ts
@@ -65,7 +66,6 @@ join healthscore_dw.suvitas_hospital_master_view hm
 on fpv.visit_hospital_key = hm.hospital_key
 left join healthscore_dw.fact_patient_visit_admission fpva 
 on fpv.patient_visit_key = fpva.patient_visit_key  ;
-
 DROP VIEW IF EXISTS healthscore_dw.suvitas_patient_careplan_instructions_view;
 CREATE VIEW healthscore_dw.suvitas_patient_careplan_instructions_view AS
 SELECT fcpi.patient_careplan_key,fcp.patient_key,fcp.visit_hospital_key hospital_key,careplan_status_nm,careplan_summary,careplan_instruction_desc,careplan_instruction_type_nm,careplan_instruction_dept_nm,careplan_ins_status_nm,freq_num,freq_mode_nm,ins_started_ts,ins_ended_ts,comments,bill_item_key,patient_medication_key,stopped_flg,ins_created_date_key,ins_created_time_key,ins_created_ts,fcpi.active_flg
@@ -105,7 +105,6 @@ CREATE VIEW healthscore_dw.suvitas_hospital_daily_statistics_view AS
 SELECT as_of_date as transaction_date_key,fhds.hospital_key,in_patient_cnt,out_patient_cnt,in_patient_admission_cnt,in_patient_checkout_cnt,out_patient_checkout_cnt,in_patient_avg_stay
 FROM healthscore_dw.fact_hospital_daily_statistics fhds 
 join healthscore_dw.suvitas_hospital_master_view hm ON fhds.hospital_key = hm.hospital_key;
-
 DROP view if exists healthscore_dw.suvitas_active_visits_view;
 CREATE VIEW healthscore_dw.suvitas_active_visits_view AS
 SELECT as_of_date_key,patient_visit_key,patient_key,fav.hospital_key,daily_rate,billed_days,ward_nm,admitted_days,total_paid_amt,total_refund_amt,total_waived_amt,total_billed_amt,unbilled_consumables_amt,unbilled_canteen_amt,coalesce(previous_bill_balance_amt,0) as previous_bill_balance_amt,coalesce(current_balance_amt,0) as current_balance_amt, (coalesce(total_paid_amt,0)-coalesce(total_refund_amt,0)-coalesce(previous_bill_balance_amt,0)) as total_payment_received, (coalesce(admitted_days,0)-coalesce(billed_days,0)) as unbilled_days, ((coalesce(admitted_days,0)-coalesce(billed_days,0)) * coalesce(daily_rate,0)) as unbilled_care_package_amt,
@@ -120,3 +119,21 @@ SELECT fci.patient_key,patient_visit_key,clinical_info_desc as diagnosis_nm,effe
 FROM healthscore_dw.fact_patient_clinical_info fci
 join healthscore_dw.suvitas_hospital_master_view hm ON fci.hospital_key = hm.hospital_key
 WHERE clinical_info_type_cd='diagnosis';
+
+suvitas_bill_items_master_view,suvitas_hospital_master_view,suvitas_patient_master_view,suvitas_patient_medications_view,suvitas_patient_assessments_view,suvitas_hospital_staff_master_view,suvitas_patient_visit_view,
+suvitas_hospital_daily_statistics_view,suvitas_active_visits_view,suvitas_patient_diagnosis_view,
+suvitas_patient_careplan_instructions_view,suvitas_bill_items_master_view,suvitas_vist_bill_items_view
+
+-- CREATE USER suvitas_db_viewer@localhost IDENTIFIED BY <PWD>;
+GRANT SELECT ON `healthscore_dw`.`suvitas_bill_items_master_view` TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`suvitas_hospital_master_view` TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`suvitas_patient_master_view` TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`suvitas_patient_medications_view` TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`suvitas_patient_assessments_view` TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`suvitas_hospital_staff_master_view` TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`suvitas_patient_visit_view` TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`suvitas_hospital_daily_statistics_view` TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`suvitas_active_visits_view` TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`suvitas_patient_diagnosis_view` TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`suvitas_patient_careplan_instructions_view` TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`suvitas_vist_bill_items_view` TO 'suvitas_db_viewer'@'localhost' ;
