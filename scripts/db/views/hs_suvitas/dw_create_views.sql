@@ -112,3 +112,17 @@ SELECT as_of_date_key,patient_visit_key,patient_key,fav.hospital_key,daily_rate,
 FROM healthscore_dw.fact_active_visits fav
 join healthscore_dw.suvitas_hospital_master_view hm ON fav.hospital_key = hm.hospital_key;
 
+
+-- CREATE USER suvitas_db_viewer@localhost IDENTIFIED BY <PWD>;
+GRANT SELECT ON `healthscore_dw`.`suvitas_bill_items_master_view` TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`suvitas_hospital_master_view` TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`suvitas_patient_master_view` TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`suvitas_patient_medications_view` TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`suvitas_patient_assessments_view` TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`suvitas_hospital_staff_master_view` TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`suvitas_patient_visit_view` TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`suvitas_hospital_daily_statistics_view` TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`suvitas_active_visits_view` TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`suvitas_patient_diagnosis_view` TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`suvitas_patient_careplan_instructions_view` TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`suvitas_vist_bill_items_view` TO 'suvitas_db_viewer'@'localhost' ;
