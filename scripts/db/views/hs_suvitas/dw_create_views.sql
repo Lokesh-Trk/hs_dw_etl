@@ -113,3 +113,10 @@ case when ((coalesce(total_paid_amt,0)-coalesce(total_refund_amt,0)-coalesce(pre
 case when ((coalesce(total_paid_amt,0)-coalesce(total_refund_amt,0)-coalesce(previous_bill_balance_amt,0)) - (total_billed_amt + ((coalesce(admitted_days,0)-coalesce(billed_days,0)) * coalesce(daily_rate,0))  + unbilled_consumables_amt+unbilled_canteen_amt)) < 0 then ((coalesce(total_paid_amt,0)-coalesce(total_refund_amt,0)-coalesce(previous_bill_balance_amt,0)) - (total_billed_amt + ((coalesce(admitted_days,0)-coalesce(billed_days,0)) * coalesce(daily_rate,0))  + unbilled_consumables_amt+unbilled_canteen_amt)) * -1 else 0 end as hospital_due_amt
 FROM healthscore_dw.fact_active_visits fav
 join healthscore_dw.suvitas_hospital_master_view hm ON fav.hospital_key = hm.hospital_key;
+
+DROP VIEW IF EXISTS healthscore_dw.suvitas_patient_diagnosis_view;
+CREATE VIEW healthscore_dw.suvitas_patient_diagnosis_view AS
+SELECT fci.patient_key,patient_visit_key,clinical_info_desc as diagnosis_nm,effective_from_ts,effective_to_ts
+FROM healthscore_dw.fact_patient_clinical_info fci
+join healthscore_dw.suvitas_hospital_master_view hm ON fci.hospital_key = hm.hospital_key
+WHERE clinical_info_type_cd='diagnosis';

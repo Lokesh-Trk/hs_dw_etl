@@ -90,20 +90,30 @@ join healthscore_dw.nucleus_hospital_master_view hm ON bh.hospital_key = hm.hosp
 
 DROP VIEW IF EXISTS healthscore_dw.nucleus_birth_exam_history_view;
 CREATE VIEW healthscore_dw.nucleus_birth_exam_history_view AS
-SELECT patient_birth_exam_key, patient_key, bh.hospital_key, time_of_cord_clamping, blood_gas_sample_type, hips_anomaly, cord_vessels_anomaly, femoral_pulses_anomaly, genitilia_anomaly, red_reflex_anomaly, back_spine_anomaly, extremities_anomaly, resusitation_desc, rs_desc, pa_desc, cvs_desc, cns_desc, congenital_anomalies_desc, comments, birth_diagnosis_nm, resusitation_type_nm, resusitation_duration_min, regular_hr_by_min, regular_resp_by_min, regular_hr_by_sec, regular_resp_by_sec, apgar_1_min, apgar_5_min, apgar_10_min, hr_1_min, hr_5_min, hr_10_min, resp_1_min, resp_5_min, resp_10_min, muscle_1_min, muscle_5_min, muscle_10_min, reflex_1_min, reflex_5_min, reflex_10_min, color_1_min, color_5_min, color_10_min, dysmorphic_features_flg, anal_patency_flg, ng_tube_flg, cleft_lip_flg, parent_consent_flg, baby_shown_to_parents_flg, cord_abg_ph, cord_abg_po2, cord_abg_pc02, cord_abg_hc03, cord_abg_be, hr, hc, length, spo2, temp 
+SELECT patient_birth_exam_key, patient_key, bh.hospital_key, time_of_cord_clamping, blood_gas_sample_type, hips_anomaly, cord_vessels_anomaly, femoral_pulses_anomaly, genitilia_anomaly, red_reflex_anomaly, back_spine_anomaly, extremities_anomaly, resusitation_desc, rs_desc, pa_desc, cvs_desc, cns_desc, congenital_anomalies_desc, comments, birth_diagnosis_nm, resusitation_type_nm, resusitation_duration_min, regular_hr_by_min, regular_resp_by_min, regular_hr_by_sec, regular_resp_by_sec, coalesce(apgar_1_min,0) as apgar_1_min, coalesce(apgar_5_min,0) as apgar_5_min,coalesce(apgar_10_min,0) as apgar_10_min, coalesce(hr_1_min,0) as hr_1_min,coalesce(hr_5_min,0) as hr_5_min,coalesce(hr_10_min,0) as hr_10_min, coalesce(resp_1_min,0) as resp_1_min, coalesce(resp_5_min,0) as resp_5_min, coalesce(resp_10_min,0) as resp_10_min, coalesce(muscle_1_min,0) as muscle_1_min, coalesce(muscle_5_min,0) as muscle_5_min, coalesce(muscle_10_min,0) as muscle_10_min, coalesce(reflex_1_min,0) as reflex_1_min, coalesce(reflex_5_min,0) as reflex_5_min, coalesce(reflex_10_min,0) as reflex_10_min, coalesce(color_1_min,0) as color_1_min, coalesce(color_5_min,0) as color_5_min, coalesce(color_10_min,0) as color_10_min, dysmorphic_features_flg, anal_patency_flg, ng_tube_flg, cleft_lip_flg, parent_consent_flg, baby_shown_to_parents_flg, cord_abg_ph, cord_abg_po2, cord_abg_pc02, cord_abg_hc03, cord_abg_be, hr, hc, length, spo2, temp 
 FROM healthscore_dw.dim_patient_birth_exam_history bh
 join healthscore_dw.nucleus_hospital_master_view hm ON bh.hospital_key = hm.hospital_key
  ;
  
 DROP VIEW IF EXISTS healthscore_dw.nucleus_careplan_execution_view;
 CREATE VIEW healthscore_dw.nucleus_careplan_execution_view AS
-SELECT patient_careplan_execution_key, patient_careplan_instruction_key, ced.patient_careplan_key, careplan_instruction_master_key, recorded_ts, infusion_rate, input_output_volume, feed_route_nm, input_output_type_nm, input_output_type_measurement_ref_text, input_output_type_category, ventilator_mode_nm, ventilator_settings_nm, ventilator_uom_nm, ventilator_allowed_lower_limit, ventilator_allowed_upper_limit, ventilator_settings_value 
+SELECT patient_careplan_execution_key, patient_careplan_instruction_key, ced.patient_careplan_key, careplan_instruction_master_key, hm.hospital_key, cp.patient_key, recorded_ts, infusion_rate, input_output_volume, feed_route_nm, input_output_type_nm, input_output_type_measurement_ref_text, input_output_type_category, ventilator_mode_nm, ventilator_settings_nm, ventilator_uom_nm, ventilator_allowed_lower_limit, ventilator_allowed_upper_limit, ventilator_settings_value 
 FROM healthscore_dw.fact_patient_careplan_execution_details ced
 join healthscore_dw.fact_patient_careplans cp 
 on ced.patient_careplan_key = cp.patient_careplan_key
 join healthscore_dw.nucleus_hospital_master_view hm ON cp.visit_hospital_key = hm.hospital_key
  ;
 
+DROP VIEW IF EXISTS healthscore_dw.nucleus_calendar_view;
+CREATE VIEW healthscore_dw.nucleus_calendar_view AS
+SELECT * FROM healthscore_dw.dim_date;
+
+DROP VIEW IF EXISTS healthscore_dw.nucleus_patient_diagnosis_view;
+CREATE VIEW healthscore_dw.nucleus_patient_diagnosis_view AS
+SELECT fci.patient_key,patient_visit_key,clinical_info_desc as diagnosis_nm,effective_from_ts,effective_to_ts
+FROM healthscore_dw.fact_patient_clinical_info fci
+join healthscore_dw.nucleus_hospital_master_view hm ON fci.hospital_key = hm.hospital_key
+WHERE clinical_info_type_cd='diagnosis';
 
 grant select on  healthscore_dw.nucleus_hospital_master_view to nucleus_db_viewer@localhost;
 grant select on  healthscore_dw.nucleus_patient_master_view to nucleus_db_viewer@localhost;
@@ -117,3 +127,5 @@ grant select on  healthscore_dw.nucleus_obstetric_history_view to nucleus_db_vie
 grant select on  healthscore_dw.nucleus_birth_history_view to nucleus_db_viewer@localhost;
 grant select on  healthscore_dw.nucleus_birth_exam_history_view to nucleus_db_viewer@localhost;
 grant select on  healthscore_dw.nucleus_careplan_execution_view to nucleus_db_viewer@localhost;
+grant select on  healthscore_dw.nucleus_calendar_view to nucleus_db_viewer@localhost;
+grant select on  healthscore_dw.nucleus_patient_diagnosis_view to nucleus_db_viewer@localhost;
