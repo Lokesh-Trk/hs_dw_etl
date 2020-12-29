@@ -12,7 +12,7 @@
 		},
 		{
 			"tablename": "fact_patient_visit_admission",
-			"source_table": "vw_patient_visit_sql_admission_details",
+			"source_table": "vw_patient_visit_spl_admission_details",
 			"fields": "patient_visit_key,patient_key,visit_hospital_key,visit_diagnosis,prev_hospital_duration_of_stay,spl_req,admission_note,source_cd,etl_load_id",
 			"insert_query": "select fpv.patient_visit_key,fpv.patient_key,fpv.visit_hospital_key, diagnosis,prev_hospital_duration_of_stay,spl_req,admission_note,'{0}',{1} from healthscore_stg.vw_patient_visit_spl_admission_details vad join healthscore_dw.fact_patient_visits fpv on fpv.hospital_patient_visit_id = vad.patient_visit_id and fpv.source_cd = '{0}'",
 			"where_clause": "fpv.visit_hospital_key=%i",
@@ -71,6 +71,14 @@
 			"source_table": "hs_patient_past_history_details",
 			"fields": "patient_key,patient_visit_key,created_staff_key,clinical_info_type_cd,clinical_info_ref_id,clinical_info_desc,effective_from_ts,effective_to_ts,recorded_date_key,recorded_time_key,active_flg,source_cd,etl_load_id",
 			"insert_query": "SELECT  mph.patient_key, case when pphd.created_patient_visit_id is null then null else fpv.patient_visit_key end as patient_visit_key, ds.staff_key, 'pasthistory', pphd.past_history_ref_id as clinical_info_ref_id, concat(pphd.past_history_ref_display_txt,'-',pphd.hospital_nm,'-',pphd.doctor_cd,'-',pphd.location_nm,'-',pphd.comments) as clinical_info_desc, coalesce(pphd.history_since_dt,pphd.created_ts) as effective_from_ts, CASE WHEN pphd.active_flg = 0 THEN pphd.modified_ts ELSE NULL END AS effective_to_ts,date(pphd.created_ts) as recorded_date_key, time(pphd.created_ts) as recorded_time_key, pphd.active_flg,'{0}',{1} FROM healthscore_stg.hs_patient_past_history_details pphd JOIN  healthscore_stg.hs_patient_master hpm on hpm.patient_id=pphd.patient_id JOIN  healthscore_stg.hs_hospital_master hhm on hhm.hospital_id=hpm.primary_hospital_id JOIN  healthscore_dw.map_patient_hospital mph on mph.hospital_patient_cd=hpm.patient_cd and mph.hospital_cd=hhm.hs_hospital_cd_guid left JOIN healthscore_dw.dim_staff ds on ds.hospital_staff_user_nm=pphd.created_by and ds.hospital_key=mph.hospital_key left JOIN  healthscore_dw.fact_patient_visits fpv on fpv.patient_key=mph.patient_key and fpv.visit_hospital_key=mph.hospital_key and fpv.hospital_patient_visit_id=pphd.created_patient_visit_id",
+			"where_clause": "fpv.visit_hospital_key=%i",
+			"update_fields": "patient_visit_key=src.patient_visit_key,created_staff_key=src.staff_key,clinical_info_desc=src.clinical_info_desc,effective_from_ts=src.effective_from_ts,effective_to_ts=src.effective_to_ts,recorded_date_key=src.recorded_date_key,recorded_time_key=src.recorded_time_key,active_flg=src.active_flg"
+		},
+		{
+			"tablename": "fact_patient_clinical_info",
+			"source_table": "vw_patient_visit_diagnosis_tags",
+			"fields": "patient_key,patient_visit_key,created_staff_key,clinical_info_type_cd,clinical_info_ref_id,clinical_info_desc,effective_from_ts,effective_to_ts,recorded_date_key,recorded_time_key,active_flg,source_cd,etl_load_id",
+			"insert_query": "SELECT mph.patient_key, case when pvd.patient_visit_id is null then null else fpv.patient_visit_key end as patient_visit_key,null as staff_key, 'diagnosis', patient_diagnosis_tag_id as clinical_info_ref_id, concat(pvd.diagnosis_desc) as clinical_info_desc,pvd.created_ts as effective_from_ts, CASE WHEN pvd.active_flg = 0 THEN pvd.modified_ts ELSE NULL END AS effective_to_ts, date(pvd.created_ts) as recorded_date_key, time(pvd.created_ts) as recorded_time_key, pvd.active_flg  ,'{0}',{1} FROM healthscore_stg.vw_patient_visit_diagnosis_tags pvd JOIN  healthscore_stg.hs_patient_master hpm on hpm.patient_id=pvd.patient_id JOIN  healthscore_stg.hs_hospital_master hhm on hhm.hospital_id=pvd.hospital_id JOIN  healthscore_dw.map_patient_hospital mph on mph.hospital_patient_cd=hpm.patient_cd and mph.hospital_cd=hhm.hs_hospital_cd_guid left JOIN  healthscore_dw.fact_patient_visits fpv on fpv.patient_key=mph.patient_key and fpv.visit_hospital_key=mph.hospital_key and fpv.hospital_patient_visit_id=pvd.patient_visit_id",
 			"where_clause": "fpv.visit_hospital_key=%i",
 			"update_fields": "patient_visit_key=src.patient_visit_key,created_staff_key=src.staff_key,clinical_info_desc=src.clinical_info_desc,effective_from_ts=src.effective_from_ts,effective_to_ts=src.effective_to_ts,recorded_date_key=src.recorded_date_key,recorded_time_key=src.recorded_time_key,active_flg=src.active_flg"
 		},
