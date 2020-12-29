@@ -112,7 +112,10 @@ DROP VIEW IF EXISTS healthscore_dw.nucleus_patient_diagnosis_view;
 CREATE VIEW healthscore_dw.nucleus_patient_diagnosis_view AS
 SELECT fci.patient_key,patient_visit_key,clinical_info_desc as diagnosis_nm,effective_from_ts,effective_to_ts
 FROM healthscore_dw.fact_patient_clinical_info fci
-join healthscore_dw.nucleus_hospital_master_view hm ON fci.hospital_key = hm.hospital_key
+join healthscore_dw.map_patient_hospital mph
+on mph.patient_key = fci.patient_key
+join healthscore_dw.nucleus_hospital_master_view  hm
+on mph.hospital_key = hm.hospital_key
 WHERE clinical_info_type_cd='diagnosis';
 
 grant select on  healthscore_dw.nucleus_hospital_master_view to nucleus_db_viewer@localhost;
