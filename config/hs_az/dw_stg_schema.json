@@ -153,11 +153,6 @@
 			"primary_key": "hs_patient_assessment_scale_result_id"
 		},
 		{
-			"tablename": "hs_patient_diagnosis_tags",
-			"fields": " patient_diagnosis_tag_id int(11) NOT NULL ,  diagnosis_tag_id int(11) NOT NULL,  patient_id int(11) NOT NULL,  assessment_note_id int(11) DEFAULT NULL,  active_flg tinyint(1) DEFAULT '1',  created_ts datetime NOT NULL,  created_by varchar(45) NOT NULL,  modified_by varchar(45) DEFAULT NULL,  modified_ts timestamp NULL DEFAULT NULL,  patient_visit_id bigint(50) DEFAULT NULL",
-			"primary_key": "patient_diagnosis_tag_id"
-		},
-		{
 			"tablename": "hs_patient_document_master",
 			"fields": " document_id bigint(11) NOT NULL,  patient_id bigint(11) NOT NULL,  upload_visit_id int(11) DEFAULT NULL,  upload_url varchar(1000) DEFAULT NULL,  document_nm varchar(200) DEFAULT NULL,  document_desc varchar(1000) DEFAULT NULL,  thumbnail_url varchar(200) DEFAULT NULL,  version_id varchar(145) DEFAULT NULL,  thumbnail_version_id varchar(145) DEFAULT NULL,  active_flg tinyint(1) NOT NULL DEFAULT '1',  created_by varchar(45) DEFAULT NULL,  created_ts datetime DEFAULT NULL,  modified_by varchar(45) DEFAULT NULL,  modified_ts datetime DEFAULT NULL",
 			"primary_key": "document_id"
@@ -375,6 +370,10 @@
 		{
 			"tablename": "vw_patient_visit_careplan_instruction_details",
 			"fields": "careplan_instruction_details_id bigint(50), care_plan_instruction_id bigint(50), infusion_rate double, input_output_volume double, feed_route_nm varchar(100), input_output_type_nm varchar(100), input_output_type_measurement_ref_text varchar(45), input_output_type_category varchar(45), active_flg tinyint(1), created_ts datetime, created_by varchar(45), modified_ts datetime, modified_by varchar(45), ventilator_mode_nm varchar(100), ventilator_settings_nm varchar(100), refMeasureDisplayTxt varchar(45), allowed_lower_limit decimal(10,2), allowed_upper_limit decimal(10,2), ventilator_settings_value varchar(50), recorded_ts datetime"
+		},
+		{
+			"tablename": "vw_patient_visit_diagnosis_tags",
+			"fields": " patient_diagnosis_tag_id int(11) NOT NULL , patient_id int(11) NOT NULL, hospital_id int(11) NOT NULL, patient_visit_id bigint(50) DEFAULT NULL, diagnosis_desc varchar(250),  active_flg tinyint(1), created_ts datetime, modified_ts datetime"
 		}
 	]
 }
