@@ -118,7 +118,10 @@ DROP VIEW IF EXISTS healthscore_dw.suvitas_patient_diagnosis_view;
 CREATE VIEW healthscore_dw.suvitas_patient_diagnosis_view AS
 SELECT fci.patient_key,patient_visit_key,clinical_info_desc as diagnosis_nm,effective_from_ts,effective_to_ts
 FROM healthscore_dw.fact_patient_clinical_info fci
-join healthscore_dw.suvitas_hospital_master_view hm ON fci.hospital_key = hm.hospital_key
+join healthscore_dw.map_patient_hospital mph
+on mph.patient_key = fci.patient_key
+join healthscore_dw.suvitas_hospital_master_view  hm
+on mph.hospital_key = hm.hospital_key
 WHERE clinical_info_type_cd='diagnosis';
 
 -- CREATE USER suvitas_db_viewer@localhost IDENTIFIED BY <PWD>;
@@ -134,3 +137,4 @@ GRANT SELECT ON `healthscore_dw`.`suvitas_active_visits_view` TO 'suvitas_db_vie
 GRANT SELECT ON `healthscore_dw`.`suvitas_patient_diagnosis_view` TO 'suvitas_db_viewer'@'localhost' ; 
 GRANT SELECT ON `healthscore_dw`.`suvitas_patient_careplan_instructions_view` TO 'suvitas_db_viewer'@'localhost' ; 
 GRANT SELECT ON `healthscore_dw`.`suvitas_vist_bill_items_view` TO 'suvitas_db_viewer'@'localhost' ;
+grant select on  healthscore_dw.suvitas_patient_diagnosis_view to suvitas_db_viewer@localhost;
