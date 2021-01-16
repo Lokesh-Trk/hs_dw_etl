@@ -44,7 +44,7 @@ def start_etl(load_id,data_source_cd):
 				sql=f"{sql} ((src.inserted_ts BETWEEN '{data_start_ts}' AND '{data_end_ts}') OR (src.updated_ts BETWEEN '{data_start_ts}' AND '{data_end_ts}'))"
 				
 				if table_data.get('where_clause'):
-					sql= f"{sql} and {table_data['where_clause']} " 
+					sql= f"{sql} and {table_data['where_clause'].format(data_source_cd)} " 
 				sql=f"{sql} INTO OUTFILE '{file_name}' FIELDS ESCAPED BY '\\\\' TERMINATED BY '^~^' ENCLOSED BY \"\" LINES TERMINATED BY  \'\\n\';"
 				if os.path.exists(file_name):
 					os.remove(file_name)
