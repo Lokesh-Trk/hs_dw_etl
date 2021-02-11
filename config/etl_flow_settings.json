@@ -6,8 +6,7 @@
 				"etl_stage0": "Staging_Refresh_DB",
 				"etl_stage1": "Staging_from_CSV",
 				"etl_stage2": "Staging_to_DW_Dimensions",
-				"etl_stage3": "Staging_to_DW_Facts",
-				"etl_stage4": "DW_to_Patient_app_Exports"
+				"etl_stage3": "Staging_to_DW_Facts"
 			}
 		},
 		{
@@ -53,15 +52,13 @@
 				"etl_stage0": "Staging_Refresh_DB",
 				"etl_stage1": "Staging_from_CSV",
 				"etl_stage2": "Staging_to_DW_Dimensions",
-				"etl_stage3": "Staging_to_DW_Facts",
-				"etl_stage4": "DW_to_Patient_app_Exports"
+				"etl_stage3": "Staging_to_DW_Facts"
 			}
 		}
 	],
 	"etl_file_names": [
 		{
 			"data_source_cd": "hs_shared",
-			"DW_PATIENT_APP_EXPORT_JSON_FILE": "config/hs_shared/dw_patient_app_export.json",
 			"JSON_DIM_LOAD": "config/hs_shared/dw_dim_schema.json",
 			"STG_CREATE_JSON": "config/hs_shared/dw_stg_schema.json",
 			"JSON_FACT_LOAD": "config/hs_shared/dw_fact_schema.json"
@@ -92,7 +89,6 @@
 		},
 		{
 			"data_source_cd": "hs_uoh",
-			"DW_PATIENT_APP_EXPORT_JSON_FILE": "config/hs_uoh/dw_patient_app_export.json",
 			"JSON_DIM_LOAD": "config/hs_uoh/dw_dim_schema.json",
 			"STG_CREATE_JSON": "config/hs_uoh/dw_stg_schema.json",
 			"JSON_FACT_LOAD": "config/hs_uoh/dw_fact_schema.json"
