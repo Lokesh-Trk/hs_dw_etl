@@ -1,17 +1,8 @@
 import os
-# DB_CONFIG = {
-# "host": "localhost",
-# "user": "dw_user",
-# "passwd": "d33W$er99",
-# "staging_db": "healthscore_stg",
-# "dw_db":"healthscore_dw",
-# "port":"3306",
-# "auth_plugin":"mysql_native_password"
-# }
 DB_CONFIG = {
 "host": "localhost",
 "user": "dw_user",
-"passwd": "dWy00$er",
+"passwd": "d33W$er99",
 "staging_db": "healthscore_stg",
 "dw_db":"healthscore_dw",
 "port":"3306",
