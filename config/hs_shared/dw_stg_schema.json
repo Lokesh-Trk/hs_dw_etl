@@ -285,7 +285,7 @@
 		},
 		{
 			"tablename": "hs_health_assessment_scale_result_items_master",
-			"fields": " assessment_scale_result_item_id bigint(11), ref_component_id bigint(11), ref_display_txt varchar(300), component_reference_range_txt varchar(2000), result_type_id int(11), health_assessment_scale_id int(11), default_value_txt varchar(1000), sequence_no int(11), sub_items varchar(500), active_flg tinyint(1), created_by varchar(45), modified_by varchar(45), created_ts datetime, modified_ts datetime"
+			"fields": " assessment_scale_result_item_id bigint(11), ref_component_id bigint(11), ref_display_txt varchar(300), component_reference_range_txt varchar(2000), result_type_id int(11), health_assessment_scale_id int(11), default_value_txt varchar(1000), row_no int(11), sub_items varchar(500), active_flg tinyint(1), created_by varchar(45), modified_by varchar(45), created_ts datetime, modified_ts datetime"
 		},
 		{
 			"tablename": "hs_hospital_primary_dept_master",
