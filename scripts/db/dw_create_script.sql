@@ -991,4 +991,6 @@ CREATE TABLE healthscore_dw.fact_patient_careplan_execution_details (
  UNIQUE KEY uk_patient_careplan_execution(careplan_instruction_details_id)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
- 
+ -- To be executed as of 19/04/2021 HS5-556 Online Consultation amounts not showing in reports chnages --
+ ALTER TABLE healthscore_dw.dim_bill_items ADD COLUMN item_pseudo_unit_amt DECIMAL(10,2) NOT NULL DEFAULT 0 ;
+ ALTER TABLE healthscore_dw.fact_patient_visitbillitems ADD COLUMN item_pseudo_unit_amt DECIMAL(10,2) NOT NULL DEFAULT 0 ;
