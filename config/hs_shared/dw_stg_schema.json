@@ -43,7 +43,7 @@
 		},
 		{
 			"tablename": "hs_hospital_package_mapped_items_master",
-			"fields": "package_mapped_item_id int(11) NOT NULL, package_master_id int(11) DEFAULT NULL, bill_item_cd varchar(45) DEFAULT NULL, total_count int(11) DEFAULT NULL, active_flg tinyint(1) DEFAULT NULL, created_by varchar(45) DEFAULT NULL, created_ts datetime DEFAULT NULL, modified_by varchar(45) DEFAULT NULL, modified_ts datetime DEFAULT NULL, consultation_type_id int(11) DEFAULT NULL, hospital_staff_id int(11) DEFAULT NULL, product_master_id int(11) DEFAULT '0'",
+			"fields": "package_mapped_item_id int(11) NOT NULL, package_master_id int(11) DEFAULT NULL, bill_item_cd varchar(45) DEFAULT NULL, total_count int(11) DEFAULT NULL, active_flg tinyint(1) DEFAULT NULL, created_by varchar(45) DEFAULT NULL, created_ts datetime DEFAULT NULL, modified_by varchar(45) DEFAULT NULL, modified_ts datetime DEFAULT NULL, consultation_type_id int(11) DEFAULT NULL, hospital_staff_id int(11) DEFAULT NULL, product_master_id int(11) DEFAULT '0',item_pseudo_unit_amt DECIMAL(10,2) NOT NULL DEFAULT 0",
 			"primary_key": "package_mapped_item_id"
 		},
 		{
@@ -179,7 +179,7 @@
 		},
 		{
 			"tablename": "hs_patient_package_mapped_item_details",
-			"fields": "patient_mapped_item_id int(11) NOT NULL,  patient_package_master_id int(11) DEFAULT NULL,  bill_item_cd varchar(45) DEFAULT NULL,  total_count int(11) DEFAULT NULL,  used_count int(11) DEFAULT NULL,  available_count int(11) DEFAULT NULL,  active_flg tinyint(1) DEFAULT NULL,  created_by varchar(45) DEFAULT NULL,  created_ts datetime DEFAULT NULL,  modified_by varchar(45) DEFAULT NULL,  modified_ts datetime DEFAULT NULL,  consultation_type_id int(11) DEFAULT NULL,  hospital_staff_id int(11) DEFAULT NULL,  product_master_id bigint(20) DEFAULT '0',  stock_batch_number varchar(45) DEFAULT NULL",
+			"fields": "patient_mapped_item_id int(11) NOT NULL,  patient_package_master_id int(11) DEFAULT NULL,  bill_item_cd varchar(45) DEFAULT NULL,  total_count int(11) DEFAULT NULL,  used_count int(11) DEFAULT NULL,  available_count int(11) DEFAULT NULL,  active_flg tinyint(1) DEFAULT NULL,  created_by varchar(45) DEFAULT NULL,  created_ts datetime DEFAULT NULL,  modified_by varchar(45) DEFAULT NULL,  modified_ts datetime DEFAULT NULL,  consultation_type_id int(11) DEFAULT NULL,  hospital_staff_id int(11) DEFAULT NULL,  product_master_id bigint(20) DEFAULT '0',  stock_batch_number varchar(45) DEFAULT NULL,item_pseudo_unit_amt DECIMAL(10,2) NOT NULL DEFAULT 0",
 			"primary_key": "patient_mapped_item_id"
 		},
 		{
@@ -199,7 +199,7 @@
 		},
 		{
 			"tablename": "hs_patient_visit_bill_items",
-			"fields": "visit_bill_item_id bigint(50) NOT NULL ,  visit_bill_id bigint(50) NOT NULL,  bill_item_id bigint(50) DEFAULT NULL,  bill_item_cd varchar(45) DEFAULT NULL,  con_charge_id bigint(50) DEFAULT NULL,  bill_item_qty int(11) NOT NULL DEFAULT '1',  bill_item_unit_amt decimal(10,2) NOT NULL,  bill_item_total_concession_amt decimal(10,2) DEFAULT NULL,  bill_item_final_amt decimal(10,2) NOT NULL,  bill_item_receipt_cd varchar(45) DEFAULT NULL,  active_flg tinyint(1) NOT NULL DEFAULT '1',  pharmacy_item tinyint(1) NOT NULL DEFAULT '0',  created_ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,  created_by varchar(45) NOT NULL,  modified_by varchar(45) DEFAULT NULL,  modified_ts timestamp NULL DEFAULT NULL,  payment_method_id int(11) DEFAULT NULL,  payment_comments varchar(105) DEFAULT NULL,  adj_comments varchar(105) DEFAULT NULL,  prior_visit_bill_id bigint(50) DEFAULT NULL,  approved_by_user_id int(11) DEFAULT NULL,  tax_type_id int(11) DEFAULT NULL,  bill_item_total_tax decimal(10,2) DEFAULT NULL,  stock_batch_id int(11) DEFAULT NULL,  care_plan_instruction_id bigint(20) DEFAULT NULL,  non_editable_comments varchar(150) DEFAULT NULL,  patient_mapped_item_id int(11) DEFAULT NULL,  returned_qty int(11) DEFAULT NULL",
+			"fields": "visit_bill_item_id bigint(50) NOT NULL ,  visit_bill_id bigint(50) NOT NULL,  bill_item_id bigint(50) DEFAULT NULL,  bill_item_cd varchar(45) DEFAULT NULL,  con_charge_id bigint(50) DEFAULT NULL,  bill_item_qty int(11) NOT NULL DEFAULT '1',  bill_item_unit_amt decimal(10,2) NOT NULL,  bill_item_total_concession_amt decimal(10,2) DEFAULT NULL,  bill_item_final_amt decimal(10,2) NOT NULL,  bill_item_receipt_cd varchar(45) DEFAULT NULL,  active_flg tinyint(1) NOT NULL DEFAULT '1',  pharmacy_item tinyint(1) NOT NULL DEFAULT '0',  created_ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,  created_by varchar(45) NOT NULL,  modified_by varchar(45) DEFAULT NULL,  modified_ts timestamp NULL DEFAULT NULL,  payment_method_id int(11) DEFAULT NULL,  payment_comments varchar(105) DEFAULT NULL,  adj_comments varchar(105) DEFAULT NULL,  prior_visit_bill_id bigint(50) DEFAULT NULL,  approved_by_user_id int(11) DEFAULT NULL,  tax_type_id int(11) DEFAULT NULL,  bill_item_total_tax decimal(10,2) DEFAULT NULL,  stock_batch_id int(11) DEFAULT NULL,  care_plan_instruction_id bigint(20) DEFAULT NULL,  non_editable_comments varchar(150) DEFAULT NULL,  patient_mapped_item_id int(11) DEFAULT NULL,  returned_qty int(11) DEFAULT NULL,item_pseudo_unit_amt DECIMAL(10,2) DEFAULT 0",
 			"primary_key": "visit_bill_item_id"
 		},
 		{
