@@ -159,8 +159,8 @@
 		},
 		{
 			"tablename": "hs_patient_family_history_details",
-			"fields": "patient_id bigint(50) NOT NULL,  family_relative_ref_id bigint(50) NOT NULL DEFAULT '0',  family_relative_ref_display_txt varchar(4000) DEFAULT NULL,  family_history_ref_id bigint(50) NOT NULL,  family_history_ref_display_txt varchar(1000) NOT NULL,  history_since_dt datetime DEFAULT NULL,  created_patient_visit_id bigint(50) DEFAULT NULL,  active_flg tinyint(1) DEFAULT '1',  created_by varchar(45) DEFAULT NULL,  modified_by varchar(45) DEFAULT NULL,  created_ts datetime DEFAULT CURRENT_TIMESTAMP,  modified_ts datetime DEFAULT NULL",
-			"primary_key": "patient_id,family_relative_ref_id,family_history_ref_id"
+			"fields": "hs_patient_family_history_details_id BIGINT(11) NOT NULL, patient_id bigint(50) NOT NULL,  family_relative_ref_id bigint(50) NOT NULL DEFAULT '0',  family_relative_ref_display_txt varchar(4000) DEFAULT NULL,  family_history_ref_id bigint(50) NOT NULL,  family_history_ref_display_txt varchar(1000) NOT NULL,  history_since_dt datetime DEFAULT NULL,  created_patient_visit_id bigint(50) DEFAULT NULL,  active_flg tinyint(1) DEFAULT '1',  created_by varchar(45) DEFAULT NULL,  modified_by varchar(45) DEFAULT NULL,  created_ts datetime DEFAULT CURRENT_TIMESTAMP,  modified_ts datetime DEFAULT NULL",
+			"primary_key": "hs_patient_family_history_details_id"
 		},
 		{
 			"tablename": "hs_patient_medical_summary_details",
@@ -184,8 +184,8 @@
 		},
 		{
 			"tablename": "hs_patient_past_history_details",
-			"fields": "patient_id bigint(50) NOT NULL,  past_history_ref_id bigint(50) NOT NULL,  past_history_ref_display_txt varchar(4000) NOT NULL,  history_since_dt datetime DEFAULT NULL,  created_patient_visit_id bigint(50) DEFAULT NULL,  hospital_id int(11) DEFAULT NULL,  hospital_nm varchar(45) DEFAULT NULL,  doctor_cd varchar(45) DEFAULT NULL,  location_id int(11) DEFAULT NULL,  location_nm varchar(45) DEFAULT NULL,  active_flg tinyint(1) DEFAULT '1',  created_by varchar(45) DEFAULT NULL,  modified_by varchar(45) DEFAULT NULL,  created_ts datetime DEFAULT CURRENT_TIMESTAMP,  modified_ts datetime DEFAULT NULL,  comments varchar(2000) DEFAULT NULL",
-			"primary_key": "patient_id,past_history_ref_id"
+			"fields": "hs_patient_past_history_details_id BIGINT(11) NOT NULL,patient_id bigint(50) NOT NULL,  past_history_ref_id bigint(50) NOT NULL,  past_history_ref_display_txt varchar(4000) NOT NULL,  history_since_dt datetime DEFAULT NULL,  created_patient_visit_id bigint(50) DEFAULT NULL,  hospital_id int(11) DEFAULT NULL,  hospital_nm varchar(45) DEFAULT NULL,  doctor_cd varchar(45) DEFAULT NULL,  location_id int(11) DEFAULT NULL,  location_nm varchar(45) DEFAULT NULL,  active_flg tinyint(1) DEFAULT '1',  created_by varchar(45) DEFAULT NULL,  modified_by varchar(45) DEFAULT NULL,  created_ts datetime DEFAULT CURRENT_TIMESTAMP,  modified_ts datetime DEFAULT NULL,  comments varchar(2000) DEFAULT NULL",
+			"primary_key": "hs_patient_past_history_details_id"
 		},
 		{
 			"tablename": "hs_patient_schedule_master",
