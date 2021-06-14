@@ -1,12 +1,4 @@
-DROP VIEW IF EXISTS healthscore_dw.suvitas_bill_items_master_view;
-CREATE VIEW healthscore_dw.suvitas_bill_items_master_view
-as select dbi.hospital_key, bill_item_type,bill_item_category_cd,bill_item_category_nm,bill_item_category_desc,bill_item_cd,bill_item_nm,bill_item_amt,transaction_type_cd,pkg_effective_from_ts,pkg_effective_to_ts
-,renewal_item_flg,effective_from_ts,effective_to_ts,rate_category_nm,dbi.active_flg
- from healthscore_dw.dim_bill_items dbi
-join healthscore_dw.dim_hospital dh
-on dbi.hospital_key = dh.hospital_key
-where hospital_cd in ('SUVH','SUVB','SUVV')
-;
+
  
 DROP VIEW IF EXISTS healthscore_dw.suvitas_hospital_master_view;
 CREATE VIEW healthscore_dw.suvitas_hospital_master_view
@@ -92,6 +84,7 @@ SELECT  patient_visitbillitem_key,fvbi.bill_item_key,vbi_date_key AS transaction
 bill_item_receipt_cd,bill_item_total_tax,pharmacy_item_flg,vbi_created_ts,vbv.patient_key,vbv.visit_hospital_key,vbv.patient_visit_key,visit_bill_cd,visit_bill_from_ts,visit_bill_to_ts,visit_bill_comments,visit_bill_created_ts,
 case when bill_item_cd = 'PYR' then bill_item_final_amt else 0 end as payment_amt,
 case when bill_item_cd = 'PRF' then bill_item_final_amt else 0 end as refund_amt,
+case when bill_item_cd = 'WAIV' then bill_item_final_amt else 0 end as waived_amt,
 case when bill_item_receipt_cd is null then bill_item_final_amt else 0 end as bill_amt,
 payment_method_desc
 FROM healthscore_dw.fact_patient_visitbillitems fvbi
