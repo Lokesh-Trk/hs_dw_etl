@@ -382,6 +382,10 @@
 		{			
 			"tablename": "hs_patient_visit_progress_timeline_notes",
 			"fields": "progress_timeline_note_id bigint(11) NOT NULL, progress_timeline_note_desc varchar(4000), patient_visit_id bigint(11), active_flg tinyint(1), notify_doctor_cd varchar(400), read_by TEXT, created_ts datetime, modified_ts datetime, created_by varchar(45), modified_by varchar(45)"
-		}
+		},
+		{
+			"tablename": "vw_patient_visit_unbilled_consumables",
+			"fields":"hospital_master_id bigint(20),patient_visit_id bigint(50),unbilled_consumables_amt double"
+		}	
 	]
 }
