@@ -345,7 +345,7 @@
 		},
 		{
 			"tablename": "vw_patient_active_visits",
-			"fields": " as_of_date datetime,hospital_id bigint(50),patient_visit_id bigint(50) DEFAULT NULL,  ward_nm varchar(45) NOT NULL,daily_rate decimal(10,2) DEFAULT NULL,billed_days int(11),admitted_days int(11), total_paid_amt decimal(10,2), total_billed_amt decimal(12,2),total_refund_amt decimal(10,2),total_waived_amt decimal(10,2),unbilled_consumable decimal(10,2),unbilled_canteen decimal(10,2),bill_balance_amt decimal(10,2)"
+			"fields": " as_of_date datetime,hospital_id bigint(50),patient_visit_id bigint(50) DEFAULT NULL,  ward_nm varchar(45) NOT NULL,daily_rate decimal(10,2) DEFAULT NULL,billed_days int(11),admitted_days int(11), total_paid_amt decimal(10,2), total_billed_amt decimal(12,2),total_refund_amt decimal(10,2),total_waived_amt decimal(10,2),unbilled_consumable decimal(10,2),unbilled_canteen decimal(10,2),bill_balance_amt decimal(10,2),critical_flg tinyint(1)"
 		},
 		{
 			"tablename": "vw_patient_visit_spl_admission_details",
