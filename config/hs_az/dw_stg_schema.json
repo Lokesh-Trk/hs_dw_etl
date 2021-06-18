@@ -377,7 +377,7 @@
 		},					
 		{			
 			"tablename": "vw_patient_visit_progress_timeline_notes",
-			"fields": "progress_timeline_note_id bigint(11) NOT NULL, progress_timeline_note_desc varchar(4000), patient_visit_id bigint(11), active_flg tinyint(1),note_hashtag_nm TEXT, created_ts datetime, modified_ts datetime, created_by varchar(45), modified_by varchar(45), hospital_id bigint(11)"
+			"fields": "progress_timeline_note_id bigint(11) NOT NULL, progress_timeline_note_desc varchar(4000), patient_visit_id bigint(11), active_flg tinyint(1),note_hashtag_nm TEXT,created_by varchar(45), created_ts datetime, modified_by varchar(45),modified_ts datetime, hospital_id bigint(11)"
 		},
 		{
 			"tablename": "vw_patient_visit_unbilled_consumables",
