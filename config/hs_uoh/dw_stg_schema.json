@@ -373,7 +373,7 @@
 		},
 		{			
 			"tablename": "vw_patient_visit_progress_timeline_events",
-			"fields": "patient_visit_progress_timeline_event_id bigint(11) NOT NULL, patient_visit_id bigint(11), event_title varchar(45), event_desc varchar(4000),active_flg tinyint(1), careplan_activity_id int(11), careplan_activity_status_id int(11), careplan_activity_milestone_flg tinyint(1), created_ts datetime, modified_ts datetime,created_by varchar(45), modified_by varchar(45),hospital_id bigint(11), status_nm varchar(45)"
+			"fields": "patient_visit_progress_timeline_event_id bigint(11) NOT NULL, patient_visit_id bigint(11), event_title varchar(45), event_desc varchar(4000),active_flg tinyint(1), careplan_activity_id int(11), careplan_activity_status_id int(11), careplan_activity_milestone_flg tinyint(1), created_ts datetime, modified_ts datetime,created_by varchar(45), modified_by varchar(45),hospital_id bigint(11), status_nm varchar(45),care_plan_id bigint(20)"
 		},				
 		{			
 			"tablename": "vw_patient_visit_progress_timeline_notes",
