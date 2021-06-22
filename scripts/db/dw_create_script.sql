@@ -995,6 +995,7 @@ CREATE TABLE healthscore_dw.fact_patient_careplan_execution_details (
  ALTER TABLE healthscore_dw.dim_bill_items ADD COLUMN item_pseudo_unit_amt DECIMAL(10,2) NOT NULL DEFAULT 0 ;
  ALTER TABLE healthscore_dw.fact_patient_visitbillitems ADD COLUMN item_pseudo_unit_amt DECIMAL(10,2) NOT NULL DEFAULT 0 ;
 
+-- To be executed as of 03/06/2021 HS5-478 changes
 DROP TABLE IF EXISTS healthscore_dw.fact_patient_timeline_info;
 CREATE TABLE healthscore_dw.fact_patient_timeline_info (
   patient_timeline_info_key int(11) NOT NULL AUTO_INCREMENT,
@@ -1003,15 +1004,16 @@ CREATE TABLE healthscore_dw.fact_patient_timeline_info (
   created_staff_key int(11) ,
   progress_timeline_id bigint(11) not null,
   timeline_info_type_cd varchar(100) NOT NULL,   --  note, event
-  timeline_info_hashtag_category varchar(100) NOT NULL,  
+  timeline_info_hashtag_category varchar(100) NULL,  
   timeline_info_desc varchar(4000), 
   patient_careplan_instruction_key bigint(20)  NULL ,
   patient_careplan_key int(11) null,
   careplan_instruction_master_key int(11)  NULL , 
   careplan_activity_milestone_flg tinyint(1) NULL,
   careplan_activity_status varchar(45),
-  ptl_event_created_ts datetime,
-  ptl_event_modified_ts datetime,
+  timeline_info_created_ts datetime,
+  timeline_info_modified_ts datetime,
+  active_flg tinyint(1) DEFAULT NULL,
   source_cd varchar(50) NOT NULL,
   etl_load_id int(11) NOT NULL,
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
