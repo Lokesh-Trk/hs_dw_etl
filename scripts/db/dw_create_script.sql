@@ -994,3 +994,57 @@ CREATE TABLE healthscore_dw.fact_patient_careplan_execution_details (
  -- To be executed as of 19/04/2021 HS5-556 Online Consultation amounts not showing in reports chnages --
  ALTER TABLE healthscore_dw.dim_bill_items ADD COLUMN item_pseudo_unit_amt DECIMAL(10,2) NULL DEFAULT 0 ;
  ALTER TABLE healthscore_dw.fact_patient_visitbillitems ADD COLUMN item_pseudo_unit_amt DECIMAL(10,2)  NULL DEFAULT 0 ;
+ 
+-- To be executed as of 03/06/2021 HS5-478 changes
+DROP TABLE IF EXISTS healthscore_dw.fact_patient_timeline_info;
+CREATE TABLE healthscore_dw.fact_patient_timeline_info (
+  patient_timeline_info_key int(11) NOT NULL AUTO_INCREMENT,
+  patient_key int(11) NOT NULL,
+  patient_visit_key int(11) NOT NULL,
+  created_staff_key int(11) ,
+  progress_timeline_id bigint(11) not null,
+  timeline_info_type_cd varchar(100) NOT NULL,   --  note, event
+  timeline_info_hashtag_category varchar(100) NULL,  
+  timeline_info_desc varchar(4000), 
+  patient_careplan_instruction_key bigint(20)  NULL ,
+  patient_careplan_key int(11) null,
+  careplan_instruction_master_key int(11)  NULL , 
+  careplan_activity_milestone_flg tinyint(1) NULL,
+  careplan_activity_status varchar(45),
+  timeline_info_created_ts datetime,
+  timeline_info_modified_ts datetime,
+  active_flg tinyint(1) DEFAULT NULL,
+  source_cd varchar(50) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (patient_timeline_info_key),
+  UNIQUE KEY uk_patient_timeline_info(patient_key,timeline_info_type_cd,progress_timeline_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+ DROP TABLE IF EXISTS healthscore_dw.dim_external_hospital_staff;
+CREATE TABLE healthscore_dw.dim_external_hospital_staff (
+  external_hospital_staff_key int(11) NOT NULL AUTO_INCREMENT,
+  hospital_key int(11) NOT NULL ,
+  ext_doctor_id int(11) NOT NULL,
+  external_hospital_nm varchar(200) NOT NULL,
+  external_doctor_nm varchar(100) DEFAULT NULL,  
+  external_doctor_dept_nm  varchar(45) DEFAULT NULL, 
+  email_id varchar(100) DEFAULT NULL,
+  mobile_no varchar(45) DEFAULT NULL,
+  country_cd varchar(6) DEFAULT NULL,
+  active_flg tinyint(1) DEFAULT NULL,
+  source_cd varchar(50) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,	
+  PRIMARY KEY (external_hospital_staff_key),
+  UNIQUE KEY `udx_external_hospital` (`ext_doctor_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE healthscore_dw.fact_active_visits
+ADD COLUMN critical_flg TINYINT(1) NULL DEFAULT 0;
+
+ALTER TABLE `healthscore_dw`.`fact_patient_visits` 
+CHANGE COLUMN `primary_doctor_staff_key` `primary_ext_doctor_staff_key` INT(11) NULL DEFAULT NULL , 
+CHANGE COLUMN `reference_doctor_staff_key` `reference_ext_doctor_staff_key` INT(11) NULL DEFAULT NULL ;
