@@ -1,12 +1,4 @@
-DROP VIEW IF EXISTS healthscore_dw.suvitas_bill_items_master_view;
-CREATE VIEW healthscore_dw.suvitas_bill_items_master_view
-as select dbi.hospital_key, bill_item_type,bill_item_category_cd,bill_item_category_nm,bill_item_category_desc,bill_item_cd,bill_item_nm,bill_item_amt,transaction_type_cd,pkg_effective_from_ts,pkg_effective_to_ts
-,renewal_item_flg,effective_from_ts,effective_to_ts,rate_category_nm,dbi.active_flg
- from healthscore_dw.dim_bill_items dbi
-join healthscore_dw.dim_hospital dh
-on dbi.hospital_key = dh.hospital_key
-where hospital_cd in ('SUVH','SUVB','SUVV')
-;
+
  
 DROP VIEW IF EXISTS healthscore_dw.suvitas_hospital_master_view;
 CREATE VIEW healthscore_dw.suvitas_hospital_master_view
@@ -54,7 +46,7 @@ from
 
    DROP VIEW IF EXISTS healthscore_dw.suvitas_patient_visit_view;
 CREATE VIEW healthscore_dw.suvitas_patient_visit_view as
-select fpv.patient_visit_key,fpv.patient_key,fpv.visit_hospital_key as hospital_key,visit_date_key,visit_time_key,patient_visit_cd,visit_doctor_staff_key,primary_doctor_staff_key,reference_doctor_staff_key,checkin_ts,checkout_ts,checkout_type, delivery_ts, outcome_type, condition_at_discharge, discharge_ts,case when visit_type = 1 then 'IN' else 'OUT' end as visit_type,visit_reason, visit_rate_category_nm, visit_ip_nbr,admission_method, cancel_reason, ward_nm, referral_source
+select fpv.patient_visit_key,fpv.patient_key,fpv.visit_hospital_key as hospital_key,visit_date_key,visit_time_key,patient_visit_cd,visit_doctor_staff_key,primary_ext_doctor_staff_key,reference_ext_doctor_staff_key,checkin_ts,checkout_ts,checkout_type, delivery_ts, outcome_type, condition_at_discharge, discharge_ts,case when visit_type = 1 then 'IN' else 'OUT' end as visit_type,visit_reason, visit_rate_category_nm, visit_ip_nbr,admission_method, cancel_reason, ward_nm, referral_source
 ,(case when pm.first_visit_date = date(fpv.checkin_ts) then 1 else 0 end) as first_visit_flg
 , round(datediff(fpv.checkin_ts,pm.patient_birth_dt)/365,2) age_at_visit
 , fpva.visit_diagnosis, fpva.prev_hospital_duration_of_stay,fpva.spl_req 
@@ -92,6 +84,7 @@ SELECT  patient_visitbillitem_key,fvbi.bill_item_key,vbi_date_key AS transaction
 bill_item_receipt_cd,bill_item_total_tax,pharmacy_item_flg,vbi_created_ts,vbv.patient_key,vbv.visit_hospital_key,vbv.patient_visit_key,visit_bill_cd,visit_bill_from_ts,visit_bill_to_ts,visit_bill_comments,visit_bill_created_ts,
 case when bill_item_cd = 'PYR' then bill_item_final_amt else 0 end as payment_amt,
 case when bill_item_cd = 'PRF' then bill_item_final_amt else 0 end as refund_amt,
+case when bill_item_cd = 'WAI' then bill_item_final_amt else 0 end as waived_amt,
 case when bill_item_receipt_cd is null then bill_item_final_amt else 0 end as bill_amt,
 payment_method_desc
 FROM healthscore_dw.fact_patient_visitbillitems fvbi
