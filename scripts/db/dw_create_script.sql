@@ -992,9 +992,9 @@ CREATE TABLE healthscore_dw.fact_patient_careplan_execution_details (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
  -- To be executed as of 19/04/2021 HS5-556 Online Consultation amounts not showing in reports chnages --
- ALTER TABLE healthscore_dw.dim_bill_items ADD COLUMN item_pseudo_unit_amt DECIMAL(10,2) NULL DEFAULT 0 ;
+ ALTER TABLE healthscore_dw.dim_bill_items ADD COLUMN item_pseudo_unit_amt DECIMAL(10,2)  NULL DEFAULT 0 ;
  ALTER TABLE healthscore_dw.fact_patient_visitbillitems ADD COLUMN item_pseudo_unit_amt DECIMAL(10,2)  NULL DEFAULT 0 ;
- 
+
 -- To be executed as of 03/06/2021 HS5-478 changes
 DROP TABLE IF EXISTS healthscore_dw.fact_patient_timeline_info;
 CREATE TABLE healthscore_dw.fact_patient_timeline_info (
@@ -1048,3 +1048,8 @@ ADD COLUMN critical_flg TINYINT(1) NULL DEFAULT 0;
 ALTER TABLE `healthscore_dw`.`fact_patient_visits` 
 CHANGE COLUMN `primary_doctor_staff_key` `primary_ext_doctor_staff_key` INT(11) NULL DEFAULT NULL , 
 CHANGE COLUMN `reference_doctor_staff_key` `reference_ext_doctor_staff_key` INT(11) NULL DEFAULT NULL ;
+
+
+-- to be executed as of 14-07-2021-- from below
+
+ALTER TABLE healthscore_dw.fact_patient_assessments MODIFY health_assessment_scale_desc varchar(255);

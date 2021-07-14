@@ -277,7 +277,7 @@
 		},
 		{
 			"tablename": "hs_health_assessment_scale_master",
-			"fields": "health_assessment_scale_id int(11), health_assessment_scale_desc varchar(50), dept_id int(11), report_type varchar(45), active_flg tinyint(1), created_by varchar(45), modified_by varchar(45), created_ts datetime, modified_ts datetime, assessment_scale_type_id int(11), display_seq_no int(11), hospital_id int(11)"
+			"fields": "health_assessment_scale_id int(11), health_assessment_scale_desc varchar(255), dept_id int(11), report_type varchar(45), active_flg tinyint(1), created_by varchar(45), modified_by varchar(45), created_ts datetime, modified_ts datetime, assessment_scale_type_id int(11), display_seq_no int(11), hospital_id int(11)"
 		},
 		{
 			"tablename": "hs_health_assessment_scale_result_items_master",
