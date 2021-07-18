@@ -1053,3 +1053,30 @@ CHANGE COLUMN `reference_doctor_staff_key` `reference_ext_doctor_staff_key` INT(
 -- to be executed as of 14-07-2021-- from below
 
 ALTER TABLE healthscore_dw.fact_patient_assessments MODIFY health_assessment_scale_desc varchar(255);
+
+-- Function to remove HTML Tags from text
+ SET GLOBAL log_bin_trust_function_creators=1;
+ use healthscore_dw;
+ 
+DROP FUNCTION IF EXISTS fnStripTags;
+DELIMITER |
+CREATE FUNCTION healthscore_dw.fnStripTags( htmlRichText LONGTEXT )
+RETURNS LONGTEXT
+DETERMINISTIC 
+BEGIN
+  DECLARE iStart, iEnd, iLength int;
+    WHILE Locate( '<', htmlRichText ) > 0 And Locate( '>', htmlRichText, Locate( '<', htmlRichText )) > 0 DO
+      BEGIN
+        SET iStart = Locate( '<', htmlRichText ), iEnd = Locate( '>', htmlRichText, Locate('<', htmlRichText ));
+        SET iLength = ( iEnd - iStart) + 1;
+        IF iLength > 0 THEN
+          BEGIN
+            SET htmlRichText = Insert( htmlRichText, iStart, iLength, ' ');
+          END;
+        END IF;
+      END;
+    END WHILE;
+    RETURN htmlRichText;
+END;
+|
+DELIMITER ;
