@@ -1080,3 +1080,9 @@ BEGIN
 END;
 |
 DELIMITER ;
+
+-- to be executed as of 04-08-2021 from below
+
+ALTER TABLE healthscore_dw.fact_patient_assessments
+ADD COLUMN assessment_scale_master_id bigint(50) not null default 0,
+ADD COLUMN assessment_scale_item_master_id bigint(50) NOT NULL default 0;
