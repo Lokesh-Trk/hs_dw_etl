@@ -259,11 +259,13 @@
 		},
 		{
 			"tablename": "hs_patient_assessment",
-			"fields": " hs_patient_assessment_id bigint(50), health_assessment_scale_id bigint(50), patient_visit_id bigint(50), visit_note_id bigint(50), patient_id bigint(50), hospital_id int(11), hospital_staff_id int(11), visit_assessment_status_flg tinyint(2), deactivation_comment varchar(3000), assessed_ts datetime, created_ts timestamp , created_by varchar(45), modified_by varchar(45), modified_ts timestamp, active_flg tinyint(1)"
+			"fields": "hs_patient_assessment_id bigint(50) NOT NULL,  health_assessment_scale_id bigint(50) NOT NULL,  patient_visit_id bigint(50) NOT NULL,  visit_note_id bigint(50) DEFAULT NULL,  patient_id bigint(50) NOT NULL,  hospital_id int(11) NOT NULL,  hospital_staff_id int(11) NOT NULL,  visit_assessment_status_flg tinyint(2) NOT NULL,  deactivation_comment varchar(200) DEFAULT NULL,  assessed_ts datetime DEFAULT NULL,  created_ts timestamp NOT NULL,  created_by varchar(45) NOT NULL,  modified_by varchar(45) DEFAULT NULL,  modified_ts timestamp NULL DEFAULT NULL,  active_flg tinyint(1) NOT NULL DEFAULT '1'",
+			"primary_key": "hs_patient_assessment_id"
 		},
 		{
 			"tablename": "hs_patient_assessment_scale_results",
-			"fields": "hs_patient_assessment_scale_result_id bigint(50), hs_patient_assessment_id bigint(50), assessment_scale_result_item_id bigint(11), assessment_scale_result_value varchar(2000), created_ts timestamp, created_by varchar(45), modified_by varchar(45), modified_ts timestamp , active_flg tinyint(1)"
+			"fields": " hs_patient_assessment_scale_result_id bigint(50) NOT NULL,  hs_patient_assessment_id bigint(50) NOT NULL,  assessment_scale_result_item_id bigint(11) NOT NULL,  assessment_scale_result_value varchar(2000) DEFAULT NULL,  created_ts timestamp NOT NULL,  created_by varchar(45) NOT NULL,  modified_by varchar(45) DEFAULT NULL,  modified_ts timestamp NULL DEFAULT NULL,  active_flg tinyint(1) NOT NULL DEFAULT '1'",
+			"primary_key": "hs_patient_assessment_scale_result_id"
 		},
 		{
 			"tablename": "hs_health_assessment_scale_master",
