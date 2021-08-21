@@ -1,25 +1,13 @@
 {
-"database": "healthscore_stg",
-"create_table_info":[
-  {
-  "tablename":"hs_patient_order_details",
-  "fields": "patient_order_id bigint(50) NOT NULL , patient_order_uuid varchar(255) ,payment_gateway_order_id varchar(255) ,patient_event_details_id bigint(50) NOT NULL,bill_item_cd varchar(45) NOT NULL,bill_amt double ,convenience_amt double,bill_item_qty int(11),total_amt double,bill_item_nm varchar(400) NOT NULL,package_flg tinyint(1) NOT NULL ,app_bill_flg tinyint(1) NOT NULL ,razorpay_tranfer_flg tinyint(1) NOT NULL ,app_patient_id bigint(50) NOT NULL,payment_status_master_id int(11) NOT NULL,active_flg tinyint(1) NOT NULL ,created_by varchar(45) ,modified_by varchar(45) ,created_ts datetime ,modified_ts datetime ",
-  "primary_key":"patient_order_id"
-  },
-  {
-  "tablename":"hs_patient_payment_status_master",
-  "fields": "payment_status_master_id int(11) NOT NULL ,payment_status_cd varchar(45) NOT NULL,payment_status_nm varchar(400) NOT NULL,active_flg tinyint(1) NOT NULL ,created_by varchar(45) ,modified_by varchar(45) ,created_ts datetime ,modified_ts datetime ",
-  "primary_key":"payment_status_master_id"
-  },
-  {
-  "tablename":"hs_patient_demographics",
-  "fields": "app_patient_id bigint(50) NOT NULL , oauth_user_id bigint(50) ,patient_unique_id varchar(100) , patient_unique_id_type varchar(20) ,patient_nm varchar(120) NOT NULL,patient_first_nm varchar(120) NOT NULL,patient_middle_nm varchar(120) ,patient_last_nm varchar(120) NOT NULL,birth_dt datetime NOT NULL,hospital_cd varchar(45) NOT NULL,hospital_patient_cd varchar(200),rate_category_nm varchar(45) ,patient_img_url varchar(200),gender varchar(12) NOT NULL,patient_mother_nm varchar(100) NOT NULL ,blood_group_display_nm varchar(45) ,patient_contact_id int(11) NOT NULL,active_flg tinyint(1) NOT NULL ,created_by varchar(45) ,modified_by varchar(45) ,created_ts datetime ,modified_ts datetime ",
-  "primary_key":"app_patient_id"
-  },
-  {
-  "tablename":"hs_patient_contact_details",
-  "fields": "patient_contact_id int(11) NOT NULL ,email_id varchar(100) ,patient_addr_line1 varchar(200) ,patient_addr_line2 varchar(200) ,patient_addr_city_nm varchar(100) ,patient_addr_state_nm varchar(100) ,patient_addr_country_nm varchar(100) ,patient_addr_zip_code int(11),patient_mobile_phone_num varchar(45) ,patient_mobile_phone_country_cd varchar(5) ,patient_emerg_contact_name varchar(100) ,patient_emerg_contact_num varchar(45) ,active_flg tinyint(1) NOT NULL ,created_by varchar(45) ,modified_by varchar(45) ,created_ts datetime ,modified_ts datetime ",
-  "primary_key":"patient_contact_id"
-  }
- ]
+	"database": "healthscore_stg",
+	"create_table_info": [
+		{
+			"tablename": "vw_patient_payment_transactions",
+			"fields": "hospital_cd varchar(45) NOT NULL, hospital_patient_cd varchar(100), payment_method varchar(100), razorpay_payment_id varchar(100), created_ts datetime, modified_ts datetime, hospital_bill_amt DECIMAL(10,2), convenience_amt DECIMAL(10,2), razorpay_fee_including_tax_amt DECIMAL(10,2), razorpay_fee_tax_amt DECIMAL(10,2)"
+		},
+		{
+			"tablename": "vw_patient_statistics",
+			"fields": "hospital_cd varchar(45) NOT NULL, preferred_language varchar(100), registered_date datetime, total_patients int(11), subscribed_patients int(11), registered_patients int(11)"
+		}
+	]
 }

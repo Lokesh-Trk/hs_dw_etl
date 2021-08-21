@@ -1080,3 +1080,45 @@ BEGIN
 END;
 |
 DELIMITER ;
+
+
+-- 21/Aug/21
+
+
+DROP TABLE IF EXISTS healthscore_dw.fact_patient_app_payment_details;
+CREATE TABLE healthscore_dw.fact_patient_app_payment_details (
+  patient_app_payment_key int(11) NOT NULL AUTO_INCREMENT,
+  hospital_key int(11) NOT NULL ,
+  patient_key int(11) NOT NULL,
+  payment_method_cd varchar(100),
+  razorpay_payment_id varchar(100) NOT NULL, 
+  payment_created_ts datetime, 
+  payment_modified_ts datetime, 
+  hospital_bill_amt DECIMAL(10,2), 
+  convenience_amt DECIMAL(10,2), 
+  razorpay_fee_including_tax_amt DECIMAL(10,2), 
+  razorpay_fee_tax_amt DECIMAL(10,2),
+  source_cd varchar(50) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,	
+  PRIMARY KEY (patient_app_payment_key),
+  UNIQUE KEY `uk_fact_patient_app_payment` (`razorpay_payment_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.fact_patient_app_statistics;
+CREATE TABLE healthscore_dw.fact_patient_app_statistics (
+  patient_app_statistics_key int(11) NOT NULL AUTO_INCREMENT,
+  hospital_key int(11) NOT NULL ,
+  preferred_language varchar(100), 
+  registered_date datetime,
+  total_patient_count int(11),
+  subscribed_patient_count int(11),
+  registered_patient_count int(11),
+  source_cd varchar(50) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,	
+  PRIMARY KEY (patient_app_statistics_key),
+  UNIQUE KEY `uk_fact_patient_app_statistics` (hospital_key,preferred_language,registered_date)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;

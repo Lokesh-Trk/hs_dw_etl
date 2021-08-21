@@ -18,7 +18,7 @@ def start_etl(load_id,data_source_cd):
 	log_id = None
 	conn = None
 	sql = ""
-	
+	exclude_data_source = "myhsapp"
 
 	try:
 		# if previous load failed, get the same load id and data date range, else skip
@@ -30,11 +30,14 @@ def start_etl(load_id,data_source_cd):
 		conn = Connections.dw_db_connect()
 		cursor = conn.cursor()
 		target_database_nm, insert_fact_table_data = Load_Data.get_table_data(data_source_cd,'Staging_to_DW_Facts','insert')
+		
 	#	Insert new data created in the load date range
-		sql=f"SELECT hospital_key,hospital_cd from healthscore_dw.dim_hospital where source_cd='{data_source_cd}'"
+		sql=f"SELECT hospital_key,hospital_cd from healthscore_dw.dim_hospital where (source_cd='{data_source_cd}' or '{data_source_cd}' in ('{exclude_data_source}'))"
+	 
 		cursor.execute(sql)
 		hospital_data=cursor.fetchall()
-		ranges = get_ranges(hospital_data, insert_fact_table_data)
+		ranges = get_ranges(hospital_data, insert_fact_table_data) 
+		 
 		for h, t in product(*ranges):
 			table_name=f"{target_database_nm}.{insert_fact_table_data[t]['tablename']}"
 			if not Log.check_status(load_id,etl,insert_fact_table_data[t]["source_table"]+"-"+hospital_data[h][1]+".insert",table_name,"Completed"):
