@@ -15,8 +15,7 @@
 				"etl_stage0": "Staging_Refresh_DB",
 				"etl_stage1": "Staging_from_CSV",
 				"etl_stage2": "Staging_to_DW_Dimensions",
-				"etl_stage3": "Staging_to_DW_Facts",
-				"etl_stage4": "DW_to_Patient_app_Exports"
+				"etl_stage3": "Staging_to_DW_Facts"
 			}
 		},
 		{
@@ -67,7 +66,7 @@
 			"data_source_cd": "myhsapp",
 			"JSON_DIM_LOAD": "config/myhsapp/dw_dim_schema.json",
 			"STG_CREATE_JSON": "config/myhsapp/dw_stg_schema.json",
-			"JSON_FACT_LOAD": "config/hs_shared/dw_fact_schema.json"
+			"JSON_FACT_LOAD": "config/myhsapp/dw_fact_schema.json"
 		},
 		{
 			"data_source_cd": "hs_suvitas",
