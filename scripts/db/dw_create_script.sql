@@ -1090,7 +1090,7 @@ CREATE TABLE healthscore_dw.fact_patient_app_payment_details (
   patient_app_payment_key int(11) NOT NULL AUTO_INCREMENT,
   hospital_key int(11) NOT NULL ,
   patient_key int(11) NOT NULL,
-  payment_method_cd varchar(100),
+  payment_method_cd varchar(100) NOT NULL,
   razorpay_payment_id varchar(100) NOT NULL, 
   payment_created_ts datetime, 
   payment_modified_ts datetime, 
