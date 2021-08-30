@@ -1,23 +1,5 @@
 {
-  "database": "healthscore_dw",
-  "insert_table_info":[
-    {
-    "tablename":"dim_patient",
-    "priority":1,
-    "source_table":"hs_patient_demographics",
-    "fields":"patient_unique_id,patient_nm,patient_first_nm,patient_middle_nm,patient_last_nm,patient_gender,patient_birth_dt,patient_birth_ts,patient_death_ts,patient_mother_nm,patient_father_nm,blood_group,gestational_age_in_days,birth_weight_gms,created_by_staff_key,etl_load_id",
-    "insert_query":"SELECT src.patient_cd,dem.patient_nm,dem.patient_first_nm,dem.patient_middle_nm,dem.patient_last_nm,dem.gender,date(dem.birth_dt) as patient_birth_dt,dem.birth_dt as patient_birth_ts,dem.death_dt,dem.patient_mother_nm,dem.patient_father_nm,case when REPLACE(REPLACE(lower(dem.blood_group_display_nm),'positive','+ve'),'negative','-ve') like '%ab%' and lower(dem.blood_group_display_nm) like '%pos%' then 'AB Positive' when REPLACE(REPLACE(lower(dem.blood_group_display_nm),'positive','+ve'),'negative','-ve') like '%ab%' and lower(dem.blood_group_display_nm) like '%neg%' then 'AB Negative' when REPLACE(REPLACE(lower(dem.blood_group_display_nm),'positive','+ve'),'negative','-ve') like '%b%' and lower(dem.blood_group_display_nm) like '%pos%' then 'B Positive' when REPLACE(REPLACE(lower(dem.blood_group_display_nm),'positive','+ve'),'negative','-ve') like '%b%' and lower(dem.blood_group_display_nm) like '%neg%' then 'B Negative' when REPLACE(REPLACE(lower(dem.blood_group_display_nm),'positive','+ve'),'negative','-ve') like '%a%' and lower(dem.blood_group_display_nm) like '%pos%' then 'A Positive' when REPLACE(REPLACE(lower(dem.blood_group_display_nm),'positive','+ve'),'negative','-ve') like '%a%' and lower(dem.blood_group_display_nm) like '%neg%' then 'A Negative' when REPLACE(REPLACE(lower(dem.blood_group_display_nm),'positive','+ve'),'negative','-ve') like '%o%' and lower(dem.blood_group_display_nm) like '%pos%' then 'O Positive' when REPLACE(REPLACE(lower(dem.blood_group_display_nm),'positive','+ve'),'negative','-ve') like '%o%' and lower(dem.blood_group_display_nm) like '%neg%' then 'O Negative' end as blood_group,dem.gestational_age_in_days,dem.birth_weight,ds.staff_key,{0} FROM healthscore_stg.hs_patient_demographics dem JOIN healthscore_stg.hs_patient_master src ON dem.patient_id = src.patient_id JOIN healthscore_stg.hs_hospital_master hm on hm.hospital_id=src.primary_hospital_id JOIN healthscore_dw.dim_hospital dh on dh.hospital_cd=hm.hs_hospital_cd_guid JOIN healthscore_dw.dim_staff ds ON ds.hospital_staff_user_nm = dem.created_by and ds.hospital_key=dh.hospital_key WHERE LENGTH(src.patient_cd) > 0",
-    "update_fields":"patient_nm=src.patient_nm,patient_first_nm=src.patient_first_nm,patient_middle_nm=src.patient_middle_nm,patient_last_nm=src.patient_last_nm,patient_gender=src.gender,patient_birth_dt=src.patient_birth_dt,patient_birth_ts=src.patient_birth_ts,patient_death_ts=src.death_dt,patient_mother_nm=src.patient_mother_nm,patient_father_nm=src.patient_father_nm,blood_group=src.blood_group,gestational_age_in_days=src.gestational_age_in_days,birth_weight_gms=src.birth_weight"
-    }
-    ],
-  "update_table_info":[
-    {
-    "tablename":"dim_patient",
-    "priority":1,
-    "source_table":"hs_patient_contact_details",
-    "fields":"dim.contact_email_id = src.email_id,dim.contact_addr_line1=src.patient_addr_line1,dim.contact_addr_line2=src.patient_addr_line2,dim.contact_addr_city_nm=src.city,dim.contact_addr_state_nm=src.state,dim.contact_addr_country_nm=src.country,dim.contact_home_phone_num=src.patient_home_phone_num,dim.contact_mobile_phone_num=src.patient_mobile_phone_num,dim.patient_alternate_phone_num=src.patient_alternate_phone_num,dim.patient_emerg_contact_nm=src.patient_emerg_contact_name,dim.patient_emerg_contact_num=src.patient_emerg_contact_num,dim.patient_relation=src.patient_relation",
-    "on_clause":"dim.patient_unique_id = src.patient_cd AND dim.patient_unique_id_type='hospital_patient_cd'",
-    "join_query":"select pm.patient_cd, con.email_id,con.patient_addr_line1,con.patient_addr_line2,l.city, l.state, l.country, con.patient_home_phone_num,con.patient_mobile_phone_num,con.patient_alternate_phone_num,con.patient_emerg_contact_name,con.patient_emerg_contact_num,con.patient_relation from healthscore_stg.hs_patient_contact_details con join healthscore_stg.hs_patient_master pm  on con.patient_id = pm.patient_id LEFT JOIN healthscore_stg.hs_location_master as l ON con.patient_location_id = l.location_master_id WHERE length(pm.patient_cd) > 0"
-    }
-   ]
+	"database": "healthscore_dw",
+	"insert_table_info": [],
+	"update_table_info": []
 }

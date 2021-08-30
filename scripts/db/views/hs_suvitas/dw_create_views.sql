@@ -90,7 +90,7 @@ JOIN healthscore_dw.dim_careplan_instruction_master fcim
 ON fcim.careplan_instruction_master_key = fcpi.careplan_instruction_master_key
 JOIN healthscore_dw.suvitas_hospital_master_view hm ON fcp.visit_hospital_key = hm.hospital_key
 where fcpi.active_flg=1 and fcp.active_flg=1;
-​
+
 DROP VIEW IF EXISTS healthscore_dw.suvitas_bill_items_master_view;
 CREATE VIEW healthscore_dw.suvitas_bill_items_master_view
 as select dbi.hospital_key, bill_item_key,bill_item_type,bill_item_category_cd,bill_item_category_nm,bill_item_category_desc,bill_item_cd,bill_item_nm,bill_item_amt,transaction_type_cd,pkg_effective_from_ts,pkg_effective_to_ts
@@ -191,6 +191,28 @@ and ptl.active_flg=1
 group by ptl.patient_key,ptl.patient_visit_key,sm.hospital_key, sm.hospital_staff_dept_nm
  ;
 
+
+DROP VIEW IF EXISTS healthscore_dw.suvitas_patient_careplan_instructions_summary_view;
+CREATE VIEW healthscore_dw.suvitas_patient_careplan_instructions_summary_view AS
+SELECT fcpi.patient_careplan_key,fcp.patient_key,
+fcp.visit_hospital_key hospital_key,created_visit_key as patient_visit_key,
+careplan_status_nm,careplan_summary, careplan_instruction_dept_nm,
+group_concat(ins_created_ts,": ",careplan_instruction_desc SEPARATOR '\n')  as careplan_instructions
+,ptl.milestone_achieved, ptl.medical_status
+FROM healthscore_dw.fact_patient_careplan_instructions fcpi
+JOIN healthscore_dw.fact_patient_careplans fcp 
+ON fcp.patient_careplan_key = fcpi.patient_careplan_key
+JOIN healthscore_dw.dim_careplan_instruction_master fcim 
+ON fcim.careplan_instruction_master_key = fcpi.careplan_instruction_master_key
+JOIN healthscore_dw.suvitas_hospital_master_view hm ON fcp.visit_hospital_key = hm.hospital_key
+LEFT JOIN healthscore_dw.suvitas_patient_visit_timeline_notes_view ptl
+ON created_visit_key = ptl.patient_visit_key
+and careplan_instruction_dept_nm=ptl.hospital_staff_dept_nm
+where fcpi.active_flg=1 and fcp.active_flg=1
+group by  fcpi.patient_careplan_key,fcp.patient_key,
+fcp.visit_hospital_key ,created_visit_key ,
+careplan_status_nm,careplan_summary, careplan_instruction_dept_nm;
+
 -- CREATE USER suvitas_db_viewer@localhost IDENTIFIED BY <PWD>;
 GRANT SELECT ON `healthscore_dw`.`suvitas_bill_items_master_view` TO 'suvitas_db_viewer'@'localhost' ; 
 GRANT SELECT ON `healthscore_dw`.`suvitas_hospital_master_view` TO 'suvitas_db_viewer'@'localhost' ; 
@@ -207,3 +229,4 @@ GRANT SELECT ON `healthscore_dw`.`suvitas_vist_bill_items_view` TO 'suvitas_db_v
 grant select on  healthscore_dw.suvitas_patient_diagnosis_view to suvitas_db_viewer@localhost;
 grant select on  healthscore_dw.suvitas_external_hospital_staff_view to suvitas_db_viewer@localhost;
 grant select on  healthscore_dw.suvitas_patient_visit_timeline_notes_view to suvitas_db_viewer@localhost;
+grant select on healthscore_dw.suvitas_patient_careplan_instructions_summary_view to suvitas_db_viewer@localhost;
