@@ -1,0 +1,22 @@
+{
+	"database": "healthscore_dw",
+	"insert_table_info": [
+		{
+			"tablename": "fact_patient_app_payment_details",
+			"source_table": "vw_patient_payment_transactions",
+			"fields": "hospital_key, patient_key, payment_method_cd, razorpay_payment_id, payment_created_ts, payment_modified_ts, hospital_bill_amt, convenience_amt, razorpay_fee_including_tax_amt, razorpay_fee_tax_amt, source_cd,etl_load_id",
+			"insert_query": "select mph.hospital_key, mph.patient_key, payment_method as payment_method_cd, razorpay_payment_id, stg.created_ts payment_created_ts, modified_ts payment_modified_ts, hospital_bill_amt, convenience_amt, razorpay_fee_including_tax_amt, razorpay_fee_tax_amt, '{0}' as source_cd,{1} as etl_load_id from healthscore_stg.vw_patient_payment_transactions stg join healthscore_dw.map_patient_hospital mph on stg.hospital_cd = mph.hospital_cd  and stg.hospital_patient_cd = mph.hospital_patient_cd",
+			"where_clause": "mph.hospital_key=%i",
+			"update_fields": "payment_modified_ts=src.payment_modified_ts,hospital_bill_amt=src.hospital_bill_amt,convenience_amt=src.convenience_amt,razorpay_fee_including_tax_amt=src.razorpay_fee_including_tax_amt,razorpay_fee_tax_amt=src.razorpay_fee_tax_amt"
+		},
+		{
+			"tablename": "fact_patient_app_statistics",
+			"source_table": "vw_patient_statistics",
+			"fields": "hospital_key,preferred_language,registered_date,total_patient_count, subscribed_patient_count,registered_patient_count, source_cd,etl_load_id",
+			"insert_query": "select dh.hospital_key ,preferred_language, registered_date,total_patients as total_patient_count, subscribed_patients as subscribed_patient_count,registered_patients as registered_patient_count, '{0}' as source_cd,{1} as etl_load_id from healthscore_stg.vw_patient_statistics stg join healthscore_dw.dim_hospital dh on stg.hospital_cd = dh.hospital_cd ",
+			"where_clause": "dh.hospital_key=%i",
+			"update_fields": "total_patient_count=src.total_patient_count,subscribed_patient_count=src.subscribed_patient_count,registered_patient_count=src.registered_patient_count"
+		}
+	],
+	"update_table_info": []
+}

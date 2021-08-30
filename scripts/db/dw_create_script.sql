@@ -1053,3 +1053,72 @@ CHANGE COLUMN `reference_doctor_staff_key` `reference_ext_doctor_staff_key` INT(
 -- to be executed as of 14-07-2021-- from below
 
 ALTER TABLE healthscore_dw.fact_patient_assessments MODIFY health_assessment_scale_desc varchar(255);
+
+-- Function to remove HTML Tags from text
+ SET GLOBAL log_bin_trust_function_creators=1;
+ use healthscore_dw;
+ 
+DROP FUNCTION IF EXISTS fnStripTags;
+DELIMITER |
+CREATE FUNCTION healthscore_dw.fnStripTags( htmlRichText LONGTEXT )
+RETURNS LONGTEXT
+DETERMINISTIC 
+BEGIN
+  DECLARE iStart, iEnd, iLength int;
+    WHILE Locate( '<', htmlRichText ) > 0 And Locate( '>', htmlRichText, Locate( '<', htmlRichText )) > 0 DO
+      BEGIN
+        SET iStart = Locate( '<', htmlRichText ), iEnd = Locate( '>', htmlRichText, Locate('<', htmlRichText ));
+        SET iLength = ( iEnd - iStart) + 1;
+        IF iLength > 0 THEN
+          BEGIN
+            SET htmlRichText = Insert( htmlRichText, iStart, iLength, ' ');
+          END;
+        END IF;
+      END;
+    END WHILE;
+    RETURN htmlRichText;
+END;
+|
+DELIMITER ;
+
+
+-- 21/Aug/21
+
+
+DROP TABLE IF EXISTS healthscore_dw.fact_patient_app_payment_details;
+CREATE TABLE healthscore_dw.fact_patient_app_payment_details (
+  patient_app_payment_key int(11) NOT NULL AUTO_INCREMENT,
+  hospital_key int(11) NOT NULL ,
+  patient_key int(11) NOT NULL,
+  payment_method_cd varchar(100) NOT NULL,
+  razorpay_payment_id varchar(100) NOT NULL, 
+  payment_created_ts datetime, 
+  payment_modified_ts datetime, 
+  hospital_bill_amt DECIMAL(10,2), 
+  convenience_amt DECIMAL(10,2), 
+  razorpay_fee_including_tax_amt DECIMAL(10,2), 
+  razorpay_fee_tax_amt DECIMAL(10,2),
+  source_cd varchar(50) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,	
+  PRIMARY KEY (patient_app_payment_key),
+  UNIQUE KEY `uk_fact_patient_app_payment` (`razorpay_payment_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.fact_patient_app_statistics;
+CREATE TABLE healthscore_dw.fact_patient_app_statistics (
+  patient_app_statistics_key int(11) NOT NULL AUTO_INCREMENT,
+  hospital_key int(11) NOT NULL ,
+  preferred_language varchar(100), 
+  registered_date datetime,
+  total_patient_count int(11),
+  subscribed_patient_count int(11),
+  registered_patient_count int(11),
+  source_cd varchar(50) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,	
+  PRIMARY KEY (patient_app_statistics_key),
+  UNIQUE KEY `uk_fact_patient_app_statistics` (hospital_key,preferred_language,registered_date)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
