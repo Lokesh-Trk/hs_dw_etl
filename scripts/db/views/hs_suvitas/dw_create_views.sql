@@ -182,11 +182,12 @@ group by patient_key,patient_visit_key, sm.hospital_key, sm.hospital_staff_dept_
 ) latest_note_ts
 on ptl.patient_visit_key = latest_note_ts.patient_visit_key
 and sm.hospital_staff_dept_nm = latest_note_ts.hospital_staff_dept_nm
-where  timeline_info_type_cd = 'note' and
+where  
 (timeline_info_hashtag_category like '%#Baseline%' or timeline_info_hashtag_category like '%#InitialAssessment%' or 
 timeline_info_hashtag_category like '%#ReviewNote%' or timeline_info_hashtag_category like '%#MedicalStatus%' or 
-timeline_info_hashtag_category like '%#ResidentRemarks%' or timeline_info_hashtag_category like '%#OpsNote%' or timeline_info_hashtag_category like   '%#DoctorUpdate%'
-or  timeline_info_hashtag_category like  '%#TentativeDOD(dd.mm.yy)%')
+timeline_info_hashtag_category like '%#ResidentRemarks%' or timeline_info_hashtag_category like '%#OpsNote%' or 
+timeline_info_hashtag_category like   '%#DoctorUpdate%' or  timeline_info_hashtag_category like  '%#TentativeDOD(dd.mm.yy)%'
+or timeline_info_hashtag_category  = 'Milestone Achieved')
 and ptl.active_flg=1  
 group by ptl.patient_key,ptl.patient_visit_key,sm.hospital_key, sm.hospital_staff_dept_nm
  ;
