@@ -1122,3 +1122,9 @@ CREATE TABLE healthscore_dw.fact_patient_app_statistics (
   PRIMARY KEY (patient_app_statistics_key),
   UNIQUE KEY `uk_fact_patient_app_statistics` (hospital_key,preferred_language,registered_date)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+-- to be executed as of 17-09-2021 from below
+
+ALTER TABLE healthscore_dw.fact_patient_assessments
+ADD COLUMN assessment_scale_master_id bigint(50) not null default 0,
+ADD COLUMN assessment_scale_item_master_id bigint(50) NOT NULL default 0;
