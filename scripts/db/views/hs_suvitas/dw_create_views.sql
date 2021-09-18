@@ -2,7 +2,7 @@ DROP VIEW IF EXISTS healthscore_dw.suvitas_hospital_master_view;
 CREATE VIEW healthscore_dw.suvitas_hospital_master_view
 as   SELECT hospital_key, hospital_cd, hospital_nm, hospital_addr_line1, hospital_addr_line2, hospital_addr_city_nm, hospital_addr_state_nm, hospital_addr_country_nm, hospital_addr_zipcode, hospital_phone_num, hospital_email_addr, hospital_logo 
 FROM healthscore_dw.dim_hospital dh 
-where hospital_cd in ('SUVH','SUVB','SUVV')
+where hospital_cd in ('SUVH','SUVB','SUVV','HCAH')
 ;
 
 DROP VIEW IF EXISTS healthscore_dw.suvitas_bill_items_master_view;
@@ -182,11 +182,12 @@ group by patient_key,patient_visit_key, sm.hospital_key, sm.hospital_staff_dept_
 ) latest_note_ts
 on ptl.patient_visit_key = latest_note_ts.patient_visit_key
 and sm.hospital_staff_dept_nm = latest_note_ts.hospital_staff_dept_nm
-where  timeline_info_type_cd = 'note' and
+where  
 (timeline_info_hashtag_category like '%#Baseline%' or timeline_info_hashtag_category like '%#InitialAssessment%' or 
 timeline_info_hashtag_category like '%#ReviewNote%' or timeline_info_hashtag_category like '%#MedicalStatus%' or 
-timeline_info_hashtag_category like '%#ResidentRemarks%' or timeline_info_hashtag_category like '%#OpsNote%' or timeline_info_hashtag_category like   '%#DoctorUpdate%'
-or  timeline_info_hashtag_category like  '%#TentativeDOD(dd.mm.yy)%')
+timeline_info_hashtag_category like '%#ResidentRemarks%' or timeline_info_hashtag_category like '%#OpsNote%' or 
+timeline_info_hashtag_category like   '%#DoctorUpdate%' or  timeline_info_hashtag_category like  '%#TentativeDOD(dd.mm.yy)%'
+or timeline_info_hashtag_category  = 'Milestone Achieved')
 and ptl.active_flg=1  
 group by ptl.patient_key,ptl.patient_visit_key,sm.hospital_key, sm.hospital_staff_dept_nm
  ;
