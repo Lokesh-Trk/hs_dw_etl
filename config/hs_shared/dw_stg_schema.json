@@ -258,7 +258,7 @@
 			"fields": "doctor_id int(11) NOT NULL ,external_hospital_nm varchar(200) DEFAULT NULL,external_doctor_nm varchar(100) NOT NULL,effective_from_ts datetime DEFAULT NULL,effective_to_ts datetime DEFAULT NULL,active_flg tinyint(1) NOT NULL DEFAULT '1',created_by varchar(45) DEFAULT NULL,created_ts datetime DEFAULT NULL,modified_by varchar(45) DEFAULT NULL,modified_ts datetime DEFAULT NULL,department_nm varchar(200) DEFAULT NULL,mobile_no varchar(45) DEFAULT NULL,email_addr varchar(100) DEFAULT NULL,hospital_id int(11) NOT NULL,hospital_location_id bigint(20) DEFAULT NULL,country_cd varchar(45)"
 		},
 		{
-			"tablename": "hs_patient_assessment_vw",
+			"tablename": "hs_patient_assessment",
 			"fields": "hs_patient_assessment_id bigint(50) NOT NULL,  health_assessment_scale_id bigint(50) NOT NULL,  patient_visit_id bigint(50) NOT NULL,  visit_note_id bigint(50) DEFAULT NULL,  patient_id bigint(50) NOT NULL,  hospital_id int(11) NOT NULL,  hospital_staff_id int(11) NOT NULL,  visit_assessment_status_flg tinyint(2) NOT NULL,  deactivation_comment varchar(200) DEFAULT NULL,  assessed_ts datetime DEFAULT NULL,  created_ts timestamp NOT NULL,  created_by varchar(45) NOT NULL,  modified_by varchar(45) DEFAULT NULL,  modified_ts timestamp NULL DEFAULT NULL,  active_flg tinyint(1) NOT NULL DEFAULT '1'",
 			"primary_key": "hs_patient_assessment_id"
 		},
@@ -363,17 +363,17 @@
 			"tablename": "vw_patient_visit_diagnosis_tags",
 			"fields": " patient_diagnosis_tag_id int(11) NOT NULL , patient_id int(11) NOT NULL, hospital_id int(11) NOT NULL, patient_visit_id bigint(50) DEFAULT NULL, diagnosis_desc varchar(250),  active_flg tinyint(1), created_ts datetime, modified_ts datetime"
 		},
-		{			
+		{
 			"tablename": "vw_patient_visit_progress_timeline_events",
 			"fields": "patient_visit_progress_timeline_event_id bigint(11) NOT NULL, patient_visit_id bigint(11), event_title varchar(45), event_desc varchar(4000),active_flg tinyint(1), careplan_activity_id int(11), careplan_activity_status_id int(11), careplan_activity_milestone_flg tinyint(1), created_ts datetime, modified_ts datetime,created_by varchar(45), modified_by varchar(45),hospital_id bigint(11), status_nm varchar(45),care_plan_id bigint(20)"
-		},					
-		{			
+		},
+		{
 			"tablename": "vw_patient_visit_progress_timeline_notes",
 			"fields": "progress_timeline_note_id bigint(11) NOT NULL, progress_timeline_note_desc varchar(4000), patient_visit_id bigint(11), active_flg tinyint(1),note_hashtag_nm TEXT,created_by varchar(45), created_ts datetime, modified_by varchar(45),modified_ts datetime, hospital_id bigint(11)"
 		},
 		{
 			"tablename": "vw_patient_visit_unbilled_consumables",
-			"fields":"hospital_master_id bigint(20),patient_visit_id bigint(50),unbilled_consumables_amt double"
-		}			
+			"fields": "hospital_master_id bigint(20),patient_visit_id bigint(50),unbilled_consumables_amt double"
+		}
 	]
 }
