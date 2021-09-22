@@ -1128,3 +1128,55 @@ CREATE TABLE healthscore_dw.fact_patient_app_statistics (
 ALTER TABLE healthscore_dw.fact_patient_assessments
 ADD COLUMN assessment_scale_master_id bigint(50) not null default 0,
 ADD COLUMN assessment_scale_item_master_id bigint(50) NOT NULL default 0;
+
+
+-- to be executed as of 20-09-2021 from below
+
+ DROP TABLE IF EXISTS healthscore_dw.fact_patient_assessments;
+ CREATE TABLE healthscore_dw.fact_patient_assessments(
+  patient_assmt_key int(11) NOT NULL AUTO_INCREMENT,
+  patient_key int(11) NOT NULL,
+  visit_hospital_key int(11) DEFAULT NULL,
+  patient_visit_key int(11) default null,
+  patient_assessment_id bigint(50) not null default 0, 
+  assessment_scale_master_id bigint(50) not null default 0, 
+  assessment_scale_desc varchar(255) NOT NULL,
+  hospital_dept_nm varchar(255) NOT NULL, 
+  assessed_date_key date not null,
+  assessed_time_key time not null,
+  assessed_ts datetime not null,
+  visit_assessment_status_flg TINYINT(1) default null,
+  deactivation_comment varchar(255) null,
+  active_flg TINYINT(1) default null,
+  source_cd varchar(50) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (patient_assmt_key),
+  UNIQUE uk_patient_assessments_key(source_cd,patient_assessment_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+
+ DROP TABLE IF EXISTS healthscore_dw.fact_patient_assessment_results;
+ CREATE TABLE healthscore_dw.fact_patient_assessment_results(
+  patient_assmt_result_key int(11) NOT NULL AUTO_INCREMENT,
+  patient_assmt_key int(11) NOT NULL,  
+  patient_assessment_result_id bigint(50) NOT NULL default 0, 
+  assessment_result_item_master_id bigint(50) NOT NULL default 0, 
+  result_item_display_txt varchar(100),
+  result_item_value varchar(1000),  
+  result_item_ref_range_txt varchar(1000),
+  result_item_row_no int(11),
+  result_item_column_no int(11),
+  result_item_min_value decimal(10,2) DEFAULT NULL,
+  result_item_max_value decimal(10,2) DEFAULT NULL, 
+  active_flg TINYINT(1) default null,
+  source_cd varchar(50) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (patient_assmt_result_key),
+  UNIQUE uk_patient_assmt_result_key(source_cd,patient_assessment_result_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+ 
+ 
