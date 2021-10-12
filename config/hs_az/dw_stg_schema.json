@@ -243,7 +243,7 @@
 		},
 		{
 			"tablename": "hs_patient_visit_actions",
-			"fields": "visit_action_id bigint(50) NOT NULL, visit_note_id bigint(11) , visit_doctor_id bigint(50), action_category_ref_component_id bigint(50) NOT NULL, action_desc varchar(4000) , visit_action_ref_id_json varchar(4000), active_flg tinyint(1) , continue_flg tinyint(1) , deactivation_comment varchar(255) , created_ts datetime, modified_ts datetime, created_by varchar(45), modified_by varchar(45), generated_visit_actions varchar(4000), processed_ts datetime"
+			"fields": "visit_action_id bigint(50) NOT NULL, visit_note_id bigint(11) , visit_doctor_id bigint(50), action_category_ref_component_id bigint(50) NOT NULL, action_desc MEDIUMTEXT , visit_action_ref_id_json MEDIUMTEXT, active_flg tinyint(1) , continue_flg tinyint(1) , deactivation_comment varchar(255) , created_ts datetime, modified_ts datetime, created_by varchar(45), modified_by varchar(45), generated_visit_actions varchar(4000), processed_ts datetime"
 		},
 		{
 			"tablename": "hs_patient_visit_notes",
