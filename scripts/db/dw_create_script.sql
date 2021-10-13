@@ -1180,4 +1180,4 @@ ADD COLUMN assessment_scale_item_master_id bigint(50) NOT NULL default 0;
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
  
  
-ALTER TABLE  healthscore_dw.fact_patient_visit_advice CHANGE COLUMN action_desc action_desc MEDIUMTEXT NULL DEFAULT NULL;
+ALTER TABLE  healthscore_dw.fact_patient_visit_advice CHANGE COLUMN advice_desc advice_desc MEDIUMTEXT NULL DEFAULT NULL;
