@@ -26,7 +26,7 @@ on fpm.prescribed_hospital_key = hm.hospital_key;
 
 DROP VIEW IF EXISTS healthscore_dw.nucleus_patient_assessments_view;
 CREATE VIEW healthscore_dw.nucleus_patient_assessments_view as
-SELECT fpa.patient_assmt_key,fpa.patient_key,visit_hospital_key as hospital_key,patient_visit_key,health_assessment_scale_desc,hospital_dept_nm,
+SELECT fpa.patient_assmt_key,fpa.patient_key,visit_hospital_key as hospital_key,patient_visit_key,assessment_scale_desc,hospital_dept_nm,
 result_item_row_no as assessment_result_item_seq_no,result_item_ref_range_txt as assessment_result_item_ref_range_txt, result_item_display_txt as assessment_result_item_display_txt,
 result_item_value as assessment_result_item_value,assessed_date_key,assessed_time_key,assessed_ts
 FROM healthscore_dw.fact_patient_assessments fpa
