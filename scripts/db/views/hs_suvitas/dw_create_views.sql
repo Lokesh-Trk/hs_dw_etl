@@ -37,8 +37,8 @@ on fpm.prescribed_hospital_key = hm.hospital_key;
 ​
 DROP VIEW IF EXISTS healthscore_dw.suvitas_patient_assessments_view;
 CREATE VIEW healthscore_dw.suvitas_patient_assessments_view as
-SELECT fpa.patient_assmt_key,fpa.patient_key,visit_hospital_key as hospital_key,patient_visit_key,assessed_date_key,assessed_time_key,assessed_ts,health_assessment_scale_desc,hospital_dept_nm,
-patient_assessment_id ,patient_assessment_result_id,result_item_display_txt,result_item_value,result_item_row_no,result_item_column_no,result_item_ref_range_txt,result_item_min_value,result_item_max_value
+SELECT fpa.patient_assmt_key,fpa.patient_key,visit_hospital_key as hospital_key,patient_visit_key,assessed_date_key,assessed_time_key,assessed_ts,assessment_scale_desc,hospital_dept_nm,
+patient_assessment_id ,patient_assessment_result_id,assessment_result_item_master_id,result_item_display_txt,result_item_value,result_item_row_no,result_item_column_no,result_item_ref_range_txt,result_item_min_value,result_item_max_value
 FROM healthscore_dw.fact_patient_assessments fpa
 join healthscore_dw.fact_patient_assessment_results fpar
 on fpa.patient_assmt_key=fpar.patient_assmt_key
@@ -51,8 +51,8 @@ where fpar.active_flg = 1 and fpa.active_flg = 1
 
 DROP VIEW IF EXISTS healthscore_dw.suvitas_patient_admission_evaluations_view;
 CREATE VIEW healthscore_dw.suvitas_patient_admission_evaluations_view as
-SELECT fpa.patient_assmt_key,fpa.patient_key,visit_hospital_key as hospital_key,patient_visit_key,assessed_date_key,assessed_time_key,assessed_ts,health_assessment_scale_desc,hospital_dept_nm,
-patient_assessment_id ,patient_assessment_result_id,result_item_display_txt,result_item_value,result_item_row_no,result_item_column_no,result_item_ref_range_txt,result_item_min_value,result_item_max_value
+SELECT fpa.patient_assmt_key,fpa.patient_key,visit_hospital_key as hospital_key,fpa.patient_visit_key,assessed_date_key,assessed_time_key,assessed_ts,fpa.assessment_scale_master_id, assessment_scale_desc,hospital_dept_nm,
+patient_assessment_id ,patient_assessment_result_id,assessment_result_item_master_id,result_item_display_txt,fnStripTags(result_item_value) as result_item_value,result_item_row_no,result_item_column_no,result_item_ref_range_txt,result_item_min_value,result_item_max_value
 FROM healthscore_dw.fact_patient_assessments fpa
 join healthscore_dw.fact_patient_assessment_results fpar
 on fpa.patient_assmt_key=fpar.patient_assmt_key
@@ -60,17 +60,17 @@ join healthscore_dw.suvitas_patient_master_view pm
 on fpa.patient_key = pm.patient_key
 join healthscore_dw.suvitas_hospital_master_view hm
 on fpa.visit_hospital_key = hm.hospital_key
-join (select distinct patient_assmt_key
+join (select distinct patient_assmt_key 
 from healthscore_dw.fact_patient_assessment_results fpar
-where fpar.result_item_display_txt='Assessment Timeline'
-and result_item_value='Admission' and active_flg = 1 ) admission_assmt
+where result_item_display_txt='Assessment Timeline'
+and  result_item_value='Admission' and active_flg = 1  ) admission_assmt
 on admission_assmt.patient_assmt_key = fpa.patient_assmt_key
 ;
 
 DROP VIEW IF EXISTS healthscore_dw.suvitas_patient_discharge_evaluations_view;
 CREATE VIEW healthscore_dw.suvitas_patient_discharge_evaluations_view as
-SELECT fpa.patient_assmt_key,fpa.patient_key,visit_hospital_key as hospital_key,patient_visit_key,assessed_date_key,assessed_time_key,assessed_ts,health_assessment_scale_desc,hospital_dept_nm,
-patient_assessment_id ,patient_assessment_result_id,result_item_display_txt,result_item_value,result_item_row_no,result_item_column_no,result_item_ref_range_txt,result_item_min_value,result_item_max_value
+SELECT fpa.patient_assmt_key,fpa.patient_key,visit_hospital_key as hospital_key,patient_visit_key,assessed_date_key,assessed_time_key,assessed_ts,assessment_scale_master_id,assessment_scale_desc,hospital_dept_nm,
+patient_assessment_id ,patient_assessment_result_id,assessment_result_item_master_id, result_item_display_txt,fnStripTags(result_item_value) as result_item_value,result_item_row_no,result_item_column_no,result_item_ref_range_txt,result_item_min_value,result_item_max_value
 FROM healthscore_dw.fact_patient_assessments fpa
 join healthscore_dw.fact_patient_assessment_results fpar
 on fpa.patient_assmt_key=fpar.patient_assmt_key
@@ -78,10 +78,10 @@ join healthscore_dw.suvitas_patient_master_view pm
 on fpa.patient_key = pm.patient_key
 join healthscore_dw.suvitas_hospital_master_view hm
 on fpa.visit_hospital_key = hm.hospital_key
-join (select distinct patient_assmt_key
+join (select distinct patient_assmt_key 
 from healthscore_dw.fact_patient_assessment_results fpar
 where result_item_display_txt='Assessment Timeline'
-and  result_item_value='Discharge' and active_flg = 1 ) discharge_assmt
+and  result_item_value='Discharge' and active_flg = 1  ) discharge_assmt
 on discharge_assmt.patient_assmt_key = fpa.patient_assmt_key
 ;
 ​
