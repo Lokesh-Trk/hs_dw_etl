@@ -63,7 +63,7 @@
 		},
 		{
 			"tablename": "hs_patient_contact_details",
-			"fields": "patient_contact_id int(11) NOT NULL, patient_id bigint(50) NOT NULL, email_id varchar(100) DEFAULT NULL, patient_addr_line1 varchar(200) DEFAULT NULL, patient_addr_line2 varchar(200) DEFAULT NULL, patient_location_id int(11) DEFAULT '0', patient_home_phone_num varchar(45) DEFAULT NULL, patient_mobile_phone_num varchar(45) DEFAULT NULL, patient_alternate_phone_num varchar(45) DEFAULT NULL, patient_emerg_contact_name varchar(100) DEFAULT NULL, patient_emerg_contact_num varchar(45) DEFAULT NULL, patient_relation varchar(100) DEFAULT NULL, effective_from_dt datetime DEFAULT NULL, effective_to_dt datetime DEFAULT '9999-12-31 00:00:00', created_by varchar(45) DEFAULT NULL, modified_by varchar(45) DEFAULT NULL, created_ts datetime DEFAULT NULL, modified_ts datetime DEFAULT NULL",
+			"fields": "patient_contact_id int(11) NOT NULL, patient_id bigint(50) NOT NULL, patient_location_id int(11) DEFAULT '0', patient_relation varchar(100) DEFAULT NULL, effective_from_dt datetime DEFAULT NULL, effective_to_dt datetime DEFAULT '9999-12-31 00:00:00', created_by varchar(45) DEFAULT NULL, modified_by varchar(45) DEFAULT NULL, created_ts datetime DEFAULT NULL, modified_ts datetime DEFAULT NULL",
 			"primary_key": "patient_contact_id"
 		},
 		{
