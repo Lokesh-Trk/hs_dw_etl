@@ -1183,7 +1183,17 @@ ADD COLUMN assessment_scale_item_master_id bigint(50) NOT NULL default 0;
 ALTER TABLE  healthscore_dw.fact_patient_visit_advice CHANGE COLUMN advice_desc advice_desc MEDIUMTEXT NULL DEFAULT NULL;
 
 
--- dec 6 2021
+-- to be executed as of 10-01-2022 from below 
+ALTER TABLE  healthscore_dw.dim_patient 
+DROP COLUMN contact_email_id,
+DROP COLUMN contact_addr_line1,
+DROP COLUMN contact_addr_line2,
+DROP COLUMN contact_home_phone_num,
+DROP COLUMN contact_mobile_phone_num,
+DROP COLUMN patient_alternate_phone_num,
+DROP COLUMN patient_emerg_contact_nm,
+DROP COLUMN patient_emerg_contact_num;
+
 
 DROP TABLE IF EXISTS healthscore_dw.fact_consultant_appointment_schedule;
  CREATE TABLE healthscore_dw.fact_consultant_appointment_schedule (
