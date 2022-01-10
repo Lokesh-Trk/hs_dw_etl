@@ -960,7 +960,7 @@ CREATE TABLE healthscore_dw.dim_patient_birth_exam_history (
 alter table healthscore_dw.fact_patient_visits modify COLUMN outcome_type MEDIUMTEXT;
 alter table healthscore_dw.fact_patient_visits modify COLUMN  condition_at_discharge MEDIUMTEXT;
 
-alter table  healthscore_dw.fact_patient_assessments modify column assessment_result_item_value varchar(2000);
+alter table  healthscore_dw.fact_patient_assessment_results modify column result_item_value varchar(2000);
 
 DROP TABLE IF EXISTS healthscore_dw.fact_patient_careplan_execution_details;
 CREATE TABLE healthscore_dw.fact_patient_careplan_execution_details (
@@ -1193,3 +1193,50 @@ DROP COLUMN contact_mobile_phone_num,
 DROP COLUMN patient_alternate_phone_num,
 DROP COLUMN patient_emerg_contact_nm,
 DROP COLUMN patient_emerg_contact_num;
+
+
+DROP TABLE IF EXISTS healthscore_dw.fact_consultant_appointment_schedule;
+ CREATE TABLE healthscore_dw.fact_consultant_appointment_schedule (
+  consultant_schedule_key int(11) NOT NULL AUTO_INCREMENT, 
+  hospital_key bigint(50) DEFAULT NULL,
+  consulting_staff_key int(11) NOT NULL,
+  schedule_date_key DATE not null,
+  schedule_start_time_key time NOT NULL,
+  schedule_end_time_key time DEFAULT NULL,
+  consultant_schedule_id int(11) NOT NULL,
+  duration int(11) DEFAULT NULL, 
+  active_flg TINYINT(1) null,
+  timeslot_usage_limit int(11),
+  timeslot_used_cnt   int(11),
+  schedule_created_ts datetime NOT NULL,
+  schedule_modified_ts datetime NULL,
+  source_cd varchar(50) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (consultant_schedule_key),
+  UNIQUE uk_consultant_schedule_key(hospital_key,consultant_schedule_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.fact_patient_appointments;
+ CREATE TABLE healthscore_dw.fact_patient_appointments (
+  patient_appt_key int(11) NOT NULL AUTO_INCREMENT,
+  patient_key int(11) NOT NULL,
+  consultant_schedule_key int(11) NOT NULL,
+  hospital_key bigint(50) DEFAULT NULL,
+  patient_appointment_id bigint(50) NOT NULL,
+  schedule_status  varchar(255) NOT NULL, -- requested, confirmed, cancelled
+  visit_type varchar(255) ,
+  contact_type varchar(255) ,
+  appointment_status varchar(255), -- no show, fulfilled, cancelled
+  appointment_created_ts datetime NOT NULL,
+  appointment_modified_ts datetime,
+  patient_visit_key int(11) , 
+  bill_item_key int(11) , 
+  source_cd varchar(50) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (patient_appt_key),
+  UNIQUE uk_patient_appointments_key(hospital_key,patient_appointment_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
