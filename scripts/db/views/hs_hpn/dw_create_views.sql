@@ -25,7 +25,7 @@ SUBSTRING_INDEX(assessment_scale_desc,'-',-1) as assessment_scale_desc,
 trim(replace(result_item_display_txt,'Statistical Scores and comments','')) as result_item_display_txt ,
 min(result_item_row_no) as result_item_row_no,min(result_item_column_no) as result_item_column_no,
 max(result_item_ref_range_txt) result_item_ref_range_txt ,max(result_item_min_value) as result_item_min_value,max(result_item_max_value) as result_item_max_value ,
-max(case when result_item_display_txt not like '%Statistical Scores and comments%' then fnStripTags(result_item_value) else null end) as result_item_value,
+max(case when result_item_display_txt like '%Signing Credentials%' then replace(replace(result_item_value,'<p>',''),'</p>','\n')  when result_item_display_txt not like '%Statistical Scores and comments%' then fnStripTags(result_item_value) else null end) as result_item_value,
 max(case when result_item_display_txt like '%Statistical Scores and comments%' then fnStripTags(result_item_value) else null end) as statistical_score_and_comment
 FROM healthscore_dw.fact_patient_assessments fpa
 join healthscore_dw.fact_patient_assessment_results fpar
@@ -103,4 +103,6 @@ GRANT SELECT ON `healthscore_dw`.`hpn_patient_assessments_view` TO 'hpn_db_viewe
 GRANT SELECT ON `healthscore_dw`.`hpn_hospital_staff_master_view` TO 'hpn_db_viewer'@'localhost' ; 
 GRANT SELECT ON `healthscore_dw`.`hpn_patient_visit_view` TO 'hpn_db_viewer'@'localhost' ;       
 GRANT SELECT ON `healthscore_dw`.`hpn_patient_past_history_view` TO 'hpn_db_viewer'@'localhost' ;   
-GRANT SELECT ON `healthscore_dw`.`hpn_patient_family_history_view` TO 'hpn_db_viewer'@'localhost' ;    
+GRANT SELECT ON `healthscore_dw`.`hpn_patient_family_history_view` TO 'hpn_db_viewer'@'localhost' ;   
+
+GRANT SELECT ON `healthscore_dw`.`hpn_patient_diagnosis_view` TO 'hpn_db_viewer'@'localhost' ;   
