@@ -63,7 +63,7 @@
 		},
 		{
 			"tablename": "hs_patient_contact_details",
-			"fields": "patient_contact_id int(11) NOT NULL, patient_id bigint(50) NOT NULL, email_id varchar(100) DEFAULT NULL, patient_addr_line1 varchar(200) DEFAULT NULL, patient_addr_line2 varchar(200) DEFAULT NULL, patient_location_id int(11) DEFAULT '0', patient_home_phone_num varchar(45) DEFAULT NULL, patient_mobile_phone_num varchar(45) DEFAULT NULL, patient_alternate_phone_num varchar(45) DEFAULT NULL, patient_emerg_contact_name varchar(100) DEFAULT NULL, patient_emerg_contact_num varchar(45) DEFAULT NULL, patient_relation varchar(100) DEFAULT NULL, effective_from_dt datetime DEFAULT NULL, effective_to_dt datetime DEFAULT '9999-12-31 00:00:00', created_by varchar(45) DEFAULT NULL, modified_by varchar(45) DEFAULT NULL, created_ts datetime DEFAULT NULL, modified_ts datetime DEFAULT NULL",
+			"fields": "patient_contact_id int(11) NOT NULL, patient_id bigint(50) NOT NULL, patient_location_id int(11) DEFAULT '0', patient_relation varchar(100) DEFAULT NULL, effective_from_dt datetime DEFAULT NULL, effective_to_dt datetime DEFAULT '9999-12-31 00:00:00', created_by varchar(45) DEFAULT NULL, modified_by varchar(45) DEFAULT NULL, created_ts datetime DEFAULT NULL, modified_ts datetime DEFAULT NULL",
 			"primary_key": "patient_contact_id"
 		},
 		{
@@ -169,7 +169,7 @@
 		},
 		{
 			"tablename": "hs_patient_package_mapped_item_details",
-			"fields": "patient_mapped_item_id int(11) NOT NULL,  patient_package_master_id int(11) DEFAULT NULL,  bill_item_cd varchar(45) DEFAULT NULL,  total_count int(11) DEFAULT NULL,  used_count int(11) DEFAULT NULL,  available_count int(11) DEFAULT NULL,  active_flg tinyint(1) DEFAULT NULL,  created_by varchar(45) DEFAULT NULL,  created_ts datetime DEFAULT NULL,  modified_by varchar(45) DEFAULT NULL,  modified_ts datetime DEFAULT NULL,  consultation_type_id int(11) DEFAULT NULL,  hospital_staff_id int(11) DEFAULT NULL,  product_master_id bigint(20) DEFAULT '0',  stock_batch_number varchar(45) DEFAULT NULL, item_pseudo_unit_amt DECIMAL(10,2) NOT NULL DEFAULT 0",
+			"fields": "patient_mapped_item_id int(11) NOT NULL,  patient_package_master_id int(11) DEFAULT NULL,  bill_item_cd varchar(45) DEFAULT NULL,  total_count int(11) DEFAULT NULL,  used_count int(11) DEFAULT NULL,  available_count int(11) DEFAULT NULL,  active_flg tinyint(1) DEFAULT NULL,  created_by varchar(45) DEFAULT NULL,  created_ts datetime DEFAULT NULL,  modified_by varchar(45) DEFAULT NULL,  modified_ts datetime DEFAULT NULL,  consultation_type_id int(11) DEFAULT NULL,  hospital_staff_id int(11) DEFAULT NULL,  product_master_id bigint(20) DEFAULT '0',  stock_batch_number varchar(45) DEFAULT NULL,item_pseudo_unit_amt DECIMAL(10,2) NOT NULL DEFAULT 0",
 			"primary_key": "patient_mapped_item_id"
 		},
 		{
@@ -374,6 +374,18 @@
 		{
 			"tablename": "vw_patient_visit_unbilled_consumables",
 			"fields": "hospital_master_id bigint(20),patient_visit_id bigint(50),unbilled_consumables_amt double"
+		},
+		{
+			"tablename": "hs_consultant_schedule_master",
+			"fields": " consultant_schedule_id int(11)   , hospital_id      int(11)   , hospital_staff_id   int(11)   , schedule_dt      date    , schedule_hour_id    int(11)   , schedule_minute_id   int(11)   , schedule_end_hour_id  int(11)   , duration        int(11)   , schedule_end_minute_id int(11)   , active_flg       tinyint(1) , created_by       varchar(45) , created_ts       datetime  , modified_by      varchar(45) ,modified_ts      datetime  , timeslot_usage_limit  int(11)   , timeslot_used_cnt   int(11)"
+		},
+		{
+			"tablename": "hs_patient_appointments_master",
+			"fields": "patient_appointment_id int(11) NOT NULL  ,consultant_schedule_id int(11)  ,patient_id int(11)  ,schedule_status_id int(11) NOT NULL  ,active_flg tinyint(1)  ,created_by varchar(45)  ,created_ts datetime  ,modified_by varchar(45)  ,modified_ts datetime  ,visit_type varchar(60)  ,contact_type varchar(45)  ,note  varchar(100)  ,patient_name varchar(100)  ,recurring_appointment_id bigint(20)  ,care_plan_instruction_id bigint(20)  ,surgery_id bigint(50)  ,status  varchar(100)  ,visit_id  bigint(50)  ,patient_schedule_id bigint(50)  ,host_meeting_url varchar(500)  ,attendee_meeting_url varchar(500)  ,consultation_type_id int(11)  ,delay_sms_sent_ts datetime  ,patient_mapped_item_id int(11) "
+		},
+		{
+			"tablename": "hs_schedule_status_master",
+			"fields": "schedule_status_id int(11),schedule_status_cd char(2),schedule_status_desc varchar(20),active_flg tinyint(1),created_by varchar(45),modified_by varchar(45),created_ts datetime,modified_ts datetime"
 		}
 	]
 }

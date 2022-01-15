@@ -61,7 +61,7 @@ on fpv.patient_visit_key = fpva.patient_visit_key
 DROP VIEW IF EXISTS healthscore_dw.amgh_bill_items_master_view;
 CREATE VIEW healthscore_dw.amgh_bill_items_master_view
 as select dbi.hospital_key, bill_item_key,bill_item_type,bill_item_category_cd,bill_item_category_nm,bill_item_category_desc,bill_item_cd,bill_item_nm,bill_item_amt,transaction_type_cd,pkg_effective_from_ts,pkg_effective_to_ts
-,renewal_item_flg,effective_from_ts,effective_to_ts,rate_category_nm,dbi.active_flg
+,renewal_item_flg,effective_from_ts,effective_to_ts,rate_category_nm,dbi.active_flg,consulting_staff_key
  from healthscore_dw.dim_bill_items dbi
 join healthscore_dw.amgh_hospital_master_view dh
 on dbi.hospital_key = dh.hospital_key
