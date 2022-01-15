@@ -45,12 +45,17 @@ on fpm.prescribed_hospital_key = hm.hospital_key;
 
 DROP VIEW IF EXISTS healthscore_dw.az_patient_assessments_view;
 CREATE VIEW healthscore_dw.az_patient_assessments_view as
-SELECT patient_assmt_key,fpa.patient_key,visit_hospital_key as hospital_key,patient_visit_key,health_assessment_scale_desc,hospital_dept_nm,assessment_result_item_seq_no,assessment_result_item_ref_range_txt,assessment_result_item_display_txt,assessment_result_item_value,assessed_date_key,assessed_time_key,assessed_ts
+SELECT fpa.patient_assmt_key,fpa.patient_key,visit_hospital_key as hospital_key,patient_visit_key,health_assessment_scale_desc,hospital_dept_nm,
+result_item_row_no as assessment_result_item_seq_no,result_item_ref_range_txt as assessment_result_item_ref_range_txt, result_item_display_txt as assessment_result_item_display_txt,
+result_item_value as assessment_result_item_value,assessed_date_key,assessed_time_key,assessed_ts
 FROM healthscore_dw.fact_patient_assessments fpa
+join healthscore_dw.fact_patient_assessment_results fpar
+on fpa.patient_assmt_key=fpar.patient_assmt_key
 join healthscore_dw.az_patient_master_view pm
 on fpa.patient_key = pm.patient_key
 join healthscore_dw.az_hospital_master_view hm
 on fpa.visit_hospital_key = hm.hospital_key
+where fpa.active_flg=1 and fpar.active_flg=1
 ;
 
 DROP VIEW IF EXISTS healthscore_dw.az_hospital_staff_master_view;

@@ -960,7 +960,7 @@ CREATE TABLE healthscore_dw.dim_patient_birth_exam_history (
 alter table healthscore_dw.fact_patient_visits modify COLUMN outcome_type MEDIUMTEXT;
 alter table healthscore_dw.fact_patient_visits modify COLUMN  condition_at_discharge MEDIUMTEXT;
 
-alter table  healthscore_dw.fact_patient_assessments modify column assessment_result_item_value varchar(2000);
+alter table  healthscore_dw.fact_patient_assessment_results modify column result_item_value varchar(2000);
 
 DROP TABLE IF EXISTS healthscore_dw.fact_patient_careplan_execution_details;
 CREATE TABLE healthscore_dw.fact_patient_careplan_execution_details (
@@ -1128,3 +1128,115 @@ CREATE TABLE healthscore_dw.fact_patient_app_statistics (
 ALTER TABLE healthscore_dw.fact_patient_assessments
 ADD COLUMN assessment_scale_master_id bigint(50) not null default 0,
 ADD COLUMN assessment_scale_item_master_id bigint(50) NOT NULL default 0;
+
+
+-- to be executed as of 20-09-2021 from below
+
+ DROP TABLE IF EXISTS healthscore_dw.fact_patient_assessments;
+ CREATE TABLE healthscore_dw.fact_patient_assessments(
+  patient_assmt_key int(11) NOT NULL AUTO_INCREMENT,
+  patient_key int(11) NOT NULL,
+  visit_hospital_key int(11) DEFAULT NULL,
+  patient_visit_key int(11) default null,
+  patient_assessment_id bigint(50) not null default 0, 
+  assessment_scale_master_id bigint(50) not null default 0, 
+  assessment_scale_desc varchar(255) NOT NULL,
+  hospital_dept_nm varchar(255) NOT NULL, 
+  assessed_date_key date not null,
+  assessed_time_key time not null,
+  assessed_ts datetime not null,
+  visit_assessment_status_flg TINYINT(1) default null,
+  deactivation_comment varchar(255) null,
+  active_flg TINYINT(1) default null,
+  source_cd varchar(50) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (patient_assmt_key),
+  UNIQUE uk_patient_assessments_key(source_cd,patient_assessment_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+
+ DROP TABLE IF EXISTS healthscore_dw.fact_patient_assessment_results;
+ CREATE TABLE healthscore_dw.fact_patient_assessment_results(
+  patient_assmt_result_key int(11) NOT NULL AUTO_INCREMENT,
+  patient_assmt_key int(11) NOT NULL,  
+  patient_assessment_result_id bigint(50) NOT NULL default 0, 
+  assessment_result_item_master_id bigint(50) NOT NULL default 0, 
+  result_item_display_txt varchar(100),
+  result_item_value varchar(1000),  
+  result_item_ref_range_txt varchar(1000),
+  result_item_row_no int(11),
+  result_item_column_no int(11),
+  result_item_min_value decimal(10,2) DEFAULT NULL,
+  result_item_max_value decimal(10,2) DEFAULT NULL, 
+  active_flg TINYINT(1) default null,
+  source_cd varchar(50) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (patient_assmt_result_key),
+  UNIQUE uk_patient_assmt_result_key(source_cd,patient_assessment_result_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+ 
+ 
+ALTER TABLE  healthscore_dw.fact_patient_visit_advice CHANGE COLUMN advice_desc advice_desc MEDIUMTEXT NULL DEFAULT NULL;
+
+
+-- to be executed as of 10-01-2022 from below 
+ALTER TABLE  healthscore_dw.dim_patient 
+DROP COLUMN contact_email_id,
+DROP COLUMN contact_addr_line1,
+DROP COLUMN contact_addr_line2,
+DROP COLUMN contact_home_phone_num,
+DROP COLUMN contact_mobile_phone_num,
+DROP COLUMN patient_alternate_phone_num,
+DROP COLUMN patient_emerg_contact_nm,
+DROP COLUMN patient_emerg_contact_num;
+
+
+DROP TABLE IF EXISTS healthscore_dw.fact_consultant_appointment_schedule;
+ CREATE TABLE healthscore_dw.fact_consultant_appointment_schedule (
+  consultant_schedule_key int(11) NOT NULL AUTO_INCREMENT, 
+  hospital_key bigint(50) DEFAULT NULL,
+  consulting_staff_key int(11) NOT NULL,
+  schedule_date_key DATE not null,
+  schedule_start_time_key time NOT NULL,
+  schedule_end_time_key time DEFAULT NULL,
+  consultant_schedule_id int(11) NOT NULL,
+  duration int(11) DEFAULT NULL, 
+  active_flg TINYINT(1) null,
+  timeslot_usage_limit int(11),
+  timeslot_used_cnt   int(11),
+  schedule_created_ts datetime NOT NULL,
+  schedule_modified_ts datetime NULL,
+  source_cd varchar(50) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (consultant_schedule_key),
+  UNIQUE uk_consultant_schedule_key(hospital_key,consultant_schedule_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.fact_patient_appointments;
+ CREATE TABLE healthscore_dw.fact_patient_appointments (
+  patient_appt_key int(11) NOT NULL AUTO_INCREMENT,
+  patient_key int(11) NOT NULL,
+  consultant_schedule_key int(11) NOT NULL,
+  hospital_key bigint(50) DEFAULT NULL,
+  patient_appointment_id bigint(50) NOT NULL,
+  schedule_status  varchar(255) NOT NULL, -- requested, confirmed, cancelled
+  visit_type varchar(255) ,
+  contact_type varchar(255) ,
+  appointment_status varchar(255), -- no show, fulfilled, cancelled
+  appointment_created_ts datetime NOT NULL,
+  appointment_modified_ts datetime,
+  patient_visit_key int(11) , 
+  bill_item_key int(11) , 
+  source_cd varchar(50) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (patient_appt_key),
+  UNIQUE uk_patient_appointments_key(hospital_key,patient_appointment_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
