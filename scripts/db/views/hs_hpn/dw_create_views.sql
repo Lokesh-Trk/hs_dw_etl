@@ -14,19 +14,21 @@ join healthscore_dw.map_patient_hospital mph
 on mph.patient_key = dp.patient_key
 join healthscore_dw.hpn_hospital_master_view dh
 on mph.hospital_key = dh.hospital_key ;
-  
+
 DROP VIEW IF EXISTS healthscore_dw.hpn_patient_assessments_view;
 CREATE VIEW healthscore_dw.hpn_patient_assessments_view as
 SELECT   
 fpa.patient_assmt_key,fpa.patient_key,visit_hospital_key as hospital_key,patient_visit_key,assessed_date_key,assessed_time_key,assessed_ts,hospital_dept_nm,
 assessment_scale_master_id,fpa.patient_assessment_id , 
+assessment_scale_desc as assessment_scale_full_nm,
 SUBSTRING_INDEX(assessment_scale_desc,'-',1) as assessment_category,
 SUBSTRING_INDEX(assessment_scale_desc,'-',-1) as assessment_scale_desc, 
 trim(replace(result_item_display_txt,'Statistical Scores and comments','')) as result_item_display_txt ,
 min(result_item_row_no) as result_item_row_no,min(result_item_column_no) as result_item_column_no,
 max(result_item_ref_range_txt) result_item_ref_range_txt ,max(result_item_min_value) as result_item_min_value,max(result_item_max_value) as result_item_max_value ,
 max(case when result_item_display_txt like '%Signing Credentials%' then replace(replace(result_item_value,'<p>',''),'</p>','\n')  when result_item_display_txt not like '%Statistical Scores and comments%' then fnStripTags(result_item_value) else null end) as result_item_value,
-max(case when result_item_display_txt like '%Statistical Scores and comments%' then fnStripTags(result_item_value) else null end) as statistical_score_and_comment
+max(case when result_item_display_txt like '%Statistical Scores and comments%' then fnStripTags(result_item_value) else null end) as statistical_score_and_comment,
+sum(case when result_item_value REGEXP '^[0-9]+$' then result_item_value else null end) as numeric_result_value
 FROM healthscore_dw.fact_patient_assessments fpa
 join healthscore_dw.fact_patient_assessment_results fpar
 on fpa.patient_assmt_key=fpar.patient_assmt_key
@@ -35,7 +37,7 @@ on fpa.patient_key = pm.patient_key
 join healthscore_dw.hpn_hospital_master_view hm
 on fpa.visit_hospital_key = hm.hospital_key   
 group by fpa.patient_assmt_key,fpa.patient_key,visit_hospital_key  ,patient_visit_key,assessed_date_key,assessed_time_key,assessed_ts,hospital_dept_nm,
-assessment_scale_master_id,fpa.patient_assessment_id , 
+assessment_scale_master_id,fpa.patient_assessment_id , assessment_scale_desc,
 SUBSTRING_INDEX(assessment_scale_desc,'-',1)  ,
 SUBSTRING_INDEX(assessment_scale_desc,'-',-1)  ,trim(replace(result_item_display_txt,'Statistical Scores and comments','')) 
 ;
@@ -65,35 +67,38 @@ on fpv.patient_visit_key = fpva.patient_visit_key
 
 DROP VIEW IF EXISTS healthscore_dw.hpn_patient_past_history_view;
 CREATE VIEW healthscore_dw.hpn_patient_past_history_view AS
-SELECT fci.patient_key,patient_visit_key,fnStripTags(clinical_info_desc) as past_history,effective_from_ts,effective_to_ts
+SELECT fci.patient_key,patient_visit_key,group_concat(distinct concat(fnStripTags(clinical_info_desc),case when effective_from_ts is not null then concat(' since ',date(effective_from_ts)) else '' end)) as past_history
 FROM healthscore_dw.fact_patient_clinical_info fci
 join healthscore_dw.map_patient_hospital mph
 on mph.patient_key = fci.patient_key
 join healthscore_dw.hpn_hospital_master_view  hm
 on mph.hospital_key = hm.hospital_key
-WHERE clinical_info_type_cd='pasthistory';
+WHERE clinical_info_type_cd='pasthistory'
+group by fci.patient_key,patient_visit_key;
 
 DROP VIEW IF EXISTS healthscore_dw.hpn_patient_family_history_view;
 CREATE VIEW healthscore_dw.hpn_patient_family_history_view AS
-SELECT fci.patient_key,patient_visit_key,SUBSTRING_INDEX(fnStripTags(clinical_info_desc),'-',-1)  as family_history,effective_from_ts,effective_to_ts
+SELECT fci.patient_key,patient_visit_key,group_concat(distinct concat(SUBSTRING_INDEX(fnStripTags(clinical_info_desc),'-',-1),case when effective_from_ts is not null then concat(' since ',date(effective_from_ts)) else '' end))  as family_history 
 FROM healthscore_dw.fact_patient_clinical_info fci
 join healthscore_dw.map_patient_hospital mph
 on mph.patient_key = fci.patient_key
 join healthscore_dw.hpn_hospital_master_view  hm
 on mph.hospital_key = hm.hospital_key
-WHERE clinical_info_type_cd='familyhistory';
+WHERE clinical_info_type_cd='familyhistory'
+group by fci.patient_key,patient_visit_key;
 
 
 ​
 DROP VIEW IF EXISTS healthscore_dw.hpn_patient_diagnosis_view;
 CREATE VIEW healthscore_dw.hpn_patient_diagnosis_view AS
-SELECT fci.patient_key,patient_visit_key,clinical_info_desc as diagnosis_nm,effective_from_ts,effective_to_ts
+SELECT fci.patient_key,patient_visit_key,group_concat(distinct clinical_info_desc)  as diagnosis_nm 
 FROM healthscore_dw.fact_patient_clinical_info fci
 join healthscore_dw.map_patient_hospital mph
 on mph.patient_key = fci.patient_key
 join healthscore_dw.hpn_hospital_master_view  hm
 on mph.hospital_key = hm.hospital_key
-WHERE clinical_info_type_cd='diagnosis';
+WHERE clinical_info_type_cd='diagnosis'
+group by fci.patient_key,patient_visit_key;
 
   
 -- CREATE USER hpn_db_viewer@localhost IDENTIFIED BY <PWD>; 

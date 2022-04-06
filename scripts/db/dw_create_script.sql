@@ -1240,3 +1240,10 @@ DROP TABLE IF EXISTS healthscore_dw.fact_patient_appointments;
   PRIMARY KEY (patient_appt_key),
   UNIQUE uk_patient_appointments_key(hospital_key,patient_appointment_id)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+-- 22 mar 22
+ALTER TABLE healthscore_dw.dim_patient_documents ADD COLUMN source_cd varchar(45) DEFAULT NULL;
+ALTER TABLE healthscore_dw.dim_patient_documents ADD COLUMN updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP;
+ALTER TABLE healthscore_dw.dim_patient_documents ADD COLUMN published_ts datetime DEFAULT null;
+ALTER TABLE healthscore_dw.dim_patient_documents ADD COLUMN published_staff_key int(11) DEFAULT NULL;
+
