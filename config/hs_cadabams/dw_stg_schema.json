@@ -144,7 +144,7 @@
 		},
 		{
 			"tablename": "hs_patient_document_master",
-			"fields": " document_id bigint(11) NOT NULL,  patient_id bigint(11) NOT NULL,  upload_visit_id int(11) DEFAULT NULL,  upload_url varchar(1000) DEFAULT NULL,  document_nm varchar(200) DEFAULT NULL,  document_desc varchar(1000) DEFAULT NULL,  thumbnail_url varchar(200) DEFAULT NULL,  version_id varchar(145) DEFAULT NULL,  thumbnail_version_id varchar(145) DEFAULT NULL,  active_flg tinyint(1) NOT NULL DEFAULT '1',  created_by varchar(45) DEFAULT NULL,  created_ts datetime DEFAULT NULL,  modified_by varchar(45) DEFAULT NULL,  modified_ts datetime DEFAULT NULL",
+			"fields": " document_id bigint(11) NOT NULL,  patient_id bigint(11) NOT NULL,  upload_visit_id int(11) DEFAULT NULL,  upload_url varchar(1000) DEFAULT NULL,  document_nm varchar(200) DEFAULT NULL,  document_desc varchar(1000) DEFAULT NULL,  thumbnail_url varchar(200) DEFAULT NULL,  version_id varchar(145) DEFAULT NULL,  thumbnail_version_id varchar(145) DEFAULT NULL,  active_flg tinyint(1) NOT NULL DEFAULT '1',  created_by varchar(45) DEFAULT NULL,  created_ts datetime DEFAULT NULL,  modified_by varchar(45) DEFAULT NULL,  modified_ts datetime DEFAULT NULL, published_ts datetime DEFAULT NULL, published_by varchar(100) DEFAULT NULL",
 			"primary_key": "document_id"
 		},
 		{
