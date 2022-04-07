@@ -130,7 +130,7 @@ JOIN healthscore_dw.dim_careplan_instruction_master fcim
 ON fcim.careplan_instruction_master_key = fcpi.careplan_instruction_master_key
 JOIN healthscore_dw.suvitas_hospital_master_view hm ON fcp.visit_hospital_key = hm.hospital_key
 where fcpi.active_flg=1 and fcp.active_flg=1;
-
+​
 DROP VIEW IF EXISTS healthscore_dw.suvitas_bill_items_master_view;
 CREATE VIEW healthscore_dw.suvitas_bill_items_master_view
 as select dbi.hospital_key, bill_item_key,bill_item_type,bill_item_category_cd,bill_item_category_nm,bill_item_category_desc,bill_item_cd,bill_item_nm,bill_item_amt,transaction_type_cd,pkg_effective_from_ts,pkg_effective_to_ts
