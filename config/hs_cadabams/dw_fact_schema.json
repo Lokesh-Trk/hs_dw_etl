@@ -217,6 +217,14 @@
 			"insert_query": "select mph.patient_key, cas.consultant_schedule_key,cas.hospital_key, pam.patient_appointment_id ,schedule_status_desc as schedule_status,  case when pam.visit_type = '' then 'in person' else lower(pam.visit_type) end  as visit_type,pam.contact_type, CASE WHEN pam.contact_type IS NULL AND pam.visit_type IS NULL THEN 'AVAILABLE' ELSE IFNULL(status,'FULFILLED') END  as appointment_status, pam.created_ts as appointment_created_ts, pam.modified_ts as appointment_modified_ts, fpv.patient_visit_key,'{0}',{1}  from healthscore_stg.hs_patient_appointments_master pam join healthscore_dw.fact_consultant_appointment_schedule cas on pam.consultant_schedule_id = cas.consultant_schedule_id join healthscore_dw.map_patient_hospital mph on mph.hospital_patient_id = pam.patient_id and cas.hospital_key = mph.hospital_key join healthscore_stg.hs_hospital_master hm  on mph.hospital_cd= hm.hs_hospital_cd_guid join healthscore_stg.hs_schedule_status_master ssm on pam.schedule_status_id = ssm.schedule_status_id left join fact_patient_visits fpv on pam.visit_id=fpv.hospital_patient_visit_id and cas.hospital_key= fpv.visit_hospital_key",
 			"where_clause": "mph.hospital_key=%i",
 			"update_fields": " schedule_status = src.schedule_status , appointment_status = src.appointment_status, visit_type = src.visit_type,  contact_type = src.contact_type,  appointment_created_ts = src.appointment_created_ts ,  appointment_modified_ts = src.appointment_modified_ts, patient_visit_key = src.patient_visit_key  "
+		},
+		{
+			"tablename": "fact_content_info",
+			"source_table": "content_action_log",
+			"fields": "patient_key, hospital_key, content_key, viewed_ts, viewed_date_key, source_cd, etl_load_id",
+			"insert_query": "SELECT map_patient_hospital.patient_key, map_patient_hospital.hospital_key, dim_content.content_key, content_action_log.created_ts as viewed_ts, date(content_action_log.created_ts) viewed_date_key, '{0}', {1} from healthscore_stg.content_action_log join healthscore_dw.map_patient_hospital on map_patient_hospital.hospital_patient_cd = content_action_log.user_id join healthscore_dw.dim_content on content_action_log.shared_content_id = dim_content.shared_content_id ",
+			"where_clause": "map_patient_hospital.hospital_key=%i",
+			"update_fields": "viewed_ts = src.viewed_ts, viewed_date_key=src.viewed_date_key"
 		}
 	],
 	"update_table_info": []

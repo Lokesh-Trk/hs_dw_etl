@@ -12,6 +12,11 @@
 			"primary_key": "bill_item_id"
 		},
 		{
+			"tablename": "content_action_log",
+			"fields": "content_action_log_id int(11) NOT NULL AUTO_INCREMENT, user_id varchar(45) NOT NULL, user_type_id int(11) NOT NULL, shared_content_id int(11) NOT NULL,tenant_cd varchar(45) NOT NULL, user_action_type_id int(11) NOT NULL, comments mediumtext NOT NULL, active_flg tinyint(1) DEFAULT '1',created_by varchar(45) NOT NULL, created_ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, modified_by varchar(45) DEFAULT NULL,modified_ts timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP",
+			"primary_key": "content_action_log_id"
+		},
+		{
 			"tablename": "hs_bill_items_package_map_master",
 			"fields": "bill_items_package_master_id bigint(15) NOT NULL, package_bill_item_code varchar(45) NOT NULL, sub_bill_item_code varchar(45) DEFAULT NULL, effective_from_ts timestamp NOT NULL, created_ts datetime NOT NULL, created_by varchar(45) NOT NULL, modified_ts timestamp NULL DEFAULT NULL, modified_by varchar(45) DEFAULT NULL, item_seq_nbr int(15) DEFAULT NULL, effective_to_ts timestamp NULL DEFAULT NULL",
 			"primary_key": "bill_items_package_master_id"
