@@ -1277,3 +1277,6 @@ CREATE TABLE healthscore_dw.fact_content_info
   PRIMARY KEY (content_info_key),
   unique key (patient_key,hospital_key,content_key)
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+
+ALTER TABLE  healthscore_dw.fact_patient_visitbillitems ADD COLUMN (payment_last_cd varchar(45),payment_approval_cd varchar(45));
