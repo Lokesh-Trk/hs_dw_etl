@@ -60,7 +60,7 @@ def start_etl(load_id,data_source_cd):
 		# Update data that has been modified in the load date range
 		for table_data in update_fact_table_data:
 			table_name = f'{target_database_nm}.{table_data["tablename"]}'
-			sql = f"UPDATE {table_name} fact JOIN ({table_data['join_query']}) src ON {table_data['on_clause']}" 
+			sql = f"UPDATE {table_name} fact JOIN ({table_data['join_query']}) src ON {table_data['on_clause'].format(data_source_cd,load_id)}" 
 			sql = f"{sql} SET {table_data['fields']}"
 
 			#if table has been processed for the given load id successfully, then, skip it
