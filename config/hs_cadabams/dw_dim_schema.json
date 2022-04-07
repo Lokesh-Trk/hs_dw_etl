@@ -117,8 +117,8 @@
 			"tablename": "dim_content",
 			"source_table": "content_action_log",
 			"fields": "hospital_key, shared_content_id, content_url, etl_load_id, source_cd",
-			"insert_query": "SELECT map_patient_hospital.hospital_key, content_action_log.shared_content_id,substring_index(comments,' ',1) as content_url,{0},'{1}' FROM healthscore_stg.content_action_log JOIN healthscore_dw.map_patient_hospital on map_patient_hospital.hospital_patient_cd = content_action_log.user_id",	
-			"update_fields":"shared_content_id= src.shared_content_id,content_url= src.content_url"
+			"insert_query": "SELECT DISTINCT map_patient_hospital.hospital_key, content_action_log.shared_content_id,substring_index(comments,' ',1) as content_url,{0},'{1}' FROM healthscore_stg.content_action_log JOIN healthscore_dw.map_patient_hospital on map_patient_hospital.hospital_patient_cd = content_action_log.user_id",	
+			"update_fields":"content_url= src.content_url"
 		}
 	],
 	"update_table_info": [

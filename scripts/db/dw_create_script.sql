@@ -24,21 +24,6 @@ use healthscore_dw;
  PRIMARY KEY (date_key)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-drop TABLE if exists healthscore_dw.dim_content;
-use healthscore_dw;
- CREATE TABLE healthscore_dw.dim_content (
-  content_key int(11) NOT NULL AUTO_INCREMENT,
-  hospital_key int(11) NOT NULL,
-  shared_content_id int(11) NOT NULL,
-  content_url varchar(1000) NOT NULL,
-  source_cd varchar(45) NOT NULL,
-  etl_load_id int(11) NOT NULL,
-  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
-  updated_ts timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (content_key)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
-
-
 drop TABLE if exists healthscore_dw.dim_time;
  CREATE TABLE healthscore_dw.dim_time (
   time_key time NOT NULL,
@@ -349,24 +334,6 @@ CREATE TABLE healthscore_dw.fact_patient_investigations
  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,	
  PRIMARY KEY (patient_investigation_key),
  UNIQUE uk_patient_investigation_key(patient_key,hospital_key,investigation_type,investigation_date_key,investigation_time_key)
-)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
-
-DROP TABLE IF EXISTS healthscore_dw.fact_content_info;
-use healthscore_dw;
-CREATE TABLE healthscore_dw.fact_content_info
-(
-  content_info_key int(11) NOT NULL AUTO_INCREMENT,
-  patient_key int(11) NOT NULL,
-  hospital_key int(11) NOT NULL,
-  content_key int(11) NOT NULL,
-  viewed_ts datetime,
-  viewed_date_key date NOT NULL,
-  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
-  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
-  etl_load_id int(11) NOT NULL,
-  source_cd varchar(20) NOT NULL,
-  PRIMARY KEY (content_info_key),
-  unique key (patient_key,hospital_key,content_key)
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS healthscore_dw.etl_log; 
@@ -1272,3 +1239,36 @@ DROP TABLE IF EXISTS healthscore_dw.fact_patient_appointments;
   PRIMARY KEY (patient_appt_key),
   UNIQUE uk_patient_appointments_key(hospital_key,patient_appointment_id)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+drop TABLE if exists healthscore_dw.dim_content;
+use healthscore_dw;
+ CREATE TABLE healthscore_dw.dim_content (
+  content_key int(11) NOT NULL AUTO_INCREMENT,
+  hospital_key int(11) NOT NULL,
+  shared_content_id int(11) NOT NULL,
+  content_url varchar(1000) NOT NULL,
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (content_key),
+  UNIQUE KEY (hospital_key, shared_content_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.fact_content_info;
+use healthscore_dw;
+CREATE TABLE healthscore_dw.fact_content_info
+(
+  content_info_key int(11) NOT NULL AUTO_INCREMENT,
+  patient_key int(11) NOT NULL,
+  hospital_key int(11) NOT NULL,
+  content_key int(11) NOT NULL,
+  viewed_ts datetime,
+  viewed_date_key date NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  etl_load_id int(11) NOT NULL,
+  source_cd varchar(20) NOT NULL,
+  PRIMARY KEY (content_info_key),
+  unique key (patient_key,hospital_key,content_key)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
