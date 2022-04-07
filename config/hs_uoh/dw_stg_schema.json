@@ -389,7 +389,7 @@
 		},
 		{
 			"tablename": "content_action_log",
-			"fields": "content_action_log_id int(11) NOT NULL AUTO_INCREMENT, user_id varchar(45) NOT NULL, user_type_id int(11) NOT NULL, shared_content_id int(11) NOT NULL,tenant_cd varchar(45) NOT NULL, user_action_type_id int(11) NOT NULL, comments mediumtext NOT NULL, active_flg tinyint(1) DEFAULT '1',created_by varchar(45) NOT NULL, created_ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, modified_by varchar(45) DEFAULT NULL,modified_ts timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP"
+			"fields": "content_action_log_id int(11), user_id varchar(45) , user_type_id int(11) , shared_content_id int(11) ,tenant_cd varchar(45) , user_action_type_id int(11) , comments mediumtext , active_flg tinyint(1) ,created_by varchar(45) , created_ts datetime , modified_by varchar(45)  ,modified_ts datetime"
 		},
 		{
 			"tablename": "hs_patient_visit_payment_details",
