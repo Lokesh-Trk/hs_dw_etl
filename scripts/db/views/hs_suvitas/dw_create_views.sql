@@ -62,7 +62,7 @@ join healthscore_dw.suvitas_hospital_master_view hm
 on fpa.visit_hospital_key = hm.hospital_key
 join (select distinct patient_assmt_key 
 from healthscore_dw.fact_patient_assessment_results fpar
-where result_item_display_txt='Assessment Timeline'
+where result_item_display_txt like 'Assessment Timeline%'
 and  result_item_value='Admission' and active_flg = 1  ) admission_assmt
 on admission_assmt.patient_assmt_key = fpa.patient_assmt_key
 ;
@@ -80,7 +80,7 @@ join healthscore_dw.suvitas_hospital_master_view hm
 on fpa.visit_hospital_key = hm.hospital_key
 join (select distinct patient_assmt_key 
 from healthscore_dw.fact_patient_assessment_results fpar
-where result_item_display_txt='Assessment Timeline'
+where result_item_display_txt like 'Assessment Timeline%'
 and  result_item_value='Discharge' and active_flg = 1  ) discharge_assmt
 on discharge_assmt.patient_assmt_key = fpa.patient_assmt_key
 ;
@@ -145,15 +145,17 @@ CREATE VIEW healthscore_dw.suvitas_vist_bill_items_view AS
 SELECT  patient_visitbillitem_key,fvbi.bill_item_key,vbi_date_key AS transaction_date_key,vbi_time_key AS transaction_time_key,vbi_created_staff_key,bill_item_qty,bill_item_returned_qty,bill_item_unit_amt,bill_item_total_concession_amt,bill_item_final_amt,
 bill_item_receipt_cd,bill_item_total_tax,pharmacy_item_flg,vbi_created_ts,vbv.patient_key,vbv.visit_hospital_key,vbv.patient_visit_key,visit_bill_cd,visit_bill_from_ts,visit_bill_to_ts,visit_bill_comments,visit_bill_created_ts,
 case when bill_item_cd = 'PYR' then bill_item_final_amt else 0 end as payment_amt,
+case when bill_item_cd = 'PYO' then bill_item_final_amt else 0 end as prior_outstd_amt,
 case when bill_item_cd = 'PRF' then bill_item_final_amt else 0 end as refund_amt,
 case when bill_item_cd = 'WAI' then bill_item_final_amt else 0 end as waived_amt,
-case when bill_item_receipt_cd is null then bill_item_final_amt else 0 end as bill_amt,
-payment_method_desc
+case when bill_item_receipt_cd is null and bill_item_cd <> 'PYO' then bill_item_final_amt else 0 end as bill_amt,
+payment_method_desc,payment_comments,non_editable_comments
 FROM healthscore_dw.fact_patient_visitbillitems fvbi
 JOIN healthscore_dw.fact_patient_visitbills vbv ON vbv.patient_visitbill_key = fvbi.patient_visitbill_key
 JOIN healthscore_dw.suvitas_patient_visit_view pvv ON pvv.patient_visit_key = vbv.patient_visit_key
 JOIN healthscore_dw.suvitas_bill_items_master_view bim ON fvbi.bill_item_key = bim.bill_item_key
-WHERE fvbi.active_flg = 1;
+WHERE fvbi.active_flg = 1
+;
 ​
 DROP view if exists healthscore_dw.suvitas_hospital_daily_statistics_view;
 CREATE VIEW healthscore_dw.suvitas_hospital_daily_statistics_view AS
