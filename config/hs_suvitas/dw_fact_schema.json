@@ -222,7 +222,7 @@
 			"tablename": "fact_content_info",
 			"source_table": "content_action_log",
 			"fields": "patient_key, hospital_key, content_key, viewed_ts, viewed_date_key, source_cd, etl_load_id",
-			"insert_query": "SELECT mph.patient_key, mph.hospital_key, dim_c.content_key, c.created_ts as viewed_ts, date(c.created_ts) viewed_date_key from healthscore_stg.content_action_log c join healthscore_dw.map_patient_hospital  mph on mph.hospital_patient_cd = c.user_id join healthscore_dw.dim_content dim_c on c.shared_content_id = dim_c.shared_content_id and dim_c.hospital_key = mph.hospital_key",
+			"insert_query": "SELECT mph.patient_key, mph.hospital_key, dim_c.content_key, c.created_ts as viewed_ts, date(c.created_ts) viewed_date_key,'{0}',{1} from healthscore_stg.content_action_log c join healthscore_dw.map_patient_hospital  mph on mph.hospital_patient_cd = c.user_id join healthscore_dw.dim_content dim_c on c.shared_content_id = dim_c.shared_content_id and dim_c.hospital_key = mph.hospital_key",
 			"where_clause": "mph.hospital_key=%i",
 			"update_fields": "viewed_ts = src.viewed_ts, viewed_date_key=src.viewed_date_key"
 		}
