@@ -1240,8 +1240,14 @@ DROP TABLE IF EXISTS healthscore_dw.fact_patient_appointments;
   UNIQUE uk_patient_appointments_key(hospital_key,patient_appointment_id)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
+ 
+-- 22 mar 22
+ALTER TABLE healthscore_dw.dim_patient_documents ADD COLUMN source_cd varchar(45) DEFAULT NULL;
+ALTER TABLE healthscore_dw.dim_patient_documents ADD COLUMN updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP;
+ALTER TABLE healthscore_dw.dim_patient_documents ADD COLUMN published_ts datetime DEFAULT null;
+ALTER TABLE healthscore_dw.dim_patient_documents ADD COLUMN published_staff_key int(11) DEFAULT NULL;
+
 drop TABLE if exists healthscore_dw.dim_content;
-use healthscore_dw;
  CREATE TABLE healthscore_dw.dim_content (
   content_key int(11) NOT NULL AUTO_INCREMENT,
   hospital_key int(11) NOT NULL,
@@ -1256,7 +1262,6 @@ use healthscore_dw;
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS healthscore_dw.fact_content_info;
-use healthscore_dw;
 CREATE TABLE healthscore_dw.fact_content_info
 (
   content_info_key int(11) NOT NULL AUTO_INCREMENT,
@@ -1272,3 +1277,6 @@ CREATE TABLE healthscore_dw.fact_content_info
   PRIMARY KEY (content_info_key),
   unique key (patient_key,hospital_key,content_key)
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+
+ALTER TABLE  healthscore_dw.fact_patient_visitbillitems ADD COLUMN (payment_last_cd varchar(45),payment_approval_cd varchar(45));
