@@ -1352,3 +1352,24 @@ DROP TABLE if exists healthscore_dw.dim_product_batch;
   PRIMARY KEY (product_batch_key),
   UNIQUE KEY (product_key, batch_id)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.fact_daily_stock_transactions;
+CREATE TABLE healthscore_dw.fact_daily_stock_transactions
+(
+  stock_transaction_key bigint(11) NOT NULL AUTO_INCREMENT,
+  transaction_date_key datetime NOT NULL,
+  hospital_key int(11) NOT NULL,
+  product_batch_key int(11) NOT NULL,
+  store_key int(11) NOT NULL,
+  stock_transaction_id int(11) NOT NULL,
+  transaction_type_cd varchar(10) NOT NULL ,
+  transaction_type_nm varchar(45) ,
+  adjustment_status_cd varchar(45) ,
+  transaction_qty int(11) NOT NULL DEFAULT 0, 
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (stock_transaction_key),
+  unique key (as_of_date_key,hospital_key,product_batch_key,store_key)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;

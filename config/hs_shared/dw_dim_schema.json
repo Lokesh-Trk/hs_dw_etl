@@ -130,22 +130,22 @@
 		{
 			"tablename": "dim_vendor",
 			"source_table": "hs_hospital_vendor_master",
-			"fields": "hospital_key, vendor_id, vendor_nm, vendor_desc, etl_load_id, source_cd",
-			"insert_query": "SELECT dh.hospital_key, hvm.vendor_master_id as vendor_id, hvm.vendor_nm, hvm.vendor_desc, {0},'{1}' FROM healthscore_stg.hs_hospital_vendor_master hvm JOIN healthscore_stg.hs_hospital_master hm on hm.hospital_id = hvm.hospital_master_id JOIN healthscore_dw.dim_hospital dh on  dh.hospital_cd = hm.hs_hospital_cd_guid ",
+			"fields": "hospital_key, vendor_id, vendor_nm, vendor_desc, active_flg, etl_load_id, source_cd",
+			"insert_query": "SELECT dh.hospital_key, hvm.vendor_master_id as vendor_id, hvm.vendor_nm, hvm.vendor_desc, hvm.active_flg,{0},'{1}' FROM healthscore_stg.hs_hospital_vendor_master hvm JOIN healthscore_stg.hs_hospital_master hm on hm.hospital_id = hvm.hospital_master_id JOIN healthscore_dw.dim_hospital dh on  dh.hospital_cd = hm.hs_hospital_cd_guid ",
 			"update_fields": "vendor_nm = src.vendor_nm, vendor_desc = src.vendor_desc"
 		},
 		{
 			"tablename": "dim_store",
 			"source_table": "hs_hospital_store_master",
-			"fields": "hospital_key, store_id, store_cd, store_nm, main_store_flg, etl_load_id, source_cd",
-			"insert_query": "SELECT dh.hospital_key, hsm.hospital_store_master_id as store_id, hsm.hospital_store_cd as store_cd, hsm.hospital_store_nm as store_nm, hsm.main_store_flg, {0},'{1}' FROM healthscore_stg.hs_hospital_store_master hsm JOIN healthscore_stg.hs_hospital_master hm on hm.hospital_id = hsm.hospital_master_id JOIN healthscore_dw.dim_hospital dh on  dh.hospital_cd = hm.hs_hospital_cd_guid",
+			"fields": "hospital_key, store_id, store_cd, store_nm, main_store_flg, allow_direct_billing_flg, active_flg, etl_load_id, source_cd",
+			"insert_query": "SELECT dh.hospital_key, hsm.hospital_store_master_id as store_id, hsm.hospital_store_cd as store_cd, hsm.hospital_store_nm as store_nm, hsm.main_store_flg, hsm.allow_direct_billing_flg, hsm.active_flg, {0},'{1}' FROM healthscore_stg.hs_hospital_store_master hsm JOIN healthscore_stg.hs_hospital_master hm on hm.hospital_id = hsm.hospital_master_id JOIN healthscore_dw.dim_hospital dh on  dh.hospital_cd = hm.hs_hospital_cd_guid",
 			"update_fields": "store_cd = src.store_cd, store_nm = src.store_nm, main_store_flg = src.main_store_flg"
 		},
 		{
 			"tablename": "dim_product_batch",
 			"source_table": "hs_stock_batch_details",
-			"fields": "product_key, batch_id, stock_batch_no, mrp, selling_price, expiry_date_key, etl_load_id, source_cd",
-			"insert_query": "SELECT dp.product_key, sbd.batch_id, sbd.stock_batch_no, sbd.mrp, sbd.selling_price, sbd.expire_dt as expiry_date_key, {0},'{1}' FROM healthscore_stg.hs_stock_batch_details sbd JOIN healthscore_dw.dim_product dp ON dp.product_id = sbd.product_master_id",
+			"fields": "product_key, batch_id, stock_batch_no, mrp, selling_price, expiry_date_key, store_key, product_id, etl_load_id, source_cd",
+			"insert_query": "SELECT dp.product_key, sbd.batch_id, sbd.stock_batch_no, sbd.mrp, sbd.selling_price, sbd.expire_dt as expiry_date_key, ds.store_key, sbd.product_master_id AS product_id, {0},'{1}' FROM healthscore_stg.hs_stock_batch_details sbd JOIN healthscore_dw.dim_product dp ON dp.product_id = sbd.product_master_id JOIN healthscore_dw.dim_store ds ON ds.store_id = sbd.hospital_store_master_id",
 			"update_fields": "stock_batch_no = src.stock_batch_no, mrp = src.mrp, selling_price = src.selling_price, expiry_date_key = src.expiry_date_key"
 		
 		}
