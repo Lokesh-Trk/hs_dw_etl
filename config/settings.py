@@ -1,17 +1,17 @@
 import os
 DB_CONFIG = {
 "host": "localhost",
-"user": "root",
-"passwd": "root1234",
+"user": "dw_user",
+"passwd": "d33W$er99",
 "staging_db": "healthscore_stg",
 "dw_db":"healthscore_dw",
 "port":"3306",
 "auth_plugin":"mysql_native_password"
 }
-CONFIG_DIR = "config/" 
+CONFIG_DIR = "config/"
 DEBUG = True
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-#SRC_DATA_DIR = "/home/taslimanazz/mysql-extract/dw_import/"
+SRC_DATA_DIR = "/home/ubuntu/mysql-extract/dw_import/"
 #SRC_DATA_DIR = "/Users/chiamala/mysql-extract/data/dw_import/"
 #SRC_DATA_DIR = "/home/csoft-tech/Downloads/CSV/"
 EXPORT_FILE_DIR="/home/ubuntu/mysql-extract/dw_export/"
