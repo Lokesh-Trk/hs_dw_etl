@@ -1163,7 +1163,7 @@ ADD COLUMN assessment_scale_item_master_id bigint(50) NOT NULL default 0;
   patient_assessment_result_id bigint(50) NOT NULL default 0, 
   assessment_result_item_master_id bigint(50) NOT NULL default 0, 
   result_item_display_txt varchar(100),
-  result_item_value varchar(1000),  
+  result_item_value varchar(4000),  
   result_item_ref_range_txt varchar(1000),
   result_item_row_no int(11),
   result_item_column_no int(11),
@@ -1280,3 +1280,96 @@ CREATE TABLE healthscore_dw.fact_content_info
 
 
 ALTER TABLE  healthscore_dw.fact_patient_visitbillitems ADD COLUMN (payment_last_cd varchar(45),payment_approval_cd varchar(45));
+
+-- apr 18 2022
+
+DROP TABLE if exists healthscore_dw.dim_product;
+ CREATE TABLE healthscore_dw.dim_product (
+  product_key int(11) NOT NULL AUTO_INCREMENT,
+  hospital_key int(11) NOT NULL,
+  product_id int(11) NOT NULL,
+  product_cd varchar(45) NOT NULL,
+  product_nm varchar(1000) ,
+  product_generic_nm varchar(1000) ,
+  product_hsn_cd varchar(45),
+  product_schedule_type_cd  varchar(45),
+  product_brand_nm varchar(255),
+  product_category_nm varchar(255),
+  tax_type_nm varchar(45),
+  tax_value_in_per decimal(6,3),
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (product_key),
+  UNIQUE KEY (hospital_key, product_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE if exists healthscore_dw.dim_vendor;
+ CREATE TABLE healthscore_dw.dim_vendor (
+  vendor_key int(11) NOT NULL AUTO_INCREMENT,
+  hospital_key int(11) NOT NULL,
+  vendor_id int(11) NOT NULL,
+  vendor_nm varchar(1000) ,
+  vendor_desc  varchar(1000),
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (vendor_key),
+  UNIQUE KEY (hospital_key, vendor_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE if exists healthscore_dw.dim_store;
+ CREATE TABLE healthscore_dw.dim_store (
+  store_key int(11) NOT NULL AUTO_INCREMENT,
+  hospital_key int(11) NOT NULL,
+  store_id int(11) NOT NULL,
+  store_cd varchar(45),
+  store_nm varchar(1000) ,
+  main_store_flg tinyint(1),
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (store_key),
+  UNIQUE KEY (hospital_key, store_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE if exists healthscore_dw.dim_product_batch;
+ CREATE TABLE healthscore_dw.dim_product_batch (
+  product_batch_key int(11) NOT NULL AUTO_INCREMENT,
+  product_key int(11) NOT NULL,
+  batch_id int(11) NOT NULL,
+  stock_batch_no varchar(45) NOT NULL,
+  mrp decimal(10,2),
+  selling_price decimal(10,2),
+  expiry_date_key date,
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (product_batch_key),
+  UNIQUE KEY (product_key, batch_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.fact_daily_stock_transactions;
+CREATE TABLE healthscore_dw.fact_daily_stock_transactions
+(
+  stock_transaction_key bigint(11) NOT NULL AUTO_INCREMENT,
+  transaction_date_key datetime NOT NULL,
+  hospital_key int(11) NOT NULL,
+  product_batch_key int(11) NOT NULL,
+  store_key int(11) NOT NULL,
+  stock_transaction_id int(11) NOT NULL,
+  transaction_type_cd varchar(10) NOT NULL ,
+  transaction_type_nm varchar(45) ,
+  adjustment_status_cd varchar(45) ,
+  transaction_qty int(11) NOT NULL DEFAULT 0, 
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (stock_transaction_key),
+  unique key (as_of_date_key,hospital_key,product_batch_key,store_key)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
