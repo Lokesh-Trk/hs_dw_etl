@@ -1280,3 +1280,69 @@ CREATE TABLE healthscore_dw.fact_content_info
 
 
 ALTER TABLE  healthscore_dw.fact_patient_visitbillitems ADD COLUMN (payment_last_cd varchar(45),payment_approval_cd varchar(45));
+
+DROP TABLE if exists healthscore_dw.dim_product;
+use healthscore_dw;
+ CREATE TABLE healthscore_dw.dim_product (
+  product_key int(11) NOT NULL AUTO_INCREMENT,
+  hospital_key int(11) NOT NULL,
+  product_id int(11) NOT NULL,
+  product_cd varchar(45) NOT NULL,
+  product_nm varchar(1000) ,
+  product_generic_nm varchar(1000) ,
+  product_hsn_cd varchar(45),
+  product_schedule_type_cd  varchar(45),
+  product_brand_nm varchar(255),
+  product_category_nm varchar(255),
+  tax_type_nm varchar(45),
+  tax_value_in_per decimal(6,3),
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (product_key),
+  UNIQUE KEY (hospital_key, product_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE if exists healthscore_dw.dim_vendor;
+ CREATE TABLE healthscore_dw.dim_vendor (
+  vendor_key int(11) NOT NULL AUTO_INCREMENT,
+  hospital_key int(11) NOT NULL,
+  vendor_id int(11) NOT NULL,
+  vendor_nm varchar(1000) ,
+  vendor_desc  varchar(1000),
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (vendor_key),
+  UNIQUE KEY (hospital_key, vendor_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE if exists healthscore_dw.dim_store;
+ CREATE TABLE healthscore_dw.dim_store (
+  store_key int(11) NOT NULL AUTO_INCREMENT,
+  hospital_key int(11) NOT NULL,
+  store_id int(11) NOT NULL,
+  store_cd varchar(45),
+  store_nm varchar(1000) ,
+  main_store_flg tinyint(1),
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (store_key),
+  UNIQUE KEY (hospital_key, store_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE if exists healthscore_dw.dim_product_batch;
+ CREATE TABLE healthscore_dw.dim_product_batch (
+  product_batch_key int(11) NOT NULL AUTO_INCREMENT,
+  product_key int(11) NOT NULL,
+  batch_id int(11) NOT NULL,
+  stock_batch_no varchar(45) NOT NULL,
+  mrp decimal(10,2),
+  selling_price decimal(10,2),
+  expiry_date_key date,
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (product_batch_key),
+  UNIQUE KEY (product_key, batch_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
