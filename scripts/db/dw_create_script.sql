@@ -1371,5 +1371,5 @@ CREATE TABLE healthscore_dw.fact_daily_stock_transactions
   source_cd varchar(45) NOT NULL,
   etl_load_id int(11) NOT NULL,
   PRIMARY KEY (stock_transaction_key),
-  unique key (as_of_date_key,hospital_key,product_batch_key,store_key)
+  unique key (hospital_key,stock_transaction_id)
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
