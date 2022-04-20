@@ -229,19 +229,27 @@
 		{
 			"tablename": "fact_daily_stock_transactions",
 			"source_table": "hs_stock_transactions",
-			"fields": "transaction_date_key, hospital_key, product_batch_key, store_key, stock_transaction_id, transaction_type_cd, transaction_type_nm, adjustment_status_cd, transaction_qty, source_cd, etl_load_id,",
-			"insert_query": "SELECT DATE(st.created_ts) AS transaction_date_key, dp.hospital_key, pb.product_batch_key, ds.store_key, st.stock_transactions_id, stt.stock_transaction_type_cd, stt.stock_transaction_type_nm,  sas.adjustment_status_cd, sas.adjustment_status_cd, st.stock_transactions_qty AS transaction_qty, '{0}',{1} FROM healthscore_stg.hs_stock_transactions st JOIN healthscore_dw.dim_product dp ON dp.product_id = st.product_master_id JOIN healthscore_dw.dim_product_batch pb ON pb.product_key = dp.product_key JOIN healthscore_dw.dim_store ds ON st.hospital_store_master_id = ds.store_id  and ds.hospital_key = dp.hospital_key JOIN healthscore_stg.hs_stock_transaction_type stt ON stt.stock_transaction_type_id = st.transaction_type_id LEFT JOIN healthscore_stg.hs_stock_adjustment_status sas ON sas.adjustment_status_id = st.adjustment_status_id ",
+			"fields": "transaction_date_key, hospital_key, product_batch_key, store_key, stock_transaction_id, transaction_type_cd, transaction_type_nm, adjustment_status_cd, transaction_qty, source_cd, etl_load_id",
+			"insert_query": "SELECT DATE(st.created_ts) AS transaction_date_key, dp.hospital_key, pb.product_batch_key, ds.store_key, st.stock_transactions_id, stt.stock_transaction_type_cd as transaction_type_cd, stt.stock_transaction_type_nm as transaction_type_nm,  sas.adjustment_status_cd, st.stock_transactions_qty AS transaction_qty, '{0}',{1}  FROM healthscore_stg.hs_stock_transactions st JOIN healthscore_dw.dim_store ds ON ds.store_id = st.hospital_store_master_id and ds.source_cd = '{0}' JOIN healthscore_dw.dim_product dp ON dp.product_id = st.product_master_id and ds.hospital_key=dp.hospital_key JOIN healthscore_dw.dim_product_batch pb ON pb.product_key = dp.product_key and pb.stock_batch_no = st.stock_batch_no JOIN healthscore_stg.hs_stock_transaction_type stt ON stt.stock_transaction_type_id = st.transaction_type_id  LEFT JOIN healthscore_stg.hs_stock_adjustment_status sas ON sas.adjustment_status_id = st.adjustment_status_id",
 			"where_clause": "dp.hospital_key=%i",
-			"update_fields": "transaction_date_key = src.transaction_date_key, hospital_key = src.hospital_key, product_batch_key = src.product_batch_key, store_key = src.store_key, stock_transaction_id = src.stock_transaction_id, transaction_type_cd = src.transaction_type_cd, transaction_type_nm = src.transaction_type_nm, adjustment_status_cd  = src.adjustment_status_cd, transaction_qty = src.transaction_qty "
+			"update_fields": "transaction_date_key = src.transaction_date_key, product_batch_key = src.product_batch_key, store_key = src.store_key, transaction_type_cd = src.transaction_type_cd, transaction_type_nm = src.transaction_type_nm, adjustment_status_cd  = src.adjustment_status_cd, transaction_qty = src.transaction_qty "
+		},
+		{
+			"tablename": "fact_purchase_orders",
+			"source_table": "hs_hospital_purchase_orders",
+			"fields": " purchase_order_date_key, hospital_key, vendor_key, store_key, purchase_order_id, purchase_order_cd, purchase_order_amt, purchase_order_status_id, active_flg, source_cd, etl_load_id ",
+			"insert_query": "SELECT DATE(hpo.created_by) AS purchase_order_date_key, ds.hospital_key, dv.vendor_key, ds.store_key, hpo.purchase_order_id, hpo.purchase_order_cd, hpo.purchase_order_amt, hpo.purchase_order_status_id, hpo.active_flg, '{0}', {1} FROM healthscore_stg.hs_hospital_purchase_orders hpo JOIN healthscore_dw.dim_store ds ON ds.store_id = hpo.hospital_store_master_id AND ds.source_cd= '{0}' JOIN healthscore_dw.dim_vendor dv ON dv.vendor_id = hpo.vendor_master_id AND dv.source_cd = '{0}' ",
+			"where_clause": "ds.hospital_key=%i",
+			"update_fields": "purchase_order_date_key = src.purchase_order_date_key, vendor_key = src.vendor_key, store_key = src.store_key, purchase_order_cd = src.purchase_order_cd, purchase_order_amt = src.purchase_order_amt, purchase_order_status_id = src.purchase_order_status_id, active_flg = src.active_flg,"
+		},
+		{
+			"tablename": "fact_purchase_order_invoices",
+			"source_table": "hs_hospital_purchase_order_invoice_items",
+			"fields": "purchase_order_key, invoice_date_key, hospital_key, product_batch_key, invoice_item_id, purchase_order_invoice_id,  purchase_order_invoice_no, invoice_item_qty, invoice_item_batch_no, invoice_item_expiry_ts, invoice_item_mrp_amt, invoice_item_tax_amt, invoice_item_unit_cost_amt, invoice_item_amt, discount_amount, invoice_item_return_qty, invoice_item_return_dt, active_flg, source_cd , etl_load_id,",
+			"insert_query": "SELECT fpo.purchase_order_key, DATE(poid.purchase_order_invoice_ts) AS invoice_date_key, pb.hospital_key, pb.product_batch_key, hpoi.invoice_item_id , poid.purchase_order_invoice_id, poid.purchase_order_invoice_no, invoice_item_qty, hpoi.invoice_item_batch_no, hpoi.invoice_item_expiry_ts, hpoi.invoice_item_mrp_amt, hpoi.invoice_item_tax_amt,  hpoi.invoice_item_unit_cost_amt, hpoi.invoice_item_amt,  hpoi.discount_amount, hpoi.invoice_item_return_qty, hpoi.invoice_item_return_dt, hpoi.active_flg,'{0}',{1} FROM healthscore_stg.hs_hospital_purchase_order_invoice_items hpoi JOIN healthscore_stg.hs_hospital_purchase_order_invoice_details poid ON poid.purchase_order_invoice_id = hpoi.purchase_order_invoice_id JOIN healthscore_dw.fact_purchase_orders fpo ON fpo.purchase_order_id = poid.purchase_order_id AND source_cd= '{0}' JOIN healthscore_dw.dim_product dp ON dp.product_id = hpoi.product_master_id JOIN healthscore_dw.dim_product_batch pb ON pb.product_key = dp.product_key AND source_cd= '{0}'",
+			"where_clause": "ds.hospital_key=%i",
+			"update_fields": "purchase_order_key = src.purchase_order_key, invoice_date_key = src.invoice_date_key, product_batch_key = src.product_batch_key, purchase_order_invoice_id = src.purchase_order_invoice_id, purchase_order_invoice_no = src.purchase_order_invoice_no, invoice_item_qty = src.invoice_item_qty, invoice_item_batch_no = src.invoice_item_batch_no, invoice_item_expiry_ts = src.invoice_item_expiry_ts, invoice_item_mrp_amt = src.invoice_item_mrp_amt, invoice_item_tax_amt = src.invoice_item_tax_amt, invoice_item_unit_cost_amt = src.invoice_item_unit_cost_amt, invoice_item_amt = src.invoice_item_amt, discount_amount = src.discount_amount, invoice_item_return_qty = src.invoice_item_return_qty, invoice_item_return_dt = src.invoice_item_return_dt, active_flg = src.active_flg"
 		}
 	],
-	"update_table_info": [
-		{
-			"tablename": "fact_patient_visitbillitems",
-			"source_table": "hs_patient_visit_payment_details",
-			"fields": "fact.payment_last_cd=src.payment_last_cd,fact.payment_approval_cd=src.payment_approval_cd",
-			"on_clause": "src.visit_bill_item_id = fact.src_visit_bill_item_id AND fact.source_cd='{0}'",
-			"join_query": "select * from healthscore_stg.hs_patient_visit_payment_details"
-		}
-	]
+	"update_table_info": []
 }

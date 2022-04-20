@@ -149,7 +149,7 @@ case when bill_item_cd = 'PYO' then bill_item_final_amt else 0 end as prior_outs
 case when bill_item_cd = 'PRF' then bill_item_final_amt else 0 end as refund_amt,
 case when bill_item_cd = 'WAI' then bill_item_final_amt else 0 end as waived_amt,
 case when bill_item_receipt_cd is null and bill_item_cd <> 'PYO' then bill_item_final_amt else 0 end as bill_amt,
-payment_method_desc,payment_comments,non_editable_comments
+payment_method_desc,payment_comments,non_editable_comments,payment_last_cd,payment_approval_cd
 FROM healthscore_dw.fact_patient_visitbillitems fvbi
 JOIN healthscore_dw.fact_patient_visitbills vbv ON vbv.patient_visitbill_key = fvbi.patient_visitbill_key
 JOIN healthscore_dw.suvitas_patient_visit_view pvv ON pvv.patient_visit_key = vbv.patient_visit_key
