@@ -1414,7 +1414,7 @@ DROP TABLE IF EXISTS healthscore_dw.fact_purchase_orders;
 CREATE TABLE healthscore_dw.fact_purchase_orders
 (
   purchase_order_key bigint(20) NOT NULL AUTO_INCREMENT,
-  purchase_order_date_key datetime NOT NULL,
+  purchase_order_date_key date NOT NULL,
   hospital_key int(11) NOT NULL,
   vendor_key int(11) NOT NULL,
   store_key int(11) NOT NULL,
@@ -1436,7 +1436,7 @@ CREATE TABLE healthscore_dw.fact_purchase_order_invoices
 (
   purchase_order_invoice_key bigint(20) NOT NULL AUTO_INCREMENT,
   purchase_order_key bigint(20) NOT NULL,
-  invoice_date_key datetime NOT NULL,
+  invoice_date_key date NOT NULL,
   hospital_key int(11) NOT NULL,
   product_batch_key int(11) NOT NULL,
   invoice_item_id bigint(20) NOT NULL,
