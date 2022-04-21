@@ -434,6 +434,18 @@
         {
 			"tablename": "hs_stock_adjustment_status",
 			"fields": "adjustment_status_id bigint(20), adjustment_status_cd varchar(45), adjustment_status_nm varchar(255), adjustment_mul_factor int(1), active_flg tinyint(1), created_by varchar(45), created_ts datetime, modified_by varchar(45), modified_ts datetime "
+		},
+        {
+			"tablename": "hs_hospital_purchase_order_invoice_details",
+			"fields": "purchase_order_invoice_id bigint(20), purchase_order_invoice_no varchar(255), purchase_order_invoice_amt double, purchase_order_invoice_due_amt double, purchase_order_return_invoice_amt double, purchase_order_id bigint(20), purchase_order_invoice_ts datetime, purchase_order_invoice_due_ts datetime, purchase_order_invoice_path varchar(255), purchase_order_invoice_comments varchar(1000), receipt_code varchar(50), active_flg tinyint(1), created_by varchar(45), created_ts datetime, modified_by varchar(45), modified_ts datetime, purchase_order_invoice_roundoff_amt double "
+		},
+        {
+			"tablename": "hs_hospital_purchase_order_invoice_items ",
+			"fields": "invoice_item_id bigint(20), invoice_item_qty double, invoice_item_batch_no varchar(255), invoice_item_expiry_ts datetime, invoice_item_mrp_amt double, invoice_item_tax_amt double, invoice_item_unit_cost_amt double, invoice_item_amt double, purchase_order_invoice_id bigint(20), purchase_order_item_id bigint(20), product_name varchar(255), product_master_id bigint(20), invoice_item_return_qty double, created_by varchar(45), created_ts datetime, modified_by varchar(45), modified_ts datetime, discount_amount double, active_flg tinyint(1), invoice_item_return_dt date"
+		},
+        {
+			"tablename": "hs_hospital_purchase_orders ",
+			"fields": "purchase_order_id bigint(20), purchase_order_cd varchar(255), purchase_order_approver_id bigint(20), purchase_order_due_amt double, purchase_order_requester_id bigint(20), purchase_order_amt double, purchase_order_status_id int(11), hospital_store_master_id bigint(20), vendor_master_id bigint(20), active_flg tinyint(1), created_by varchar(45), created_ts datetime, modified_by varchar(45), modified_ts datetime"
 		}
 	]
 }
