@@ -1428,7 +1428,7 @@ CREATE TABLE healthscore_dw.fact_purchase_orders
   source_cd varchar(45) NOT NULL,
   etl_load_id int(11) NOT NULL,
   PRIMARY KEY (purchase_order_key),
-  unique key uk_stock_transaction_key(hospital_key,purchase_order_id)
+  unique key (hospital_key,purchase_order_id)
   )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
   DROP TABLE IF EXISTS healthscore_dw.fact_purchase_order_invoices;
@@ -1458,5 +1458,94 @@ CREATE TABLE healthscore_dw.fact_purchase_order_invoices
   source_cd varchar(45) NOT NULL,
   etl_load_id int(11) NOT NULL,
   PRIMARY KEY (purchase_order_invoice_key),
-  unique key uk_stock_transaction_key(hospital_key,invoice_item_id)
+  unique key (hospital_key,invoice_item_id)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.dim_participant;
+CREATE TABLE healthscore_dw.dim_participant
+(
+  participant_key bigint(20) NOT NULL AUTO_INCREMENT,
+  participant_id bigint(20) NOT NULL,
+  hospital_key int(11) NOT NULL,
+  participant_type_id int(11) NOT NULL,
+  participant_type_cd varchar(255) NOT NULL,
+  participant_type_nm varchar(400) DEFAULT NULL,
+  participant_uuid varchar(255) NOT NULL,
+  participant_unique_cd varchar(255) not null,
+  active_flg tinyint(1), 
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (participant_key),
+  unique key (participant_id, hospital_key)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.dim_meeting;
+CREATE TABLE healthscore_dw.dim_meeting
+(
+  meeting_key bigint(20) NOT NULL AUTO_INCREMENT,
+  hospital_key int(11) NOT NULL,
+  meeting_id bigint(20) NOT NULL,
+  meeting_uuid varchar(100),
+  meeting_nm varchar(400),
+  appointment_id bigint(20) NOT NULL,
+  meeting_status_id bigint(11),
+  meeting_status_cd varchar(255),
+  meeting_status_nm varchar(400),
+  meeting_scheduled_ts datetime,
+  meeting_created_ts datetime,
+  bbb_meeting_id varchar(255),
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  active_flg tinyint(1), 
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (meeting_key),
+  unique key (hospital_key, meeting_id)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.fact_meeting_participant_details;
+CREATE TABLE healthscore_dw.fact_meeting_participant_details
+(
+  meeting_participant_key bigint(20) NOT NULL AUTO_INCREMENT,
+  meeting_key int(11) NOT NULL,
+  hospital_key int(11) NOT NULL,
+  participant_key int(11) NOT NULL,
+  meeting_start_ts datetime , 
+  meeting_end_ts datetime ,
+  first_joined_ts datetime ,
+  last_left_ts datetime,
+  joined_flg tinyint(1),
+  meeting_record_flg tinyint(1),
+  recording_notification_sent_flg tinyint(1),
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  active_flg tinyint(1), 
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (meeting_participant_key),
+  unique key (meeting_key, hospital_key, participant_key)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.fact_meeting_feedback;
+CREATE TABLE healthscore_dw.fact_meeting_feedback
+(
+  meeting_feedback_key bigint(20) NOT NULL AUTO_INCREMENT,
+  meeting_participant_key int(11) NOT NULL,
+  feedback_id bigint(20) NOT NULL,
+  rating TINYINT UNSIGNED NOT NULL,
+  issue_type varchar(400),
+  comments varchar(2000),
+  created_by varchar(45),
+  modified_by varchar(45),
+  created_ts datetime,
+  modified_ts datetime,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  active_flg tinyint(1), 
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (meeting_feedback_key),
+  unique key (meeting_participant_key, feedback_id)
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
