@@ -123,6 +123,13 @@ FROM healthscore_dw.fact_patient_appointments fpa
 join healthscore_dw.uoh_hospital_master_view  hm
 on fpa.hospital_key = hm.hospital_key ;
  
+DROP VIEW IF EXISTS healthscore_dw.uoh_patient_documents_view;
+CREATE VIEW healthscore_dw.uoh_patient_documents_view AS
+SELECT 
+patient_key, fpa.hospital_key, document_created_ts, hospital_document_id, upload_url, document_nm, document_desc, thumbnail_url, active_flg, published_ts, published_staff_key,uploaded_patient_visit_key, document_created_time_key, document_created_date_key
+FROM healthscore_dw.dim_patient_documents fpa
+join healthscore_dw.uoh_hospital_master_view  hm
+on fpa.hospital_key = hm.hospital_key ;
 
 
 -- CREATE USER uoh_db_viewer@localhost IDENTIFIED BY <PWD>;
@@ -137,3 +144,4 @@ GRANT SELECT ON `healthscore_dw`.`uoh_patient_diagnosis_view` TO 'uoh_db_viewer'
 GRANT SELECT ON `healthscore_dw`.`uoh_vist_bill_items_view` TO 'uoh_db_viewer'@'localhost' ; 
 GRANT SELECT ON `healthscore_dw`.`uoh_consultant_appt_view` TO 'uoh_db_viewer'@'localhost' ; 
 GRANT SELECT ON `healthscore_dw`.`uoh_patient_appt_view` TO 'uoh_db_viewer'@'localhost' ; 
+GRANT SELECT ON `healthscore_dw`.`uoh_patient_documents_view` TO 'uoh_db_viewer'@'localhost' ; 

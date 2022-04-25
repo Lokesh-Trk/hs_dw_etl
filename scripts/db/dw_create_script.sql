@@ -1163,7 +1163,7 @@ ADD COLUMN assessment_scale_item_master_id bigint(50) NOT NULL default 0;
   patient_assessment_result_id bigint(50) NOT NULL default 0, 
   assessment_result_item_master_id bigint(50) NOT NULL default 0, 
   result_item_display_txt varchar(100),
-  result_item_value varchar(1000),  
+  result_item_value varchar(2000),  
   result_item_ref_range_txt varchar(1000),
   result_item_row_no int(11),
   result_item_column_no int(11),
@@ -1258,7 +1258,7 @@ drop TABLE if exists healthscore_dw.dim_content;
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (content_key),
-  UNIQUE KEY (hospital_key, shared_content_id)
+  UNIQUE KEY uk_content_key(hospital_key, shared_content_id)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS healthscore_dw.fact_content_info;
@@ -1275,8 +1275,278 @@ CREATE TABLE healthscore_dw.fact_content_info
   etl_load_id int(11) NOT NULL,
   source_cd varchar(20) NOT NULL,
   PRIMARY KEY (content_info_key),
-  unique key (patient_key,hospital_key,content_key)
+  unique key uk_content_info_key(patient_key,hospital_key,content_key)
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 
 ALTER TABLE  healthscore_dw.fact_patient_visitbillitems ADD COLUMN (payment_last_cd varchar(45),payment_approval_cd varchar(45));
+
+-- apr 18 2022
+
+DROP TABLE if exists healthscore_dw.dim_product;
+ CREATE TABLE healthscore_dw.dim_product (
+  product_key int(11) NOT NULL AUTO_INCREMENT,
+  hospital_key int(11) NOT NULL,
+  product_id int(11) NOT NULL,
+  product_cd varchar(45) NOT NULL,
+  product_nm varchar(1000) ,
+  product_generic_nm varchar(1000) ,
+  product_hsn_cd varchar(45),
+  product_schedule_type_cd  varchar(45),
+  product_brand_nm varchar(255),
+  product_category_nm varchar(255),
+  tax_type_nm varchar(45),
+  tax_value_in_per decimal(6,3),
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (product_key),
+  UNIQUE KEY uk_product_key(hospital_key, product_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE if exists healthscore_dw.dim_vendor;
+ CREATE TABLE healthscore_dw.dim_vendor (
+  vendor_key int(11) NOT NULL AUTO_INCREMENT,
+  hospital_key int(11) NOT NULL,
+  vendor_id int(11) NOT NULL,
+  vendor_nm varchar(1000) ,
+  vendor_desc  varchar(1000),
+  source_cd varchar(45) NOT NULL,
+  active_flg tinyint(1) NOT NULL DEFAULT 1,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (vendor_key),
+  UNIQUE KEY (hospital_key, vendor_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE if exists healthscore_dw.dim_store;
+ CREATE TABLE healthscore_dw.dim_store (
+  store_key int(11) NOT NULL AUTO_INCREMENT,
+  hospital_key int(11) NOT NULL,
+  store_id int(11) NOT NULL,
+  store_cd varchar(45),
+  store_nm varchar(1000) ,
+  main_store_flg tinyint(1),
+  active_flg tinyint(1) NOT NULL DEFAULT 1,
+  allow_direct_billing_flg tinyint(1) NOT NULL DEFAULT 0,
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (store_key),
+  UNIQUE KEY uk_store_key(hospital_key, store_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE if exists healthscore_dw.dim_product_batch;
+ CREATE TABLE healthscore_dw.dim_product_batch (
+  product_batch_key int(11) NOT NULL AUTO_INCREMENT,
+  hospital_key int(11) NOT NULL,
+  product_key int(11) NOT NULL,  
+  stock_batch_no varchar(45) NOT NULL,
+  mrp decimal(10,2),
+  selling_price decimal(10,2),
+  expiry_date_key date,
+  created_date_key date,
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (product_batch_key), 
+  UNIQUE KEY uk_product_batch_no_key(product_key, stock_batch_no)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.fact_daily_stock_transactions;
+CREATE TABLE healthscore_dw.fact_daily_stock_transactions
+(
+  stock_transaction_key bigint(11) NOT NULL AUTO_INCREMENT,
+  transaction_date_key datetime NOT NULL,
+  hospital_key int(11) NOT NULL,
+  product_batch_key int(11) NOT NULL,
+  store_key int(11) NOT NULL,
+  stock_transaction_id int(11) NOT NULL,
+  transaction_type_cd varchar(10) NOT NULL ,
+  transaction_type_nm varchar(45) ,
+  adjustment_status_cd varchar(45) ,
+  transaction_qty int(11) NOT NULL DEFAULT 0, 
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (stock_transaction_key),
+  unique key uk_stock_transaction_key(hospital_key,stock_transaction_id)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.fact_daily_stock_snapshot;
+CREATE TABLE healthscore_dw.fact_daily_stock_snapshot
+(
+  daily_stock_snapshot_key int(11) NOT NULL AUTO_INCREMENT,
+  as_of_date_key datetime NOT NULL,
+  hospital_key int(11) NOT NULL,
+  product_batch_key int(11) NOT NULL,
+  store_key int(11) NOT NULL,
+  opening_stock_qty int(11) NOT NULL DEFAULT 0, -- previous day closing stock qty
+  new_qty int(11) NOT NULL DEFAULT 0, -- or purchased, indented, or added
+  sold_qty int(11) NOT NULL DEFAULT 0,  -- sold -- negative number
+  return_qty int(11) NOT NULL DEFAULT 0, -- returned from the store to mainstore/vendor -- negative number
+  used_qty int(11) NOT NULL DEFAULT 0,  --  used -- negative number
+  expired_qty int(11) NOT NULL DEFAULT 0, -- expired  -- negative number
+  lost_qty int(11) NOT NULL DEFAULT 0,  --  lost  -- negative number
+  closing_stock_qty int(11) NOT NULL DEFAULT 0,  -- current available qty
+  opening_stock_cost_amt decimal(10,2) NOT NULL DEFAULT 0.0, -- previous day closing stock amt
+  new_cost_amt decimal(10,2) NOT NULL DEFAULT 0.0, -- or purchased, indented, or added
+  sold_cost_amt decimal(10,2) NOT NULL DEFAULT 0.0,  -- sold -- negative number
+  return_cost_amt decimal(10,2) NOT NULL DEFAULT 0.0, -- returned from the store to mainstore/vendor -- negative number
+  used_cost_amt decimal(10,2) NOT NULL DEFAULT 0.0,  --  used -- negative number
+  expired_cost_amt decimal(10,2) NOT NULL DEFAULT 0.0, -- expired  -- negative number
+  lost_cost_amt decimal(10,2) NOT NULL DEFAULT 0.0,  --  lost  -- negative number
+  closing_stock_cost_amt decimal(10,2) NOT NULL DEFAULT 0.0,  -- current available stock in amount
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (daily_stock_snapshot_key),
+  unique key uk_daily_stock_snapshot (as_of_date_key,hospital_key,product_batch_key,store_key)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.fact_purchase_orders;
+CREATE TABLE healthscore_dw.fact_purchase_orders
+(
+  purchase_order_key bigint(20) NOT NULL AUTO_INCREMENT,
+  purchase_order_date_key date NOT NULL,
+  hospital_key int(11) NOT NULL,
+  vendor_key int(11) NOT NULL,
+  store_key int(11) NOT NULL,
+  purchase_order_id bigint(20) NOT NULL ,
+  purchase_order_cd varchar(255) DEFAULT NULL,
+  purchase_order_amt double DEFAULT NULL,
+  purchase_order_status_id int(11) DEFAULT NULL,
+  active_flg tinyint(1) DEFAULT '1',
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (purchase_order_key),
+  unique key uk_fact_purchase_order (hospital_key,purchase_order_id)
+  )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+  DROP TABLE IF EXISTS healthscore_dw.fact_purchase_order_invoices;
+CREATE TABLE healthscore_dw.fact_purchase_order_invoices
+(
+  purchase_order_invoice_key bigint(20) NOT NULL AUTO_INCREMENT,
+  purchase_order_key bigint(20) NOT NULL,
+  invoice_date_key date NOT NULL,
+  hospital_key int(11) NOT NULL,
+  product_batch_key int(11) NOT NULL,
+  invoice_item_id bigint(20) NOT NULL,
+  purchase_order_invoice_id bigint(20) NOT NULL,
+  purchase_order_invoice_no varchar(255) DEFAULT NULL,
+  invoice_item_qty double DEFAULT NULL, 
+  invoice_item_batch_no varchar(255) DEFAULT NULL,
+  invoice_item_expiry_ts datetime DEFAULT NULL,
+  invoice_item_mrp_amt double DEFAULT NULL,
+  invoice_item_tax_amt double DEFAULT NULL,
+  invoice_item_unit_cost_amt double DEFAULT NULL,
+  invoice_item_amt double DEFAULT NULL, 
+  discount_amount double DEFAULT NULL,
+  invoice_item_return_qty double NOT NULL DEFAULT '0',
+  invoice_item_return_dt date DEFAULT NULL, 
+  active_flg tinyint(1) DEFAULT '1', 
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (purchase_order_invoice_key),
+  unique key uk_fact_purchase_order_invoices (hospital_key,invoice_item_id)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.dim_participant;
+CREATE TABLE healthscore_dw.dim_participant
+(
+  participant_key bigint(20) NOT NULL AUTO_INCREMENT,
+  participant_id bigint(20) NOT NULL,
+  hospital_key int(11) NOT NULL,
+  participant_type_id int(11) NOT NULL,
+  participant_type_cd varchar(255) NOT NULL,
+  participant_type_nm varchar(400) DEFAULT NULL,
+  participant_uuid varchar(255) NOT NULL,
+  participant_unique_cd varchar(255) not null,
+  active_flg tinyint(1), 
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (participant_key),
+  unique key uk_dim_participant_id (participant_id, hospital_key),
+  unique key uk_dim_participant_unique_cd (participant_unique_cd)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.dim_meeting;
+CREATE TABLE healthscore_dw.dim_meeting
+(
+  meeting_key bigint(20) NOT NULL AUTO_INCREMENT,
+  hospital_key int(11) NOT NULL,
+  meeting_id bigint(20) NOT NULL,
+  meeting_uuid varchar(100),
+  meeting_nm varchar(400),
+  appointment_id bigint(20) NOT NULL,
+  meeting_status_id bigint(11),
+  meeting_status_cd varchar(255),
+  meeting_status_nm varchar(400),
+  meeting_scheduled_ts datetime,
+  meeting_created_ts datetime,
+  bbb_meeting_id varchar(255),
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  active_flg tinyint(1), 
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (meeting_key),
+  unique key uk_dim_meeting (hospital_key, meeting_id)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.fact_meeting_participant_details;
+CREATE TABLE healthscore_dw.fact_meeting_participant_details
+(
+  meeting_participant_key bigint(20) NOT NULL AUTO_INCREMENT,
+  meeting_key int(11) NOT NULL,
+  hospital_key int(11) NOT NULL,
+  participant_key int(11) NOT NULL,
+  meeting_start_ts datetime , 
+  meeting_end_ts datetime ,
+  first_joined_ts datetime ,
+  last_left_ts datetime,
+  joined_flg tinyint(1),
+  meeting_record_flg tinyint(1),
+  recording_notification_sent_flg tinyint(1),
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  active_flg tinyint(1), 
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (meeting_participant_key),
+  unique key uk_fact_meeting_participant (meeting_key, hospital_key, participant_key)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.fact_meeting_feedback;
+CREATE TABLE healthscore_dw.fact_meeting_feedback
+(
+  meeting_feedback_key bigint(20) NOT NULL AUTO_INCREMENT,
+  meeting_participant_key int(11) NOT NULL,
+  feedback_id bigint(20) NOT NULL,
+  rating TINYINT UNSIGNED NOT NULL,
+  issue_type varchar(400),
+  comments varchar(2000),
+  created_by varchar(45),
+  modified_by varchar(45),
+  created_ts datetime,
+  modified_ts datetime,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  active_flg tinyint(1), 
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (meeting_feedback_key),
+  unique key uk_meeting_feedback (meeting_participant_key, feedback_id)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
