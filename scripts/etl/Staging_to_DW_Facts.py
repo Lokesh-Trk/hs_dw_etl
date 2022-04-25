@@ -8,6 +8,7 @@ from itertools import product
 path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0,path)
 from util import Connections, Log, Load_Data
+from config import settings
 
 def start_etl(load_id,data_source_cd):
 	#log file metadata
@@ -18,7 +19,7 @@ def start_etl(load_id,data_source_cd):
 	log_id = None
 	conn = None
 	sql = ""
-	exclude_data_source = "myhsapp"
+	exclude_data_source = settings.EXCLUDE_DATA_SOURCES_FILTER
 
 	try:
 		# if previous load failed, get the same load id and data date range, else skip
@@ -33,7 +34,6 @@ def start_etl(load_id,data_source_cd):
 		
 	#	Insert new data created in the load date range
 		sql=f"SELECT hospital_key,hospital_cd from healthscore_dw.dim_hospital where (source_cd='{data_source_cd}' or '{data_source_cd}' in ('{exclude_data_source}'))"
-	 
 		cursor.execute(sql)
 		hospital_data=cursor.fetchall()
 		ranges = get_ranges(hospital_data, insert_fact_table_data) 
