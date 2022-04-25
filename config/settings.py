@@ -28,3 +28,4 @@ JSON_ETL_STG_SCHEMA = json_schema_file_path("etl_stg_json_schema.json")
 JSON_ETL_DIM_SCHEMA = json_schema_file_path("etl_dim_json_schema.json")
 JSON_ETL_FACT_SCHEMA =json_schema_file_path("etl_fact_json_schema.json")
 DW_PATIENT_APP_EXPORT_JSON_VALIDATE_FILE = json_schema_file_path("dw_patient_app_export_json_schema.json")
+EXCLUDE_DATA_SOURCES_FILTER="hs_meet','myhsapp"

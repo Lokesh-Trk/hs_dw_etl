@@ -1407,7 +1407,7 @@ CREATE TABLE healthscore_dw.fact_daily_stock_snapshot
   source_cd varchar(45) NOT NULL,
   etl_load_id int(11) NOT NULL,
   PRIMARY KEY (daily_stock_snapshot_key),
-  unique key (as_of_date_key,hospital_key,product_batch_key,store_key)
+  unique key uk_daily_stock_snapshot (as_of_date_key,hospital_key,product_batch_key,store_key)
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS healthscore_dw.fact_purchase_orders;
@@ -1428,7 +1428,7 @@ CREATE TABLE healthscore_dw.fact_purchase_orders
   source_cd varchar(45) NOT NULL,
   etl_load_id int(11) NOT NULL,
   PRIMARY KEY (purchase_order_key),
-  unique key (hospital_key,purchase_order_id)
+  unique key uk_fact_purchase_order (hospital_key,purchase_order_id)
   )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
   DROP TABLE IF EXISTS healthscore_dw.fact_purchase_order_invoices;
@@ -1458,7 +1458,7 @@ CREATE TABLE healthscore_dw.fact_purchase_order_invoices
   source_cd varchar(45) NOT NULL,
   etl_load_id int(11) NOT NULL,
   PRIMARY KEY (purchase_order_invoice_key),
-  unique key (hospital_key,invoice_item_id)
+  unique key uk_fact_purchase_order_invoices (hospital_key,invoice_item_id)
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS healthscore_dw.dim_participant;
@@ -1478,7 +1478,8 @@ CREATE TABLE healthscore_dw.dim_participant
   source_cd varchar(45) NOT NULL,
   etl_load_id int(11) NOT NULL,
   PRIMARY KEY (participant_key),
-  unique key (participant_id, hospital_key)
+  unique key uk_dim_participant_id (participant_id, hospital_key),
+  unique key uk_dim_participant_unique_cd (participant_unique_cd)
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS healthscore_dw.dim_meeting;
@@ -1502,7 +1503,7 @@ CREATE TABLE healthscore_dw.dim_meeting
   source_cd varchar(45) NOT NULL,
   etl_load_id int(11) NOT NULL,
   PRIMARY KEY (meeting_key),
-  unique key (hospital_key, meeting_id)
+  unique key uk_dim_meeting (hospital_key, meeting_id)
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS healthscore_dw.fact_meeting_participant_details;
@@ -1525,7 +1526,7 @@ CREATE TABLE healthscore_dw.fact_meeting_participant_details
   source_cd varchar(45) NOT NULL,
   etl_load_id int(11) NOT NULL,
   PRIMARY KEY (meeting_participant_key),
-  unique key (meeting_key, hospital_key, participant_key)
+  unique key uk_fact_meeting_participant (meeting_key, hospital_key, participant_key)
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS healthscore_dw.fact_meeting_feedback;
@@ -1547,5 +1548,5 @@ CREATE TABLE healthscore_dw.fact_meeting_feedback
   source_cd varchar(45) NOT NULL,
   etl_load_id int(11) NOT NULL,
   PRIMARY KEY (meeting_feedback_key),
-  unique key (meeting_participant_key, feedback_id)
+  unique key uk_meeting_feedback (meeting_participant_key, feedback_id)
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
