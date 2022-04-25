@@ -1,0 +1,22 @@
+{
+	"database": "healthscore_dw",
+	"insert_table_info": [
+		
+        {
+			"tablename": "dim_participant",
+			"source_table": "hs_participant_details",
+			"fields": "participant_id, hospital_key, participant_type_id, participant_type_cd, participant_type_nm, participant_uuid, participant_unique_cd, active_flg, source_cd, etl_load_id",
+            "insert_query": "SELECT pd.participant_id, dh.hospital_key, pd.participant_type_id, ptm.participant_type_cd, ptm.participant_type_nm, pd.participant_uuid, pd.participant_unique_cd, pd.active_flg, '{1}', {0} FROM healthscore_stg.hs_participant_details pd JOIN healthscore_stg.hs_meeting_details md ON md.meeting_id = pd.meeting_id JOIN healthscore_dw.dim_hospital dh ON dh.hospital_cd = md.hospital_cd JOIN healthscore_stg.hs_participant_type_master ptm ON ptm.participant_type_id = pd.participant_type_id",
+			"update_fields": "participant_type_id = src.participant_type_id, participant_type_cd = src.participant_type_cd, participant_type_nm = src.participant_type_nm, participant_uuid = src.participant_uuid, participant_unique_cd = src.participant_unique_cd, active_flg = src.active_flg"
+		},
+		{
+			"tablename": "dim_meeting",
+			"source_table": "hs_meeting_details",
+			"fields": "hospital_key, meeting_id, meeting_uuid, meeting_nm, appointment_id, meeting_status_id, meeting_status_cd, meeting_status_nm, meeting_scheduled_ts, meeting_created_ts, bbb_meeting_id, active_flg, source_cd, etl_load_id",
+            "insert_query": "SELECT dh.hospital_key, hmd.meeting_id, hmd.meeting_uuid, hmd.meeting_nm, hmd.appointment_id, hmsm.meeting_status_id, hmsm.meeting_status_cd, hmsm.meeting_status_nm, hmd.meeting_scheduled_ts, hmd.created_ts as meeting_created_ts, hmd.bbb_meeting_id, hmd.active_flg, '{1}', {0} FROM healthscore_stg.hs_meeting_details hmd JOIN healthscore_dw.dim_hospital dh ON dh.hospital_cd = hmd.hospital_cd JOIN healthscore_stg.hs_participant_details hpd ON hpd.meeting_id = hmd.meeting_id JOIN healthscore_stg.hs_meeting_status_master hmsm ON hmsm.meeting_status_id = hmd.meeting_status_id",
+			"update_fields": " meeting_id= src.meeting_id, meeting_uuid = src.meeting_uuid, meeting_nm = src.meeting_nm, appointment_id = src.appointment_id, meeting_status_id = src.meeting_status_id, meeting_status_cd = src.meeting_status_cd, meeting_status_nm = src.meeting_status_nm, meeting_scheduled_ts = src.meeting_scheduled_ts, meeting_created_ts = src.meeting_created_ts, bbb_meeting_id = src.bbb_meeting_id "
+		}
+	],
+	"update_table_info": [
+	]
+}
