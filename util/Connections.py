@@ -9,17 +9,17 @@ from config import settings
 
 def stg_db_connect():
 	db_config = settings.DB_CONFIG
-	conn = mysql.connector.connect(host=db_config["host"], port=db_config["port"], user=db_config["user"], passwd=db_config["passwd"], db=db_config["staging_db"],auth_plugin=db_config["auth_plugin"])
+	conn = mysql.connector.MySQLConnection(host=db_config["host"], port=db_config["port"], user=db_config["user"], passwd=db_config["passwd"], db=db_config["staging_db"],auth_plugin=db_config["auth_plugin"])
 	return conn
 
 def dw_db_connect():
 	db_config = settings.DB_CONFIG
-	conn = mysql.connector.connect(host=db_config["host"], port=db_config["port"], user=db_config["user"], passwd=db_config["passwd"], db=db_config["dw_db"],auth_plugin=db_config["auth_plugin"])
+	conn = mysql.connector.MySQLConnection(host=db_config["host"], port=db_config["port"], user=db_config["user"], passwd=db_config["passwd"], db=db_config["dw_db"],auth_plugin=db_config["auth_plugin"])
 	return conn
 
 def log_db_connect():
 	db_config = settings.DB_CONFIG
-	conn = mysql.connector.connect(host=db_config["host"], port=db_config["port"], user=db_config["user"], passwd=db_config["passwd"], db=db_config["dw_db"],auth_plugin=db_config["auth_plugin"])
+	conn = mysql.connector.MySQLConnection(host=db_config["host"], port=db_config["port"], user=db_config["user"], passwd=db_config["passwd"], db=db_config["dw_db"],auth_plugin=db_config["auth_plugin"])
 	return conn
 
 def src_file_connect():
