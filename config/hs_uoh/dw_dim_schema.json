@@ -117,15 +117,15 @@
 			"tablename": "dim_content",
 			"source_table": "content_action_log",
 			"fields": "hospital_key, shared_content_id, content_url, etl_load_id, source_cd",
-			"insert_query": "SELECT DISTINCT map_patient_hospital.hospital_key, content_action_log.shared_content_id,substring_index(comments,' ',1) as content_url,{0},'{1}' FROM healthscore_stg.content_action_log JOIN healthscore_dw.map_patient_hospital on map_patient_hospital.hospital_patient_cd = content_action_log.user_id",	
-			"update_fields":"content_url= src.content_url"
+			"insert_query": "SELECT DISTINCT map_patient_hospital.hospital_key, content_action_log.shared_content_id,substring_index(comments,' ',1) as content_url,{0},'{1}' FROM healthscore_stg.content_action_log JOIN healthscore_dw.map_patient_hospital on map_patient_hospital.hospital_patient_cd = content_action_log.user_id",
+			"update_fields": "content_url= src.content_url"
 		},
 		{
 			"tablename": "dim_product",
 			"source_table": "hs_product_master",
 			"fields": "hospital_key, product_id, product_cd, product_nm, product_generic_nm, product_hsn_cd, product_schedule_type_cd, product_brand_nm, product_category_nm, tax_type_nm, tax_value_in_per, etl_load_id, source_cd",
 			"insert_query": "SELECT dh.hospital_key, pm.product_master_id as product_id , pm.product_cd, pm.product_nm, pm.generic_nm as product_generic_nm, pm.hsn_code as product_hsn_cd, pm.schedule_type_cd as product_schedule_type_cd, pb.product_brand_master_nm as product_brand_nm, pc.product_category_master_nm as product_category_nm, tm.tax_type_nm, tm.tax_value_in_per, {0},'{1}' FROM healthscore_stg.hs_product_master pm JOIN healthscore_stg.hs_product_brand_master pb ON pb.product_brand_master_id = pm.product_brand_master_id JOIN healthscore_stg.hs_product_category_master pc ON pc.product_category_master_id = pm.product_category_master_id LEFT JOIN healthscore_stg.hs_tax_type_master tm ON tm.tax_type_id = pm.tax_type_id JOIN healthscore_stg.hs_hospital_master hm on hm.hospital_id = pm.hospital_master_id JOIN healthscore_dw.dim_hospital dh on  dh.hospital_cd = hm.hs_hospital_cd_guid",
-			"update_fields":" product_cd = src.product_cd, product_nm = src.product_nm, product_generic_nm = src.product_generic_nm, product_hsn_cd = src.product_hsn_cd, product_schedule_type_cd = src.product_schedule_type_cd, product_brand_nm = src.product_brand_nm, product_category_nm = src.product_category_nm, tax_type_nm = src.tax_type_nm, tax_value_in_per = src.tax_value_in_per "
+			"update_fields": " product_cd = src.product_cd, product_nm = src.product_nm, product_generic_nm = src.product_generic_nm, product_hsn_cd = src.product_hsn_cd, product_schedule_type_cd = src.product_schedule_type_cd, product_brand_nm = src.product_brand_nm, product_category_nm = src.product_category_nm, tax_type_nm = src.tax_type_nm, tax_value_in_per = src.tax_value_in_per "
 		},
 		{
 			"tablename": "dim_vendor",
@@ -144,10 +144,9 @@
 		{
 			"tablename": "dim_product_batch",
 			"source_table": "hs_stock_batch_details",
-			"fields": "product_key, batch_id, stock_batch_no, mrp, selling_price, expiry_date_key, store_key, product_id, etl_load_id, source_cd",
-			"insert_query": "SELECT dp.product_key, sbd.batch_id, sbd.stock_batch_no, sbd.mrp, sbd.selling_price, sbd.expire_dt as expiry_date_key, ds.store_key, sbd.product_master_id AS product_id, {0},'{1}' FROM healthscore_stg.hs_stock_batch_details sbd JOIN healthscore_dw.dim_product dp ON dp.product_id = sbd.product_master_id JOIN healthscore_dw.dim_store ds ON ds.store_id = sbd.hospital_store_master_id",
-			"update_fields": "stock_batch_no = src.stock_batch_no, mrp = src.mrp, selling_price = src.selling_price, expiry_date_key = src.expiry_date_key"
-		
+			"fields": "hospital_key,product_key, stock_batch_no, mrp, selling_price, expiry_date_key, created_date_key, etl_load_id, source_cd",
+			"insert_query": "SELECT ds.hospital_key, dp.product_key, sbd.stock_batch_no, min(sbd.mrp) as mrp, min(sbd.selling_price) as selling_price, min(sbd.expire_dt) as expiry_date_key, date(min(sbd.created_ts)) as created_date_key , {0},'{1}'  FROM healthscore_stg.hs_stock_batch_details sbd  JOIN healthscore_dw.dim_product dp ON dp.product_id = sbd.product_master_id and dp.source_cd= '{1}' JOIN healthscore_dw.dim_store ds ON ds.store_id = sbd.hospital_store_master_id and ds.source_cd= '{1}'  group by ds.hospital_key, dp.product_key, sbd.stock_batch_no",
+			"update_fields": "mrp = src.mrp, selling_price = src.selling_price, expiry_date_key = src.expiry_date_key, created_date_key = src.created_date_key"
 		}
 	],
 	"update_table_info": [
