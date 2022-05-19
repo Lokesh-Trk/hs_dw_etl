@@ -1550,3 +1550,107 @@ CREATE TABLE healthscore_dw.fact_meeting_feedback
   PRIMARY KEY (meeting_feedback_key),
   unique key uk_meeting_feedback (meeting_participant_key, feedback_id)
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+-- apr 27 2022
+
+DROP TABLE IF EXISTS healthscore_dw.fact_pharmacy_bills;
+CREATE TABLE healthscore_dw.fact_pharmacy_bills
+(
+  pharmacy_bill_key bigint(20) NOT NULL AUTO_INCREMENT,
+  hospital_key  int(11) NOT NULL,
+  pharmacy_bill_date_key date NOT NULL,
+  patient_visit_key int(11) NOT NULL, 
+  patient_visit_bill_key int(11), 
+  patient_key int(11) NOT NULL, 
+  store_key int(11) NOT NULL,
+  reference_doctor_staff_key int(11),
+  reference_doctor_nm varchar(400),
+	pharmacy_bill_id bigint(50),
+	pharmacy_bill_cd varchar(45),
+	pharmacy_bill_from_ts datetime,
+	pharmacy_bill_to_ts datetime,
+	pharmacy_bill_total_amt double,
+	pharmacy_bill_total_concession_amt double,
+	pharmacy_bill_amt_paid double,
+	pharmacy_bill_refund_amt double,
+	active_flg tinyint(1),
+	bill_created_ts datetime,
+	bill_created_by varchar(45),
+	bill_modified_by varchar(45),
+	bill_modified_ts datetime,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (pharmacy_bill_key),
+  unique key uk_fact_pharmacy_bill (hospital_key,pharmacy_bill_id)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.fact_pharmacy_bill_items;
+CREATE TABLE healthscore_dw.fact_pharmacy_bill_items
+(
+  pharmacy_bill_item_key bigint(20) NOT NULL AUTO_INCREMENT,
+  pharmacy_bill_key bigint(20) NOT NULL ,
+  pharmacy_bill_item_id bigint(50) NOT NULL,
+  hospital_key  int(11) NOT NULL,
+  product_batch_key int(11) NOT NULL,
+  pharmacy_bill_item_qty double,
+  pharmacy_bill_item_unit_amt double,
+  pharmacy_bill_item_total_concession_amt double,
+  pharmacy_bill_item_final_amt double,
+	pharmacy_bill_item_total_tax_amt double,
+  pharmacy_bill_item_type varchar(45),
+  tax_type_nm varchar(45),
+  tax_value_in_per decimal(6,3),
+  pharmacy_bill_item_comments varchar(255),
+  payment_method_desc VARCHAR(100),
+	card_last_4_digits varchar(45),
+	card_approval_code varchar(45),
+	payment_comments varchar(100),
+	payment_receipt_no varchar(45),
+	active_flg tinyint(1),
+	bill_item_created_ts datetime,
+	bill_item_created_by varchar(45),
+	bill_item_modified_by varchar(45),
+	bill_item_modified_ts datetime,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (pharmacy_bill_item_key),
+  unique key uk_fact_pharmacy_bill_item (hospital_key,pharmacy_bill_item_id)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.fact_patient_consumables;
+CREATE TABLE healthscore_dw.fact_patient_consumables
+(
+  patient_consumables_key bigint(20) NOT NULL AUTO_INCREMENT,
+  hospital_key int(11) NOT NULL,
+  patient_visit_key int(11) NOT NULL, 
+  patient_key int(11) NOT NULL, 
+  product_key int(11) NOT NULL,
+  store_key int(11) NOT NULL,
+  product_batch_key int(11) NOT NULL,
+  consumable_added_staff_key int(11) NOT NULL,
+  consumable_item_id bigint(20) NOT NULL,
+  consumable_list_id bigint(20) NOT NULL,
+  consumable_list_cd varchar(255),
+  consumable_item_qty double,
+  consumable_item_unit_amt double,
+  consumable_item_total_concession_amt double, 
+  consumable_item_final_amt double,
+  comments varchar(2000),  
+  added_to_bill_ts datetime, 
+  added_to_bill_by varchar(45),
+  created_by  varchar(45),
+  created_ts datetime,
+  modified_ts datetime,
+  modified_by  varchar(45),
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  active_flg tinyint(1), 
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (patient_consumables_key),
+  unique key uk_fact_patient_consumables (consumable_item_id, hospital_key, patient_key)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
