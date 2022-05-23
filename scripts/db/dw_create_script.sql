@@ -1327,7 +1327,7 @@ DROP TABLE if exists healthscore_dw.dim_store;
   hospital_key int(11) NOT NULL,
   store_id int(11) NOT NULL,
   store_cd varchar(45),
-  store_nm varchar(1000) ,
+  store_nm varchar(1000),
   main_store_flg tinyint(1),
   active_flg tinyint(1) NOT NULL DEFAULT 1,
   allow_direct_billing_flg tinyint(1) NOT NULL DEFAULT 0,
@@ -1382,11 +1382,11 @@ DROP TABLE IF EXISTS healthscore_dw.fact_daily_stock_snapshot;
 CREATE TABLE healthscore_dw.fact_daily_stock_snapshot
 (
   daily_stock_snapshot_key int(11) NOT NULL AUTO_INCREMENT,
-  as_of_date_key datetime NOT NULL,
+  as_of_date_key datetime ,
   hospital_key int(11) NOT NULL,
   product_batch_key int(11) NOT NULL,
   store_key int(11) NOT NULL,
-  opening_stock_qty int(11) NOT NULL DEFAULT 0, -- previous day closing stock qty
+  opening_stock_qty int(11) DEFAULT 0, -- previous day closing stock qty
   new_qty int(11) NOT NULL DEFAULT 0, -- or purchased, indented, or added
   sold_qty int(11) NOT NULL DEFAULT 0,  -- sold -- negative number
   return_qty int(11) NOT NULL DEFAULT 0, -- returned from the store to mainstore/vendor -- negative number
@@ -1394,14 +1394,14 @@ CREATE TABLE healthscore_dw.fact_daily_stock_snapshot
   expired_qty int(11) NOT NULL DEFAULT 0, -- expired  -- negative number
   lost_qty int(11) NOT NULL DEFAULT 0,  --  lost  -- negative number
   closing_stock_qty int(11) NOT NULL DEFAULT 0,  -- current available qty
-  opening_stock_cost_amt decimal(10,2) NOT NULL DEFAULT 0.0, -- previous day closing stock amt
-  new_cost_amt decimal(10,2) NOT NULL DEFAULT 0.0, -- or purchased, indented, or added
-  sold_cost_amt decimal(10,2) NOT NULL DEFAULT 0.0,  -- sold -- negative number
-  return_cost_amt decimal(10,2) NOT NULL DEFAULT 0.0, -- returned from the store to mainstore/vendor -- negative number
-  used_cost_amt decimal(10,2) NOT NULL DEFAULT 0.0,  --  used -- negative number
-  expired_cost_amt decimal(10,2) NOT NULL DEFAULT 0.0, -- expired  -- negative number
-  lost_cost_amt decimal(10,2) NOT NULL DEFAULT 0.0,  --  lost  -- negative number
-  closing_stock_cost_amt decimal(10,2) NOT NULL DEFAULT 0.0,  -- current available stock in amount
+  opening_stock_cost_amt double DEFAULT 0, -- previous day closing stock amt
+  new_cost_amt double NOT NULL DEFAULT 0, -- or purchased, indented, or added
+  sold_cost_amt double NOT NULL DEFAULT 0,  -- sold -- negative number
+  return_cost_amt double NOT NULL DEFAULT 0, -- returned from the store to mainstore/vendor -- negative number
+  used_cost_amt double NOT NULL DEFAULT 0,  --  used -- negative number
+  expired_cost_amt double NOT NULL DEFAULT 0, -- expired  -- negative number
+  lost_cost_amt double NOT NULL DEFAULT 0,  --  lost  -- negative number
+  closing_stock_cost_amt double NOT NULL DEFAULT 0,  -- current available stock in amount
   inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
   updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   source_cd varchar(45) NOT NULL,
