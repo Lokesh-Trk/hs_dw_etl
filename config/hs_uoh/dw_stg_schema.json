@@ -381,7 +381,7 @@
 		},
 		{
 			"tablename": "hs_patient_appointments_master",
-			"fields": "patient_appointment_id int(11) NOT NULL  ,consultant_schedule_id int(11)  ,patient_id int(11)  ,schedule_status_id int(11) NOT NULL  ,active_flg tinyint(1)  ,created_by varchar(45)  ,created_ts datetime  ,modified_by varchar(45)  ,modified_ts datetime  ,visit_type varchar(60)  ,contact_type varchar(45)  ,note  varchar(100)  ,patient_name varchar(100)  ,recurring_appointment_id bigint(20)  ,care_plan_instruction_id bigint(20)  ,surgery_id bigint(50)  ,status  varchar(100)  ,visit_id  bigint(50)  ,patient_schedule_id bigint(50)  ,host_meeting_url varchar(500)  ,attendee_meeting_url varchar(500)  ,consultation_type_id int(11)  ,delay_sms_sent_ts datetime  ,patient_mapped_item_id int(11) "
+			"fields": "patient_appointment_id int(11) NOT NULL  ,consultant_schedule_id int(11)  ,patient_id int(11)  ,schedule_status_id int(11) NOT NULL  ,active_flg tinyint(1)  ,created_by varchar(45)  ,created_ts datetime  ,modified_by varchar(45)  ,modified_ts datetime  ,visit_type varchar(60)  ,contact_type varchar(45)  ,note  varchar(100)  ,patient_name varchar(100)  ,recurring_appointment_id bigint(20)  ,care_plan_instruction_id bigint(20)  ,surgery_id bigint(50)  ,status  varchar(100)  ,visit_id  bigint(50)  ,patient_schedule_id bigint(50)  ,host_meeting_url varchar(500)  ,attendee_meeting_url varchar(500)  ,consultation_type_id int(11)  ,delay_sms_sent_ts datetime  ,patient_mapped_item_id int(11),reason_txt varchar(400) "
 		},
 		{
 			"tablename": "hs_schedule_status_master",
