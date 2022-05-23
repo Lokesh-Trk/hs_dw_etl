@@ -259,7 +259,7 @@ DROP TABLE IF EXISTS healthscore_dw.fact_patient_vitals;
   PRIMARY KEY (patient_vital_key),
   UNIQUE uk_patient_vitals_key(patient_key,vital_ref_component_id,vital_created_ts)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
-  
+
  DROP TABLE IF EXISTS healthscore_dw.fact_patient_appointments;
  CREATE TABLE healthscore_dw.fact_patient_appointments (
   patient_appt_key int(11) NOT NULL AUTO_INCREMENT,
@@ -1654,3 +1654,6 @@ CREATE TABLE healthscore_dw.fact_patient_consumables
   PRIMARY KEY (patient_consumables_key),
   unique key uk_fact_patient_consumables (consumable_item_id, hospital_key, patient_key)
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+/*23 May 2022 7:34:31 AM IST*/
+ALTER TABLE healthscore_dw.fact_patient_appointments ADD COLUMN `reason_txt` varchar(400) NULL COMMENT '';
