@@ -446,6 +446,14 @@
         {
 			"tablename": "hs_hospital_purchase_orders ",
 			"fields": "purchase_order_id bigint(20), purchase_order_cd varchar(255), purchase_order_approver_id bigint(20), purchase_order_due_amt double, purchase_order_requester_id bigint(20), purchase_order_amt double, purchase_order_status_id int(11), hospital_store_master_id bigint(20), vendor_master_id bigint(20), active_flg tinyint(1), created_by varchar(45), created_ts datetime, modified_by varchar(45), modified_ts datetime"
+		},
+		{
+			"tablename": "hs_patient_visit_consumable_list",
+			"fields": "visit_consumable_list_id bigint(20), visit_consumable_list_cd varchar(255), patient_visit_id bigint(20), consumable_list_from_ts datetime, consumable_list_to_ts datetime, consumable_list_total_amt decimal(10,2), consumable_list_total_concession_amt decimal(10,2), hospital_store_master_id bigint(20), active_flg tinyint(1), created_ts datetime, created_by varchar(45), modified_by varchar(45), modified_ts datetime, add_to_bill_flg tinyint(1), added_to_bill_ts datetime, added_to_bill_by varchar(45)"
+		},
+		{
+			"tablename": "hs_patient_visit_consumable_items",
+			"fields": "visit_consumable_item_id bigint(20), visit_consumable_list_id bigint(20), hospital_store_master_id bigint(20), product_master_id bigint(20), stock_batch_no varchar(45), consumable_item_qty double, consumable_item_unit_amt double, consumable_item_total_concession_amt double, consumable_item_final_amt double, comments varchar(1000), active_flg tinyint(1), created_ts datetime, created_by varchar(45), modified_by varchar(45), modified_ts datetime "
 		}
 	]
 }

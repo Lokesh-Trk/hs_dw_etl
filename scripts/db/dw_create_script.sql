@@ -1620,3 +1620,37 @@ CREATE TABLE healthscore_dw.fact_pharmacy_bill_items
   PRIMARY KEY (pharmacy_bill_item_key),
   unique key uk_fact_pharmacy_bill_item (hospital_key,pharmacy_bill_item_id)
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.fact_patient_consumables;
+CREATE TABLE healthscore_dw.fact_patient_consumables
+(
+  patient_consumables_key bigint(20) NOT NULL AUTO_INCREMENT,
+  hospital_key int(11) NOT NULL,
+  patient_visit_key int(11) NOT NULL, 
+  patient_key int(11) NOT NULL, 
+  product_key int(11) NOT NULL,
+  store_key int(11) NOT NULL,
+  product_batch_key int(11) NOT NULL,
+  consumable_added_staff_key int(11) NOT NULL,
+  consumable_item_id bigint(20) NOT NULL,
+  consumable_list_id bigint(20) NOT NULL,
+  consumable_list_cd varchar(255),
+  consumable_item_qty double,
+  consumable_item_unit_amt double,
+  consumable_item_total_concession_amt double, 
+  consumable_item_final_amt double,
+  comments varchar(2000),  
+  added_to_bill_ts datetime, 
+  added_to_bill_by varchar(45),
+  created_by  varchar(45),
+  created_ts datetime,
+  modified_ts datetime,
+  modified_by  varchar(45),
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  active_flg tinyint(1), 
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (patient_consumables_key),
+  unique key uk_fact_patient_consumables (consumable_item_id, hospital_key, patient_key)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
