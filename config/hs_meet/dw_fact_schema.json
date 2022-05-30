@@ -3,22 +3,22 @@
 
 	"insert_table_info": [
 		{
-            "tablename": "fact_meeting_participant_details",
-			"source_table": "hs_meeting_details",
-			"fields": " meeting_key, hospital_key, participant_key, meeting_start_ts, meeting_end_ts, first_joined_ts, last_left_ts, joined_flg, meeting_record_flg, recording_notification_sent_flg, active_flg, source_cd, etl_load_id",		
-            "insert_query": "SELECT dm.meeting_key, dh.hospital_key, dp.participant_key, hmd.meeting_start_ts, hmd.meeting_end_ts, hpd.first_joined_ts , hpd.last_left_ts, hpd.joined_flg,  hmd.meeting_record_flg, hmd.recording_notification_sent_flg, hmd.active_flg, '{0}', {1} FROM healthscore_stg.hs_meeting_details hmd JOIN healthscore_dw.dim_hospital dh ON dh.hospital_cd = hmd.hospital_cd JOIN healthscore_dw.dim_meeting dm ON dm.meeting_id = hmd.meeting_id AND dm.hospital_key = dh.hospital_key JOIN  healthscore_stg.hs_participant_details hpd ON hpd.meeting_id = hmd.meeting_id JOIN  healthscore_dw.dim_participant dp ON dp.participant_id = hpd.participant_id AND dp.hospital_key = dh.hospital_key ",
+			"tablename": "fact_meeting_participant_details",
+			"source_table": "hs_participant_details",
+			"fields": " meeting_key, hospital_key, patient_key,staff_key, participant_unique_cd, participant_type_cd, participant_type_nm,participant_uuid, first_joined_ts, last_left_ts, joined_flg, active_flg, source_cd, etl_load_id",
+			"insert_query": "SELECT dm.meeting_key, dh.hospital_key, dp.patient_key as patient_key,  ds.staff_key as staff_key , hpd.participant_unique_cd,ptm.participant_type_cd, ptm.participant_type_nm, hpd.participant_uuid,  hpd.first_joined_ts , hpd.last_left_ts, hpd.joined_flg,  hpd.active_flg, '{0}', {1} FROM healthscore_stg.hs_participant_details hpd JOIN healthscore_stg.hs_meeting_details hmd ON hpd.meeting_id = hmd.meeting_id JOIN healthscore_dw.dim_hospital dh ON dh.hospital_cd = hmd.hospital_cd JOIN healthscore_dw.dim_meeting dm ON dm.meeting_id = hmd.meeting_id AND dm.hospital_key = dh.hospital_key JOIN healthscore_stg.hs_participant_type_master ptm ON ptm.participant_type_id = hpd.participant_type_id LEFT JOIN healthscore_dw.dim_staff ds on dh.hospital_key = ds.hospital_key and ds.hospital_staff_cd = hpd.participant_unique_cd LEFT JOIN healthscore_dw.dim_patient dp on dp.patient_unique_id = hpd.participant_unique_cd and patient_unique_id_type = 'hospital_patient_cd'   ",
 			"where_clause": "dm.hospital_key=%i",
-			"update_fields": "meeting_start_ts = src.meeting_start_ts, meeting_end_ts = src.meeting_end_ts, first_joined_ts = src.first_joined_ts, last_left_ts = src.last_left_ts, joined_flg = src.joined_flg, meeting_record_flg = src.meeting_record_flg, recording_notification_sent_flg = src.recording_notification_sent_flg" 
+			"update_fields": "patient_key=src.patient_key, staff_key=src.staff_key, participant_type_cd = src.participant_type_cd, participant_type_nm = src.participant_type_nm, first_joined_ts = src.first_joined_ts, last_left_ts = src.last_left_ts, joined_flg = src.joined_flg"
 		},
 		{
-            "tablename": "fact_meeting_feedback",
+			"tablename": "fact_meeting_feedback",
 			"source_table": "hs_meeting_feedback",
-			"fields": " meeting_participant_key, feedback_id, rating, issue_type, comments, created_by, modified_by, created_ts, modified_ts, source_cd, etl_load_id",		
-            "insert_query": "SELECT fmpd.meeting_participant_key, hmf.feedback_id, hmf.rating, hmf.issue_type, hmf.comments, hmf.created_by, hmf.modified_by, hmf.created_ts,  hmf.modified_ts, '{0}', {1} FROM healthscore_stg.hs_meeting_feedback hmf  JOIN healthscore_stg.hs_meeting_details hmd ON hmd.meeting_id = hmf.meeting_id JOIN healthscore_dw.dim_hospital dh ON dh.hospital_cd = hmd.hospital_cd JOIN healthscore_dw.dim_meeting dm ON dm.meeting_id = hmf.meeting_id and dm.hospital_key = dh.hospital_key JOIN healthscore_stg.hs_participant_details hpd ON hpd.meeting_id = hmf.meeting_id  JOIN healthscore_dw.dim_participant dp ON dp.participant_id = hpd.participant_id AND dp.hospital_key = dh.hospital_key  JOIN healthscore_dw.fact_meeting_participant_details fmpd on fmpd.meeting_key = dm.meeting_key and  fmpd.hospital_key = dh.hospital_key and fmpd.participant_key = dp.participant_key",
-			"where_clause": "fmpd.hospital_key=%i",
-			"update_fields": "meeting_participant_key = src.meeting_participant_key, feedback_id = src.feedback_id, rating = src.rating, issue_type = src.issue_type, comments = src.comments, created_by = src.created_by, modified_by = src.modified_by, created_ts = src.created_ts, modified_ts = src.modified_ts" 
+			"fields": " meeting_key, participant_key,hospital_key, feedback_id, rating, issue_type, comments, created_by, modified_by, created_ts, modified_ts, user_agent, source_cd, etl_load_id",
+			"insert_query": "SELECT mtg.meeting_key,fmpd.meeting_participant_key,mtg.hospital_key, hmf.feedback_id, cast(rating as unsigned) as rating, hmf.issue_type, hmf.comments, hmf.created_by, hmf.modified_by, hmf.created_ts,  hmf.modified_ts, hmf.user_agent , '{0}', {1}  FROM healthscore_stg.hs_meeting_feedback hmf   LEFT JOIN healthscore_dw.dim_meeting mtg on mtg.meeting_id =  hmf.meeting_id   LEFT JOIN healthscore_dw.fact_meeting_participant_details host ON host.meeting_key = mtg.meeting_key AND participant_type_cd= 'HOST' LEFT JOIN healthscore_dw.fact_meeting_participant_details fmpd on fmpd.participant_uuid =  (case when length(hmf.participant_uuid) = 0 then host.participant_uuid else hmf.participant_uuid  end)",
+			"where_clause": "mtg.hospital_key=%i",
+			"update_fields": "rating = src.rating, issue_type = src.issue_type, comments = src.comments, created_by = src.created_by, modified_by = src.modified_by, created_ts = src.created_ts, modified_ts = src.modified_ts, user_agent = src.user_agent"
 		}
-    ],
+	],
 
-    "update_table_info": []
+	"update_table_info": []
 }
