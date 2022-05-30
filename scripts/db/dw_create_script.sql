@@ -1657,3 +1657,86 @@ CREATE TABLE healthscore_dw.fact_patient_consumables
 
 /*23 May 2022 7:34:31 AM IST*/
 ALTER TABLE healthscore_dw.fact_patient_appointments ADD COLUMN `reason_txt` varchar(400) NULL COMMENT '';
+
+/*26 may 2022 */
+alter table healthscore_dw.fact_daily_stock_transactions ADD COLUMN stock_transactions_comment varchar(255) DEFAULT NULL;
+
+DROP TABLE IF EXISTS healthscore_dw.dim_meeting;
+CREATE TABLE healthscore_dw.dim_meeting
+(
+  meeting_key bigint(20) NOT NULL AUTO_INCREMENT,
+  hospital_key int(11) NOT NULL,
+  consultant_schedule_key int(11) DEFAULT NULL,
+  meeting_id bigint(20) NOT NULL,
+  meeting_uuid varchar(255),
+  meeting_nm varchar(255),
+  consultant_schedule_id bigint(15) NOT NULL,
+  meeting_status_cd varchar(10),
+  meeting_status_nm varchar(50),
+  meeting_scheduled_ts datetime,
+  meeting_start_ts datetime,
+  meeting_end_ts datetime,
+  bbb_meeting_id varchar(400),
+  meeting_created_ts datetime,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  active_flg tinyint(1), 
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (meeting_key),
+  unique key uk_dim_meeting (meeting_id)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+
+DROP TABLE IF EXISTS healthscore_dw.fact_meeting_participant_details;
+CREATE TABLE healthscore_dw.fact_meeting_participant_details
+(
+  meeting_participant_key bigint(20) NOT NULL AUTO_INCREMENT,
+  meeting_key int(11) NOT NULL,
+  hospital_key int(11) NOT NULL,
+  patient_key int(11) DEFAULT NULL,
+  staff_key int(11) DEFAULT NULL,
+  participant_unique_cd varchar(255) not null,
+  participant_type_cd varchar(255) NOT NULL,
+  participant_type_nm varchar(400) NOT NULL,
+  participant_uuid varchar(255) NOT NULL,
+  first_joined_ts datetime ,
+  last_left_ts datetime,
+  joined_flg tinyint(1), 
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  active_flg tinyint(1), 
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (meeting_participant_key),
+  unique key uk_fact_participant_uuid (participant_uuid),
+  unique key uk_fact_meeting_participant (meeting_key, participant_unique_cd)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+
+DROP TABLE IF EXISTS healthscore_dw.fact_meeting_feedback;
+CREATE TABLE healthscore_dw.fact_meeting_feedback
+(
+  meeting_feedback_key bigint(20) NOT NULL AUTO_INCREMENT,
+  meeting_key int(11) NOT NULL,
+  participant_key  int(11) NOT NULL,
+  hospital_key int(11) NOT NULL,
+  feedback_id bigint(20) NOT NULL,
+  rating TINYINT UNSIGNED NOT NULL,
+  issue_type varchar(400),
+  comments LONGTEXT,
+  created_by varchar(45),
+  modified_by varchar(45),
+  created_ts datetime,
+  modified_ts datetime,
+  user_agent varchar(400),
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  active_flg tinyint(1), 
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (meeting_feedback_key),
+  unique key uk_meeting_feedback (feedback_id)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.dim_participant;

@@ -256,22 +256,68 @@ group by  fcpi.patient_careplan_key,fcp.patient_key,
 fcp.visit_hospital_key ,created_visit_key ,
 careplan_status_nm,careplan_summary, careplan_instruction_dept_nm;
 
+
+DROP VIEW IF EXISTS healthscore_dw.suvitas_product_master_view;
+CREATE VIEW healthscore_dw.suvitas_product_master_view
+as select dbi.hospital_key, product_key, product_id, product_cd, product_nm, product_generic_nm, 
+product_hsn_cd, product_schedule_type_cd, product_brand_nm, product_category_nm, tax_type_nm, tax_value_in_per
+ from healthscore_dw.dim_product dbi
+join healthscore_dw.suvitas_hospital_master_view dh
+on dbi.hospital_key = dh.hospital_key 
+;
+
+DROP VIEW IF EXISTS healthscore_dw.suvitas_product_batch_master_view;
+CREATE VIEW healthscore_dw.suvitas_product_batch_master_view
+as  
+SELECT product_batch_key, dbi.hospital_key, product_key, stock_batch_no, mrp, selling_price, expiry_date_key, 
+created_date_key from healthscore_dw.dim_product_batch dbi
+join healthscore_dw.suvitas_hospital_master_view dh
+on dbi.hospital_key = dh.hospital_key 
+;
+
+DROP VIEW IF EXISTS healthscore_dw.suvitas_store_master_view;
+CREATE VIEW healthscore_dw.suvitas_store_master_view
+as  
+SELECT  
+store_key, dbi.hospital_key, store_id, store_cd, store_nm, main_store_flg, active_flg, allow_direct_billing_flg
+FROM `healthscore_dw`.`dim_store` dbi
+join healthscore_dw.suvitas_hospital_master_view dh
+on dbi.hospital_key = dh.hospital_key 
+;
+
+DROP VIEW IF EXISTS healthscore_dw.suvitas_fact_stock_transactions_view;
+CREATE VIEW healthscore_dw.suvitas_fact_stock_transactions_view
+as  
+SELECT 
+stock_transaction_key, transaction_date_key, dbi.hospital_key, product_batch_key, store_key, stock_transaction_id, transaction_type_cd,
+transaction_type_nm, adjustment_status_cd, transaction_qty , stock_transactions_comment
+FROM `healthscore_dw`.`fact_daily_stock_transactions` dbi
+join healthscore_dw.suvitas_hospital_master_view dh
+on dbi.hospital_key = dh.hospital_key 
+;
+
+
 -- CREATE USER suvitas_db_viewer@localhost IDENTIFIED BY <PWD>;
-GRANT SELECT ON `healthscore_dw`.`suvitas_bill_items_master_view` TO 'suvitas_db_viewer'@'localhost' ; 
-GRANT SELECT ON `healthscore_dw`.`suvitas_hospital_master_view` TO 'suvitas_db_viewer'@'localhost' ; 
-GRANT SELECT ON `healthscore_dw`.`suvitas_patient_master_view` TO 'suvitas_db_viewer'@'localhost' ; 
-GRANT SELECT ON `healthscore_dw`.`suvitas_patient_medications_view` TO 'suvitas_db_viewer'@'localhost' ; 
-GRANT SELECT ON `healthscore_dw`.`suvitas_patient_assessments_view` TO 'suvitas_db_viewer'@'localhost' ; 
-GRANT SELECT ON `healthscore_dw`.`suvitas_hospital_staff_master_view` TO 'suvitas_db_viewer'@'localhost' ; 
-GRANT SELECT ON `healthscore_dw`.`suvitas_patient_visit_view` TO 'suvitas_db_viewer'@'localhost' ; 
-GRANT SELECT ON `healthscore_dw`.`suvitas_hospital_daily_statistics_view` TO 'suvitas_db_viewer'@'localhost' ; 
-GRANT SELECT ON `healthscore_dw`.`suvitas_active_visits_view` TO 'suvitas_db_viewer'@'localhost' ; 
-GRANT SELECT ON `healthscore_dw`.`suvitas_patient_diagnosis_view` TO 'suvitas_db_viewer'@'localhost' ; 
-GRANT SELECT ON `healthscore_dw`.`suvitas_patient_careplan_instructions_view` TO 'suvitas_db_viewer'@'localhost' ; 
-GRANT SELECT ON `healthscore_dw`.`suvitas_vist_bill_items_view` TO 'suvitas_db_viewer'@'localhost' ;
+GRANT SELECT ON healthscore_dw.suvitas_bill_items_master_view TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON healthscore_dw.suvitas_hospital_master_view TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON healthscore_dw.suvitas_patient_master_view TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON healthscore_dw.suvitas_patient_medications_view TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON healthscore_dw.suvitas_patient_assessments_view TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON healthscore_dw.suvitas_hospital_staff_master_view TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON healthscore_dw.suvitas_patient_visit_view TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON healthscore_dw.suvitas_hospital_daily_statistics_view TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON healthscore_dw.suvitas_active_visits_view TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON healthscore_dw.suvitas_patient_diagnosis_view TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON healthscore_dw.suvitas_patient_careplan_instructions_view TO 'suvitas_db_viewer'@'localhost' ; 
+GRANT SELECT ON healthscore_dw.suvitas_vist_bill_items_view TO 'suvitas_db_viewer'@'localhost' ;
 grant select on  healthscore_dw.suvitas_patient_diagnosis_view to suvitas_db_viewer@localhost;
 grant select on  healthscore_dw.suvitas_external_hospital_staff_view to suvitas_db_viewer@localhost;
 grant select on  healthscore_dw.suvitas_patient_visit_timeline_notes_view to suvitas_db_viewer@localhost;
 grant select on healthscore_dw.suvitas_patient_careplan_instructions_summary_view to suvitas_db_viewer@localhost;
 grant select on healthscore_dw.suvitas_patient_admission_evaluations_view to suvitas_db_viewer@localhost;
 grant select on healthscore_dw.suvitas_patient_discharge_evaluations_view to suvitas_db_viewer@localhost;
+
+grant select on healthscore_dw.suvitas_product_master_view to suvitas_db_viewer@localhost;
+grant select on healthscore_dw.suvitas_product_batch_master_view to suvitas_db_viewer@localhost;
+grant select on healthscore_dw.suvitas_store_master_view to suvitas_db_viewer@localhost;
+grant select on healthscore_dw.suvitas_fact_stock_transactions_view to suvitas_db_viewer@localhost;
