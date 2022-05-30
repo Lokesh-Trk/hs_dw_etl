@@ -1710,7 +1710,7 @@ CREATE TABLE healthscore_dw.fact_meeting_participant_details
   etl_load_id int(11) NOT NULL,
   PRIMARY KEY (meeting_participant_key),
   unique key uk_fact_participant_uuid (participant_uuid),
-  unique key uk_fact_meeting_participant (meeting_key, hospital_key, participant_unique_cd)
+  unique key uk_fact_meeting_participant (meeting_key, participant_unique_cd)
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 
@@ -1738,3 +1738,5 @@ CREATE TABLE healthscore_dw.fact_meeting_feedback
   PRIMARY KEY (meeting_feedback_key),
   unique key uk_meeting_feedback (feedback_id)
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.dim_participant;

@@ -15,7 +15,7 @@
 		},
 		{
 			"tablename": "hs_participant_details",
-			"fields": "participant_id bigint(11), participant_uuid varchar(100), participant_unique_cd varchar(255), participant_nm varchar(400), participant_type_id int(11), first_joined_ts datetime, last_left_ts datetime, joined_flg tinyint(1), meeting_id bigint(11), active_flg tinyint(1), created_by varchar(45), modified_by varchar(45), created_ts datetime, modified_ts datetime, participant_email_id_encry varchar(100)"
+			"fields": "participant_id bigint(11), participant_uuid varchar(255), participant_unique_cd varchar(255), participant_nm varchar(400), participant_type_id int(11), first_joined_ts datetime, last_left_ts datetime, joined_flg tinyint(1), meeting_id bigint(11), active_flg tinyint(1), created_by varchar(45), modified_by varchar(45), created_ts datetime, modified_ts datetime, participant_email_id_encry varchar(100)"
 		},
 		{
 			"tablename": "hs_participant_type_master",
