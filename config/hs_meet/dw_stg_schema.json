@@ -1,9 +1,9 @@
 {
 	"database": "healthscore_stg",
 	"create_table_info": [
-        {
+		{
 			"tablename": "hs_meeting_details",
-			"fields": "meeting_id bigint(11) NOT NULL, meeting_uuid varchar(100), meeting_nm varchar(400), meeting_scheduled_ts datetime, meeting_status_id bigint(11) NOT NULL, meeting_record_flg tinyint(1), appointment_id bigint(11), hospital_cd varchar(45), meeting_start_ts datetime, meeting_end_ts datetime, active_flg tinyint(1), created_by varchar(45), created_ts datetime, modified_ts datetime, modified_by varchar(45), message_q varchar(255), host_password varchar(255), attendee_password varchar(255), meeting_recorded_flg tinyint(1), bbb_meeting_id varchar(255), recording_notification_sent_flg tinyint(1)"
+			"fields": "meeting_id bigint(11) NOT NULL, meeting_uuid varchar(100), meeting_nm varchar(400), meeting_scheduled_ts datetime, meeting_status_id bigint(11) NOT NULL, meeting_record_flg tinyint(1), consultant_schedule_id bigint(11), hospital_cd varchar(45), meeting_start_ts datetime, meeting_end_ts datetime, active_flg tinyint(1), created_by varchar(45), created_ts datetime, modified_ts datetime, modified_by varchar(45), message_q varchar(255), host_password varchar(255), attendee_password varchar(255), meeting_recorded_flg tinyint(1), bbb_meeting_id varchar(255), recording_notification_sent_flg tinyint(1)"
 		},
 		{
 			"tablename": "hs_meeting_feedback",
@@ -14,13 +14,12 @@
 			"fields": " meeting_status_id bigint(11), meeting_status_cd varchar(255), meeting_status_nm varchar(400), active_flg tinyint(1), created_by varchar(45), modified_by varchar(45), created_ts datetime, modified_ts datetime"
 		},
 		{
-			"tablename": "hs_participant_details", 
+			"tablename": "hs_participant_details",
 			"fields": "participant_id bigint(11), participant_uuid varchar(100), participant_unique_cd varchar(255), participant_nm varchar(400), participant_type_id int(11), first_joined_ts datetime, last_left_ts datetime, joined_flg tinyint(1), meeting_id bigint(11), active_flg tinyint(1), created_by varchar(45), modified_by varchar(45), created_ts datetime, modified_ts datetime, participant_email_id_encry varchar(100)"
 		},
 		{
 			"tablename": "hs_participant_type_master",
 			"fields": "participant_type_id int(11), participant_type_cd varchar(255), participant_type_nm varchar(400), active_flg tinyint(1), created_by varchar(45), modified_by varchar(45), created_ts datetime, modified_ts datetime "
 		}
-
-    ]
+	]
 }
