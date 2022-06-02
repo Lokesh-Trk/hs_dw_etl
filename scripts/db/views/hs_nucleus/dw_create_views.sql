@@ -122,6 +122,23 @@ join healthscore_dw.nucleus_hospital_master_view  hm
 on mph.hospital_key = hm.hospital_key
 WHERE clinical_info_type_cd='diagnosis';
 
+
+DROP VIEW IF EXISTS healthscore_dw.nucleus_patient_visit_timeline_notes_view;
+CREATE VIEW healthscore_dw.nucleus_patient_visit_timeline_notes_view AS
+select 
+ptl.patient_key,ptl.patient_visit_key,sm.hospital_key, sm.hospital_staff_dept_nm,
+ptl.timeline_info_created_ts,timeline_info_type_cd,
+fnStripTags(timeline_info_hashtag_category) as timeline_info_hashtag_category, 
+fnStripTags(replace(timeline_info_desc,ifnull(timeline_info_hashtag_category,''),'')) as timeline_info_desc
+from  healthscore_dw.fact_patient_timeline_info ptl
+join healthscore_dw.nucleus_hospital_staff_master_view sm
+on ptl.created_staff_key = sm.staff_key
+join healthscore_dw.nucleus_hospital_master_view  hm
+on sm.hospital_key = hm.hospital_key
+where  
+ptl.active_flg=1    
+ ;
+
 grant select on  healthscore_dw.nucleus_hospital_master_view to nucleus_db_viewer@localhost;
 grant select on  healthscore_dw.nucleus_patient_master_view to nucleus_db_viewer@localhost;
 grant select on  healthscore_dw.nucleus_patient_medications_view to nucleus_db_viewer@localhost;
@@ -136,3 +153,4 @@ grant select on  healthscore_dw.nucleus_birth_exam_history_view to nucleus_db_vi
 grant select on  healthscore_dw.nucleus_careplan_execution_view to nucleus_db_viewer@localhost;
 grant select on  healthscore_dw.nucleus_calendar_view to nucleus_db_viewer@localhost;
 grant select on  healthscore_dw.nucleus_patient_diagnosis_view to nucleus_db_viewer@localhost;
+grant select on  healthscore_dw.nucleus_patient_visit_timeline_notes_view to nucleus_db_viewer@localhost;
