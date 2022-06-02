@@ -1740,3 +1740,21 @@ CREATE TABLE healthscore_dw.fact_meeting_feedback
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS healthscore_dw.dim_participant;
+
+
+DROP TABLE IF EXISTS healthscore_dw.dim_patient_secondary_attributes;
+CREATE TABLE healthscore_dw.dim_patient_secondary_attributes (
+  patient_secondary_attribute_key int(11) NOT NULL AUTO_INCREMENT, 
+  hospital_key int(11) NOT NULL , 
+  patient_key int(11) NOT NULL , 
+  secondary_attribute_id int(11) NOT NULL, 
+  secondary_attribute_name varchar(100) DEFAULT NULL,
+  patient_secondary_attribute_relation_id int(11) NOT NULL ,  
+  patient_secondary_attribute_description text,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (patient_secondary_attribute_key),
+  unique key uk_patient_secondary_attribute (hospital_key,patient_secondary_attribute_relation_id)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;

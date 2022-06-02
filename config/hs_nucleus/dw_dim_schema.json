@@ -105,6 +105,13 @@
 			"fields": " hospital_key, ext_doctor_id, external_hospital_nm,external_doctor_nm,external_doctor_dept_nm,email_id,mobile_no,country_cd,active_flg,updated_ts,etl_load_id,source_cd",
 			"insert_query": "select hospital_key, exst.doctor_id as ext_doctor_id, external_hospital_nm,external_doctor_nm,exst.department_nm as external_doctor_dept_nm,exst.email_addr as email_id,exst.mobile_no,country_cd as country_cd,exst.active_flg,exst.modified_ts as updated_ts ,{0},'{1}' from healthscore_stg.hs_ext_hospital_doctors_master exst join healthscore_stg.hs_hospital_master hsm_stg on exst.hospital_id=hsm_stg.hospital_id join healthscore_dw.dim_hospital dim_h on dim_h.hospital_cd = hsm_stg.hs_hospital_cd_guid",
 			"update_fields": "external_hospital_nm=src.external_hospital_nm, external_doctor_nm=src.external_doctor_nm, external_doctor_dept_nm=src.external_doctor_dept_nm, email_id=src.email_id,mobile_no=src.mobile_no,country_cd=src.country_cd, active_flg=src.active_flg,updated_ts=src.updated_ts"
+		},
+		{
+			"tablename": "dim_patient_secondary_attributes",
+			"source_table": "hs_patient_secondary_attribute_relation",
+			"fields": "hospital_key,patient_key, secondary_attribute_id, secondary_attribute_name, patient_secondary_attribute_relation_id, patient_secondary_attribute_description, etl_load_id, source_cd",
+			"insert_query": "select hospital_key,patient_key, patient_secondary_attribute_id as secondary_attribute_id, attribute_name as secondary_attribute_name,  patient_secondary_attribute_relation_id, description as patient_secondary_attribute_description, {0},'{1}' from healthscore_stg.hs_patient_secondary_attribute_relation AS sr INNER JOIN healthscore_stg.hs_patient_secondary_attribute_master AS sm  ON sr.secondry_attribute_master_id = sm.patient_secondary_attribute_id AND sr.description IS NOT NULL JOIN healthscore_stg.hs_hospital_master hm on sm.hospital_id=hm.hospital_id join healthscore_stg.hs_patient_master pm on sr.patient_id = pm.patient_id  and  hm.hospital_id=pm.primary_hospital_id   join healthscore_dw.dim_patient dp ON pm.patient_cd=dp.patient_unique_id and dp.patient_unique_id_type='hospital_patient_cd' JOIN healthscore_dw.dim_hospital dh on dh.hospital_cd=hm.hs_hospital_cd_guid ",
+			"update_fields": "patient_key = src.patient_key,secondary_attribute_id = src.secondary_attribute_id,secondary_attribute_name = src.secondary_attribute_name, patient_secondary_attribute_description = src.patient_secondary_attribute_description"
 		}
 	],
 	"update_table_info": [

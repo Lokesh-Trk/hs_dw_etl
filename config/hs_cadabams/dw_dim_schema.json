@@ -147,6 +147,13 @@
 			"fields": "hospital_key,product_key, stock_batch_no, mrp, selling_price, expiry_date_key, created_date_key, etl_load_id, source_cd",
 			"insert_query": "SELECT ds.hospital_key, dp.product_key, sbd.stock_batch_no, min(sbd.mrp) as mrp, min(sbd.selling_price) as selling_price, min(sbd.expire_dt) as expiry_date_key, date(min(sbd.created_ts)) as created_date_key , {0},'{1}'  FROM healthscore_stg.hs_stock_batch_details sbd  JOIN healthscore_dw.dim_product dp ON dp.product_id = sbd.product_master_id and dp.source_cd= '{1}' JOIN healthscore_dw.dim_store ds ON ds.store_id = sbd.hospital_store_master_id and ds.source_cd= '{1}'  group by ds.hospital_key, dp.product_key, sbd.stock_batch_no",
 			"update_fields": "mrp = src.mrp, selling_price = src.selling_price, expiry_date_key = src.expiry_date_key, created_date_key = src.created_date_key"
+		},
+		{
+			"tablename": "dim_patient_secondary_attributes",
+			"source_table": "hs_patient_secondary_attribute_relation",
+			"fields": "hospital_key,patient_key, secondary_attribute_id, secondary_attribute_name, patient_secondary_attribute_relation_id, patient_secondary_attribute_description, etl_load_id, source_cd",
+			"insert_query": "select hospital_key,patient_key, patient_secondary_attribute_id as secondary_attribute_id, attribute_name as secondary_attribute_name,  patient_secondary_attribute_relation_id, description as patient_secondary_attribute_description, {0},'{1}' from healthscore_stg.hs_patient_secondary_attribute_relation AS sr INNER JOIN healthscore_stg.hs_patient_secondary_attribute_master AS sm  ON sr.secondry_attribute_master_id = sm.patient_secondary_attribute_id AND sr.description IS NOT NULL JOIN healthscore_stg.hs_hospital_master hm on sm.hospital_id=hm.hospital_id join healthscore_stg.hs_patient_master pm on sr.patient_id = pm.patient_id  and  hm.hospital_id=pm.primary_hospital_id   join healthscore_dw.dim_patient dp ON pm.patient_cd=dp.patient_unique_id and dp.patient_unique_id_type='hospital_patient_cd' JOIN healthscore_dw.dim_hospital dh on dh.hospital_cd=hm.hs_hospital_cd_guid ",
+			"update_fields": "patient_key = src.patient_key,secondary_attribute_id = src.secondary_attribute_id,secondary_attribute_name = src.secondary_attribute_name, patient_secondary_attribute_description = src.patient_secondary_attribute_description"
 		}
 	],
 	"update_table_info": [
