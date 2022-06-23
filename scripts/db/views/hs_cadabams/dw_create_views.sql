@@ -152,7 +152,7 @@ group by  cas.consultant_schedule_key,cas.hospital_key, cas.consulting_staff_key
 DROP VIEW IF EXISTS healthscore_dw.cadabams_patient_appt_view;
 CREATE VIEW healthscore_dw.cadabams_patient_appt_view AS
 SELECT patient_key, consultant_schedule_key, fpa.hospital_key, patient_appointment_id , schedule_status, visit_type,
- contact_type, appointment_status ,  appointment_created_ts, appointment_modified_ts, patient_visit_key 
+ contact_type, appointment_status ,  appointment_created_ts, appointment_modified_ts, patient_visit_key, reason_txt
 FROM healthscore_dw.fact_patient_appointments fpa
 join healthscore_dw.cadabams_hospital_master_view  hm
 on fpa.hospital_key = hm.hospital_key 

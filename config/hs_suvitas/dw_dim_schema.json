@@ -144,9 +144,9 @@
 		{
 			"tablename": "dim_product_batch",
 			"source_table": "hs_stock_batch_details",
-			"fields": "hospital_key,product_key, stock_batch_no, mrp, selling_price, expiry_date_key, created_date_key, etl_load_id, source_cd",
-			"insert_query": "SELECT ds.hospital_key, dp.product_key, sbd.stock_batch_no, min(sbd.mrp) as mrp, min(sbd.selling_price) as selling_price, min(sbd.expire_dt) as expiry_date_key, date(min(sbd.created_ts)) as created_date_key , {0},'{1}'  FROM healthscore_stg.hs_stock_batch_details sbd  JOIN healthscore_dw.dim_product dp ON dp.product_id = sbd.product_master_id and dp.source_cd= '{1}' JOIN healthscore_dw.dim_store ds ON ds.store_id = sbd.hospital_store_master_id and ds.source_cd= '{1}'  group by ds.hospital_key, dp.product_key, sbd.stock_batch_no",
-			"update_fields": "mrp = src.mrp, selling_price = src.selling_price, expiry_date_key = src.expiry_date_key, created_date_key = src.created_date_key"
+			"fields": "hospital_key,product_key, stock_batch_no, erp, mrp, selling_price, expiry_date_key, created_date_key, etl_load_id, source_cd",
+			"insert_query": "SELECT ds.hospital_key, dp.product_key, sbd.stock_batch_no, min(sbd.erp) as erp, min(sbd.mrp) as mrp, min(sbd.selling_price) as selling_price, min(sbd.expire_dt) as expiry_date_key, date(min(sbd.created_ts)) as created_date_key , {0},'{1}'  FROM healthscore_stg.hs_stock_batch_details sbd  JOIN healthscore_dw.dim_product dp ON dp.product_id = sbd.product_master_id and dp.source_cd= '{1}' JOIN healthscore_dw.dim_store ds ON ds.store_id = sbd.hospital_store_master_id and ds.source_cd= '{1}'  group by ds.hospital_key, dp.product_key, sbd.stock_batch_no",
+			"update_fields": "erp=src.erp, mrp = src.mrp, selling_price = src.selling_price, expiry_date_key = src.expiry_date_key, created_date_key = src.created_date_key"
 		},
 		{
 			"tablename": "dim_patient_secondary_attributes",

@@ -1431,7 +1431,7 @@ CREATE TABLE healthscore_dw.fact_purchase_orders
   unique key uk_fact_purchase_order (hospital_key,purchase_order_id)
   )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
-  DROP TABLE IF EXISTS healthscore_dw.fact_purchase_order_invoices;
+DROP TABLE IF EXISTS healthscore_dw.fact_purchase_order_invoices;
 CREATE TABLE healthscore_dw.fact_purchase_order_invoices
 (
   purchase_order_invoice_key bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1758,3 +1758,132 @@ CREATE TABLE healthscore_dw.dim_patient_secondary_attributes (
   PRIMARY KEY (patient_secondary_attribute_key),
   unique key uk_patient_secondary_attribute (hospital_key,patient_secondary_attribute_relation_id)
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+
+-- jun 8 2022
+
+DROP TABLE IF EXISTS healthscore_dw.fact_pharmacy_bills;
+CREATE TABLE healthscore_dw.fact_pharmacy_bills
+(
+  pharmacy_bill_key bigint(20) NOT NULL AUTO_INCREMENT,
+  hospital_key  int(11) NOT NULL,
+  pharmacy_bill_date_key date NOT NULL,
+  patient_visit_key int(11) NOT NULL, 
+  patient_visitbill_key int(11), 
+  patient_key int(11) NOT NULL, 
+  store_key int(11) NOT NULL,
+  reference_doctor_staff_key int(11),
+	pharmacy_bill_id bigint(50),
+	pharmacy_bill_cd varchar(45),
+	pharmacy_bill_from_ts datetime,
+	pharmacy_bill_to_ts datetime,
+	pharmacy_bill_total_amt double,
+	pharmacy_bill_total_concession_amt double,
+	pharmacy_bill_amt_paid double,
+	pharmacy_bill_refund_amt double,
+  pharmacy_bill_bank_charges_amt double,
+	active_flg tinyint(1),
+	bill_created_ts datetime,
+	bill_created_staff_key int(11),
+	bill_modified_staff_key int(11),
+	bill_modified_ts datetime,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (pharmacy_bill_key),
+  unique key uk_fact_pharmacy_bill (hospital_key,pharmacy_bill_id)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.fact_pharmacy_bill_items;
+CREATE TABLE healthscore_dw.fact_pharmacy_bill_items
+(
+  pharmacy_bill_item_key bigint(20) NOT NULL AUTO_INCREMENT,
+  pharmacy_bill_key bigint(20) NOT NULL ,
+  hospital_key int(11) NOT NULL,
+  product_key int(11) NOT NULL,
+  product_batch_key int(11) NOT NULL,
+  pharmacy_bill_item_id bigint(50) NOT NULL,
+  pharmacy_bill_item_qty double,
+  pharmacy_bill_item_unit_amt double,
+  pharmacy_bill_item_total_concession_amt double,
+  pharmacy_bill_item_final_amt double,
+	pharmacy_bill_item_total_tax_amt double,
+  pharmacy_bill_item_type varchar(45),
+  tax_type_nm varchar(45),
+  tax_value_in_per decimal(6,3),
+  pharmacy_bill_item_comments varchar(255), 
+	active_flg tinyint(1),
+	bill_item_created_ts datetime,
+	bill_item_created_staff_key int(11),
+	bill_item_modified_staff_key int(11),
+	bill_item_modified_ts datetime,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (pharmacy_bill_item_key),
+  unique key uk_fact_pharmacy_bill_item (hospital_key,pharmacy_bill_item_id)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS healthscore_dw.fact_pharmacy_bill_payments;
+CREATE TABLE healthscore_dw.fact_pharmacy_bill_payments
+(
+  pharmacy_bill_payment_key bigint(20) NOT NULL AUTO_INCREMENT,
+  pharmacy_bill_key bigint(20) NOT NULL ,
+  hospital_key int(11) NOT NULL, 
+  pharmacy_bill_item_id bigint(50) NOT NULL, 
+  pharmacy_bill_item_final_amt double, 
+  pharmacy_bill_item_type varchar(45),
+  pharmacy_bill_item_comments varchar(255),
+  payment_method_desc VARCHAR(100),
+	card_last_4_digits varchar(45),
+	card_approval_code varchar(45),
+	payment_comments varchar(100),
+	payment_receipt_no varchar(45),
+	active_flg tinyint(1),
+	bill_item_created_ts datetime,
+	bill_item_created_staff_key int(11),
+	bill_item_modified_staff_key int(11),
+	bill_item_modified_ts datetime,
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (pharmacy_bill_payment_key),
+  unique key uk_fact_pharmacy_bill_pymt (hospital_key,pharmacy_bill_item_id)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+ 
+ DROP TABLE IF EXISTS healthscore_dw.fact_daily_stock_snapshot;
+CREATE TABLE healthscore_dw.fact_daily_stock_snapshot
+(
+  daily_stock_snapshot_key int(11) NOT NULL AUTO_INCREMENT,
+  as_of_date_key datetime NOT NULL,
+  hospital_key int(11) NOT NULL,
+  product_batch_key int(11) NOT NULL,
+  store_key int(11) NOT NULL,
+  opening_stock_qty int(11) NOT NULL DEFAULT 0, -- previous day closing stock qty
+  new_qty int(11) NOT NULL DEFAULT 0, -- or purchased, indented, or added
+  sold_qty int(11) NOT NULL DEFAULT 0,  -- sold -- negative number
+  return_qty int(11) NOT NULL DEFAULT 0, -- returned from the store to mainstore/vendor -- negative number
+  used_qty int(11) NOT NULL DEFAULT 0,  --  used -- negative number
+  expired_qty int(11) NOT NULL DEFAULT 0, -- expired  -- negative number
+  lost_qty int(11) NOT NULL DEFAULT 0,  --  lost  -- negative number
+  closing_stock_qty int(11) NOT NULL DEFAULT 0,  -- current available qty
+  opening_stock_cost_amt decimal(10,2) NOT NULL DEFAULT 0.0, -- previous day closing stock amt
+  new_cost_amt decimal(10,2) NOT NULL DEFAULT 0.0, -- or purchased, indented, or added
+  sold_cost_amt decimal(10,2) NOT NULL DEFAULT 0.0,  -- sold -- negative number
+  return_cost_amt decimal(10,2) NOT NULL DEFAULT 0.0, -- returned from the store to mainstore/vendor -- negative number
+  used_cost_amt decimal(10,2) NOT NULL DEFAULT 0.0,  --  used -- negative number
+  expired_cost_amt decimal(10,2) NOT NULL DEFAULT 0.0, -- expired  -- negative number
+  lost_cost_amt decimal(10,2) NOT NULL DEFAULT 0.0,  --  lost  -- negative number
+  closing_stock_cost_amt decimal(10,2) NOT NULL DEFAULT 0.0,  -- current available stock in amount
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (daily_stock_snapshot_key),
+  unique key uk_daily_stock_snapshot (as_of_date_key,hospital_key,product_batch_key,store_key)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE healthscore_dw.dim_product_batch ADD COLUMN erp double DEFAULT 0.0; 
