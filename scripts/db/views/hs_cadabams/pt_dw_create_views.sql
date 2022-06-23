@@ -79,11 +79,14 @@ case when bill_item_cd = 'PYR' then bill_item_final_amt else 0 end as payment_am
 case when bill_item_cd = 'PRF' then bill_item_final_amt else 0 end as refund_amt,
 case when bill_item_cd = 'WAI' then bill_item_final_amt else 0 end as waived_amt,
 case when bill_item_receipt_cd is null then bill_item_final_amt else 0 end as bill_amt,
-payment_method_desc
+payment_method_desc,
+(case when hospital_cd in ('PTBSK','PTGB') then 0.55 when hospital_cd='PTML' then 0.5 else 1 end) * bill_item_final_amt as recognizable_revenue_amt
 FROM healthscore_dw.fact_patient_visitbillitems fvbi
 JOIN healthscore_dw.fact_patient_visitbills vbv ON vbv.patient_visitbill_key = fvbi.patient_visitbill_key
 JOIN healthscore_dw.pt_patient_visit_view pvv ON pvv.patient_visit_key = vbv.patient_visit_key
 JOIN healthscore_dw.pt_bill_items_master_view bim ON fvbi.bill_item_key = bim.bill_item_key
+join healthscore_dw.pt_hospital_master_view hm
+on pvv.hospital_key = hm.hospital_key 
 WHERE fvbi.active_flg = 1;
 ​ 
 ​
