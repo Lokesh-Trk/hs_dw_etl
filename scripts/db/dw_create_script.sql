@@ -959,7 +959,6 @@ CREATE TABLE healthscore_dw.dim_patient_birth_exam_history (
 alter table healthscore_dw.fact_patient_visits modify COLUMN outcome_type MEDIUMTEXT;
 alter table healthscore_dw.fact_patient_visits modify COLUMN  condition_at_discharge MEDIUMTEXT;
 
-alter table  healthscore_dw.fact_patient_assessment_results modify column result_item_value varchar(2000);
 
 DROP TABLE IF EXISTS healthscore_dw.fact_patient_careplan_execution_details;
 CREATE TABLE healthscore_dw.fact_patient_careplan_execution_details (
@@ -1177,8 +1176,7 @@ ADD COLUMN assessment_scale_item_master_id bigint(50) NOT NULL default 0;
   PRIMARY KEY (patient_assmt_result_key),
   UNIQUE uk_patient_assmt_result_key(source_cd,patient_assessment_result_id)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
- 
- 
+  
 ALTER TABLE  healthscore_dw.fact_patient_visit_advice CHANGE COLUMN advice_desc advice_desc MEDIUMTEXT NULL DEFAULT NULL;
 
 
@@ -1243,6 +1241,7 @@ DROP TABLE IF EXISTS healthscore_dw.fact_patient_appointments;
  
 -- 22 mar 22
 ALTER TABLE healthscore_dw.dim_patient_documents ADD COLUMN source_cd varchar(45) DEFAULT NULL;
+ALTER TABLE healthscore_dw.dim_patient_documents DROP COLUMN updated_ts;
 ALTER TABLE healthscore_dw.dim_patient_documents ADD COLUMN updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP;
 ALTER TABLE healthscore_dw.dim_patient_documents ADD COLUMN published_ts datetime DEFAULT null;
 ALTER TABLE healthscore_dw.dim_patient_documents ADD COLUMN published_staff_key int(11) DEFAULT NULL;
@@ -1887,3 +1886,16 @@ CREATE TABLE healthscore_dw.fact_daily_stock_snapshot
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 ALTER TABLE healthscore_dw.dim_product_batch ADD COLUMN erp double DEFAULT 0.0; 
+
+ALTER TABLE  healthscore_dw.fact_pharmacy_bills MODIFY COLUMN  patient_visit_key int(11) DEFAULT NULL;
+ALTER TABLE  healthscore_dw.fact_pharmacy_bills MODIFY COLUMN  patient_key int(11) DEFAULT NULL;
+
+ALTER TABLE  healthscore_dw.dim_bill_items DROP INDEX uk_bill_item_key;
+ALTER TABLE  healthscore_dw.dim_bill_items ADD CONSTRAINT uk_bill_item_id UNIQUE (hospital_key,bill_item_id,bill_item_type);
+ALTER TABLE  healthscore_dw.dim_bill_items ADD CONSTRAINT uk_bill_item_cd UNIQUE (hospital_key,bill_item_cd,effective_from_ts);
+  
+ALTER TABLE healthscore_dw.dim_bill_items 
+DROP COLUMN total_cnt, 
+DROP COLUMN pkg_effective_from_ts, 
+DROP COLUMN pkg_effective_to_ts, 
+DROP COLUMN renewal_item_flg;
