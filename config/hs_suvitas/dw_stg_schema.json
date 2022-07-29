@@ -409,11 +409,11 @@
 		},
 		{
 			"tablename": "hs_stock_transactions",
-			"fields": "stock_transactions_id bigint(20),stock_transactions_comment varchar(255),transaction_type_id bigint(20),stock_transactions_cd varchar(255),stock_transactions_qty double,stock_transactions_ts datetime,stock_batch_no varchar(255),product_master_id bigint(20),adjustment_status_id bigint(20),hospital_store_master_id bigint(20),created_by varchar(45),created_ts datetime,modified_by varchar(45),modified_ts datetime"
+			"fields": "stock_transactions_id bigint(20),stock_transactions_comment varchar(255),transaction_type_id bigint(20),stock_transactions_cd varchar(255),stock_transactions_qty double,stock_transactions_ts datetime,stock_batch_no varchar(255),product_master_id bigint(20),adjustment_status_id bigint(20),hospital_store_master_id bigint(20),created_by varchar(45),created_ts datetime,modified_by varchar(45),modified_ts datetime,patient_visit_id bigint(50)"
 		},
 		{
 			"tablename": "hs_stock_batch_details",
-			"fields": "batch_id int(11),stock_batch_no varchar(45), hospital_store_master_id bigint(20),product_master_id bigint(20),stock_batch_qty double,created_by varchar(45),created_ts datetime,modified_by varchar(45),modified_ts datetime,mrp double,selling_price double,expire_dt date,erp double"
+			"fields": "batch_id int(11),stock_batch_no varchar(45), hospital_store_master_id bigint(20),product_master_id bigint(20),stock_batch_qty double,created_by varchar(45),created_ts datetime,modified_by varchar(45),modified_ts datetime,mrp double,selling_price double,expire_dt date,erp double, default_discount_percent double, minimum_selling_price double"
 		},
 		{
 			"tablename": "hs_stock_transaction_type",
