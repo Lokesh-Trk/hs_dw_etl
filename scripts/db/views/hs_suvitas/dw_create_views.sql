@@ -20,6 +20,7 @@ DROP VIEW IF EXISTS healthscore_dw.suvitas_patient_master_view;
 CREATE VIEW healthscore_dw.suvitas_patient_master_view as
 SELECT mph.hospital_key,dp.patient_key,patient_unique_id,patient_nm,patient_first_nm,patient_middle_nm,patient_last_nm,patient_gender,patient_birth_dt,patient_death_ts,patient_mother_nm
 ,patient_father_nm,blood_group,contact_addr_city_nm,contact_addr_state_nm,contact_addr_country_nm,contact_addr_zipcode, date(mph.hospital_registration_ts) as first_visit_date, mph.color_category_nm as patient_category, patient_socio_economic_status,patient_occupation_status,patient_marital_status,patient_religion,patient_spouse_occupation
+,case when contact_addr_city_nm != hospital_addr_city_nm then 'out_of_city' else 'within_city' end as location_type
  FROM healthscore_dw.dim_patient dp
 join healthscore_dw.map_patient_hospital mph
 on mph.patient_key = dp.patient_key
@@ -133,8 +134,8 @@ where fcpi.active_flg=1 and fcp.active_flg=1;
 ​
 DROP VIEW IF EXISTS healthscore_dw.suvitas_bill_items_master_view;
 CREATE VIEW healthscore_dw.suvitas_bill_items_master_view
-as select dbi.hospital_key, bill_item_key,bill_item_type,bill_item_category_cd,bill_item_category_nm,bill_item_category_desc,bill_item_cd,bill_item_nm,bill_item_amt,transaction_type_cd,pkg_effective_from_ts,pkg_effective_to_ts
-,renewal_item_flg,effective_from_ts,effective_to_ts,rate_category_nm,dbi.active_flg
+as select dbi.hospital_key, bill_item_key,bill_item_type,bill_item_category_cd,bill_item_category_nm,bill_item_category_desc,bill_item_cd,bill_item_nm,bill_item_amt,transaction_type_cd,
+effective_from_ts,effective_to_ts,rate_category_nm,dbi.active_flg
  from healthscore_dw.dim_bill_items dbi
 join healthscore_dw.suvitas_hospital_master_view dh
 on dbi.hospital_key = dh.hospital_key
@@ -149,6 +150,7 @@ case when bill_item_cd = 'PYO' then bill_item_final_amt else 0 end as prior_outs
 case when bill_item_cd = 'PRF' then bill_item_final_amt else 0 end as refund_amt,
 case when bill_item_cd = 'WAI' then bill_item_final_amt else 0 end as waived_amt,
 case when bill_item_receipt_cd is null and bill_item_cd <> 'PYO' then bill_item_final_amt else 0 end as bill_amt,
+case when bill_item_cd = 'WAI' then -1 * bill_item_final_amt when bill_item_receipt_cd is null and bill_item_cd <> 'PYO' then bill_item_final_amt else 0 end as billed_amt_w_waiver,
 payment_method_desc,payment_comments,non_editable_comments,payment_last_cd,payment_approval_cd
 FROM healthscore_dw.fact_patient_visitbillitems fvbi
 JOIN healthscore_dw.fact_patient_visitbills vbv ON vbv.patient_visitbill_key = fvbi.patient_visitbill_key

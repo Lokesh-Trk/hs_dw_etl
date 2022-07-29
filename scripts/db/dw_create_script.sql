@@ -1899,3 +1899,18 @@ DROP COLUMN total_cnt,
 DROP COLUMN pkg_effective_from_ts, 
 DROP COLUMN pkg_effective_to_ts, 
 DROP COLUMN renewal_item_flg;
+
+alter table healthscore_stg.hs_hospital_payment_methods_master add primary key(payment_method_id);
+
+alter table healthscore_dw.fact_patient_careplan_instructions add unique index uk_cpi_source (care_plan_instruction_id,source_cd);
+
+alter table healthscore_dw.fact_patient_medications add unique index uk_patient_medication_id (medication_details_id,prescribed_hospital_key);
+
+alter table healthscore_dw.etl_log add index idx_src_tgt_status (etl,source,target,status);
+
+
+-- 29 july 2022
+ALTER TABLE healthscore_dw.dim_product_batch ADD COLUMN default_discount_percent double DEFAULT 0.0; 
+ALTER TABLE healthscore_dw.dim_product_batch ADD COLUMN minimum_selling_price double DEFAULT 0.0; 
+
+alter table healthscore_dw.fact_daily_stock_transactions ADD patient_visit_key int(11);
