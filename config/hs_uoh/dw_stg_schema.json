@@ -409,41 +409,41 @@
 		},
 		{
 			"tablename": "hs_product_category_master",
-			"fields": "product_category_master_id bigint(20),product_category_master_cd varchar(255),product_category_master_nm varchar(255),hospital_master_id bigint(20), active_flg tinyint(1), created_by varchar(45), created_ts datetime, modified_by varchar(45), modified_ts datetime"	
+			"fields": "product_category_master_id bigint(20),product_category_master_cd varchar(255),product_category_master_nm varchar(255),hospital_master_id bigint(20), active_flg tinyint(1), created_by varchar(45), created_ts datetime, modified_by varchar(45), modified_ts datetime"
 		},
 		{
 			"tablename": "hs_stock_transactions",
-			"fields": "stock_transactions_id bigint(20),stock_transactions_comment varchar(255),transaction_type_id bigint(20),stock_transactions_cd varchar(255),stock_transactions_qty double,stock_transactions_ts datetime,stock_batch_no varchar(255),product_master_id bigint(20),adjustment_status_id bigint(20),hospital_store_master_id bigint(20),created_by varchar(45),created_ts datetime,modified_by varchar(45),modified_ts datetime"
+			"fields": "stock_transactions_id bigint(20),stock_transactions_comment varchar(255),transaction_type_id bigint(20),stock_transactions_cd varchar(255),stock_transactions_qty double,stock_transactions_ts datetime,stock_batch_no varchar(255),product_master_id bigint(20),adjustment_status_id bigint(20),hospital_store_master_id bigint(20),created_by varchar(45),created_ts datetime,modified_by varchar(45),modified_ts datetime,patient_visit_id bigint(50)"
 		},
 		{
 			"tablename": "hs_stock_batch_details",
-			"fields": "batch_id int(11),stock_batch_no varchar(45), hospital_store_master_id bigint(20),product_master_id bigint(20),stock_batch_qty double,created_by varchar(45),created_ts datetime,modified_by varchar(45),modified_ts datetime,mrp double,selling_price double,expire_dt date,erp double"
+			"fields": "batch_id int(11),stock_batch_no varchar(45), hospital_store_master_id bigint(20),product_master_id bigint(20),stock_batch_qty double,created_by varchar(45),created_ts datetime,modified_by varchar(45),modified_ts datetime,mrp double,selling_price double,expire_dt date,erp double, default_discount_percent double, minimum_selling_price double"
 		},
 		{
 			"tablename": "hs_stock_transaction_type",
-			"fields": "stock_transaction_type_id bigint(20),stock_transaction_type_cd varchar(10),stock_transaction_type_nm varchar(255),active_flg tinyint(1),created_by varchar(45),created_ts datetime,modified_by varchar(45),modified_ts datetime"		
+			"fields": "stock_transaction_type_id bigint(20),stock_transaction_type_cd varchar(10),stock_transaction_type_nm varchar(255),active_flg tinyint(1),created_by varchar(45),created_ts datetime,modified_by varchar(45),modified_ts datetime"
 		},
 		{
 			"tablename": "hs_patient_visit_pharmacy_bill_master",
-			"fields": "visit_pharmacy_bill_id bigint(50),bill_seq_no bigint(50),visit_pharmacy_bill_cd varchar(45),patient_visit_id bigint(50), pharmacy_bill_from_ts datetime, pharmacy_bill_to_ts datetime,pharmacy_bill_total_amt double,pharmacy_bill_total_concession_amt double,pharmacy_bill_amt_paid double,pharmacy_bill_refund_amt double,hospital_store_master_id bigint(20),active_flg tinyint(1),created_ts timestamp,created_by varchar(45),modified_by varchar(45),modified_ts datetime, patient_cd varchar(45),visit_bill_id bigint(50),ref_dr_nm varchar(400),ref_dr_hospital_staff_id bigint(50),hospital_id int(11)"		
+			"fields": "visit_pharmacy_bill_id bigint(50),bill_seq_no bigint(50),visit_pharmacy_bill_cd varchar(45),patient_visit_id bigint(50), pharmacy_bill_from_ts datetime, pharmacy_bill_to_ts datetime,pharmacy_bill_total_amt double,pharmacy_bill_total_concession_amt double,pharmacy_bill_amt_paid double,pharmacy_bill_refund_amt double,hospital_store_master_id bigint(20),active_flg tinyint(1),created_ts timestamp,created_by varchar(45),modified_by varchar(45),modified_ts datetime, patient_cd varchar(45),visit_bill_id bigint(50),ref_dr_nm varchar(400),ref_dr_hospital_staff_id bigint(50),hospital_id int(11)"
 		},
 		{
 			"tablename": "hs_patient_visit_pharmacy_items",
-			"fields": "visit_pharmacy_item_id bigint(50), visit_pharmacy_bill_id bigint(50), product_master_id bigint(20), stock_batch_no varchar(45), pharmacy_item_qty double, pharmacy_item_unit_amt double, pharmacy_item_total_concession_amt double, pharmacy_item_final_amt double, tax_type_id int(11), comments varchar(255), active_flg tinyint(1), created_ts timestamp, created_by varchar(45), modified_by varchar(45), modified_ts datetime, payment_method_id int(11), card_last_code varchar(45), card_approval_code varchar(45), payment_comments varchar(100), payment_receipt_no varchar(45), item_total_tax_amt double, item_type varchar(45)" 		
+			"fields": "visit_pharmacy_item_id bigint(50), visit_pharmacy_bill_id bigint(50), product_master_id bigint(20), stock_batch_no varchar(45), pharmacy_item_qty double, pharmacy_item_unit_amt double, pharmacy_item_total_concession_amt double, pharmacy_item_final_amt double, tax_type_id int(11), comments varchar(255), active_flg tinyint(1), created_ts timestamp, created_by varchar(45), modified_by varchar(45), modified_ts datetime, payment_method_id int(11), card_last_code varchar(45), card_approval_code varchar(45), payment_comments varchar(100), payment_receipt_no varchar(45), item_total_tax_amt double, item_type varchar(45)"
 		},
-        {
+		{
 			"tablename": "hs_stock_adjustment_status",
 			"fields": "adjustment_status_id bigint(20), adjustment_status_cd varchar(45), adjustment_status_nm varchar(255), adjustment_mul_factor int(1), active_flg tinyint(1), created_by varchar(45), created_ts datetime, modified_by varchar(45), modified_ts datetime "
 		},
-        {
+		{
 			"tablename": "hs_hospital_purchase_order_invoice_details",
 			"fields": "purchase_order_invoice_id bigint(20), purchase_order_invoice_no varchar(255), purchase_order_invoice_amt double, purchase_order_invoice_due_amt double, purchase_order_return_invoice_amt double, purchase_order_id bigint(20), purchase_order_invoice_ts datetime, purchase_order_invoice_due_ts datetime, purchase_order_invoice_path varchar(255), purchase_order_invoice_comments varchar(1000), receipt_code varchar(50), active_flg tinyint(1), created_by varchar(45), created_ts datetime, modified_by varchar(45), modified_ts datetime, purchase_order_invoice_roundoff_amt double "
 		},
-        {
+		{
 			"tablename": "hs_hospital_purchase_order_invoice_items ",
 			"fields": "invoice_item_id bigint(20), invoice_item_qty double, invoice_item_batch_no varchar(255), invoice_item_expiry_ts datetime, invoice_item_mrp_amt double, invoice_item_tax_amt double, invoice_item_unit_cost_amt double, invoice_item_amt double, purchase_order_invoice_id bigint(20), purchase_order_item_id bigint(20), product_name varchar(255), product_master_id bigint(20), invoice_item_return_qty double, created_by varchar(45), created_ts datetime, modified_by varchar(45), modified_ts datetime, discount_amount double, active_flg tinyint(1), invoice_item_return_dt date"
 		},
-        {
+		{
 			"tablename": "hs_hospital_purchase_orders ",
 			"fields": "purchase_order_id bigint(20), purchase_order_cd varchar(255), purchase_order_approver_id bigint(20), purchase_order_due_amt double, purchase_order_requester_id bigint(20), purchase_order_amt double, purchase_order_status_id int(11), hospital_store_master_id bigint(20), vendor_master_id bigint(20), active_flg tinyint(1), created_by varchar(45), created_ts datetime, modified_by varchar(45), modified_ts datetime"
 		},

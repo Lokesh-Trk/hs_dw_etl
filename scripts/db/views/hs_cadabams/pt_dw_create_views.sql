@@ -8,8 +8,8 @@ where hospital_cd like 'PT%'
 
 DROP VIEW IF EXISTS healthscore_dw.pt_bill_items_master_view;
 CREATE VIEW healthscore_dw.pt_bill_items_master_view
-as select dbi.hospital_key, bill_item_key,bill_item_type,bill_item_category_cd,bill_item_category_nm,bill_item_category_desc,bill_item_cd,bill_item_nm,bill_item_amt,transaction_type_cd,pkg_effective_from_ts,pkg_effective_to_ts
-,renewal_item_flg,effective_from_ts,effective_to_ts,rate_category_nm,dbi.active_flg
+as select dbi.hospital_key, bill_item_key,bill_item_type,bill_item_category_cd,bill_item_category_nm,bill_item_category_desc,bill_item_cd,bill_item_nm,bill_item_amt,transaction_type_cd,
+effective_from_ts,effective_to_ts,rate_category_nm,dbi.active_flg
  from healthscore_dw.dim_bill_items dbi
 join healthscore_dw.pt_hospital_master_view dh
 on dbi.hospital_key = dh.hospital_key
@@ -73,7 +73,7 @@ on fpv.visit_hospital_key = hm.hospital_key
 
 DROP VIEW IF EXISTS healthscore_dw.pt_visit_bill_items_view;
 CREATE VIEW healthscore_dw.pt_visit_bill_items_view AS
-SELECT  patient_visitbillitem_key,fvbi.bill_item_key,vbi_date_key AS transaction_date_key,vbi_time_key AS transaction_time_key,vbi_created_staff_key,bill_item_qty,bill_item_returned_qty,bill_item_unit_amt,bill_item_total_concession_amt,bill_item_final_amt,
+SELECT  patient_visitbillitem_key,patient_visitbill_key,fvbi.bill_item_key,vbi_date_key AS transaction_date_key,vbi_time_key AS transaction_time_key,vbi_created_staff_key,bill_item_qty,bill_item_returned_qty,bill_item_unit_amt,bill_item_total_concession_amt,bill_item_final_amt,
 bill_item_receipt_cd,bill_item_total_tax,pharmacy_item_flg,vbi_created_ts,vbv.patient_key,vbv.visit_hospital_key,vbv.patient_visit_key,visit_bill_cd,visit_bill_from_ts,visit_bill_to_ts,visit_bill_comments,visit_bill_created_ts,
 case when bill_item_cd = 'PYR' then bill_item_final_amt else 0 end as payment_amt,
 case when bill_item_cd = 'PRF' then bill_item_final_amt else 0 end as refund_amt,
