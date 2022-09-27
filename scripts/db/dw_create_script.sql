@@ -1914,3 +1914,26 @@ ALTER TABLE healthscore_dw.dim_product_batch ADD COLUMN default_discount_percent
 ALTER TABLE healthscore_dw.dim_product_batch ADD COLUMN minimum_selling_price double DEFAULT 0.0; 
 
 alter table healthscore_dw.fact_daily_stock_transactions ADD patient_visit_key int(11);
+
+DROP TABLE IF EXISTS healthscore_dw.fact_daily_opening_stock;
+CREATE TABLE healthscore_dw.fact_daily_opening_stock
+(
+  daily_opening_stock_key int(11) NOT NULL AUTO_INCREMENT,
+  as_of_date_key date NOT NULL,
+  hospital_key int(11) NOT NULL,
+  product_batch_key int(11) NOT NULL,
+  store_key int(11) NOT NULL,
+  opening_stock_qty int(11) NOT NULL DEFAULT 0, -- previous day closing stock qty
+  inserted_ts datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  source_cd varchar(45) NOT NULL,
+  etl_load_id int(11) NOT NULL,
+  PRIMARY KEY (daily_opening_stock_key),
+  unique key uk_daily_opening_stock (as_of_date_key,hospital_key,product_batch_key,store_key)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE `healthscore_dw`.`fact_pharmacy_bills` 
+CHANGE COLUMN `pharmacy_bill_date_key` `pharmacy_bill_date_key` DATE NULL ;
+
+ALTER TABLE `healthscore_dw`.`fact_daily_stock_transactions` 
+ADD INDEX `idx_stock_transaction` (`transaction_date_key` ASC, `hospital_key` ASC, `product_batch_key` ASC, `store_key` ASC);

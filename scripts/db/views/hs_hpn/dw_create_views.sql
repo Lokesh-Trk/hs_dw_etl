@@ -111,3 +111,95 @@ GRANT SELECT ON `healthscore_dw`.`hpn_patient_past_history_view` TO 'hpn_db_view
 GRANT SELECT ON `healthscore_dw`.`hpn_patient_family_history_view` TO 'hpn_db_viewer'@'localhost' ;   
 
 GRANT SELECT ON `healthscore_dw`.`hpn_patient_diagnosis_view` TO 'hpn_db_viewer'@'localhost' ;   
+
+DROP VIEW IF EXISTS healthscore_dw.hpn_patient_master_view;
+CREATE VIEW healthscore_dw.hpn_patient_master_view as
+SELECT mph.hospital_key,dp.patient_key,patient_unique_id,patient_nm,patient_first_nm,patient_middle_nm,patient_last_nm,patient_gender,patient_birth_dt,patient_death_ts,patient_mother_nm
+,patient_father_nm,blood_group,contact_addr_city_nm,contact_addr_state_nm,contact_addr_country_nm,contact_addr_zipcode, date(mph.hospital_registration_ts) as first_visit_date, mph.color_category_nm as patient_category, 
+patient_socio_economic_status, 
+pd.patient_occupation_status,
+pd.patient_marital_status,
+pd.patient_education_status,
+patient_handedness_status,
+patient_diet_status,
+patient_L1_status,
+patient_mother_tongue_status,
+patient_retired_status
+ FROM healthscore_dw.dim_patient dp
+join healthscore_dw.map_patient_hospital mph
+on mph.patient_key = dp.patient_key
+join healthscore_dw.hpn_hospital_master_view dh
+on mph.hospital_key = dh.hospital_key 
+left join 
+(SELECT   
+fpa.patient_key,visit_hospital_key as hospital_key,
+max(case when result_item_display_txt = 'Occupation' then result_item_value else null end) as patient_occupation_status,
+max(case when result_item_display_txt = 'Marital Status' then result_item_value else null end) as patient_marital_status,
+max(case when result_item_display_txt = 'Education' then result_item_value else null end ) as patient_education_status,
+max(case when result_item_display_txt = 'Handedness' then result_item_value else null end ) as patient_handedness_status,
+max(case when result_item_display_txt = 'Diet' then result_item_value else null end ) as patient_diet_status,
+max(case when result_item_display_txt = 'L1' then result_item_value else null end ) as patient_L1_status,
+max(case when result_item_display_txt = 'Mother tongue' then result_item_value else null end ) as patient_mother_tongue_status,
+max(case when result_item_display_txt = 'Retired' then result_item_value else null end ) as patient_retired_status
+FROM healthscore_dw.fact_patient_assessments fpa
+join healthscore_dw.fact_patient_assessment_results fpar
+on fpa.patient_assmt_key=fpar.patient_assmt_key 
+where assessment_scale_desc = 'Patient Demographic' and result_item_value is not null
+and result_item_display_txt in ('Occupation', 'Marital Status', 'Education')
+group by  fpa.patient_key,visit_hospital_key 
+) pd 
+on pd.patient_key = dp.patient_key
+and mph.hospital_key = pd.hospital_key 
+;
+
+DROP VIEW IF EXISTS healthscore_dw.hpn_patient_assessments_view;
+CREATE VIEW healthscore_dw.hpn_patient_assessments_view as
+SELECT   
+fpa.patient_assmt_key,fpa.patient_key,visit_hospital_key as hospital_key,patient_visit_key,assessed_date_key,assessed_time_key,assessed_ts,hospital_dept_nm,
+assessment_scale_master_id,fpa.patient_assessment_id , 
+assessment_scale_desc as assessment_scale_full_nm,
+SUBSTRING_INDEX(assessment_scale_desc,'-',1) as assessment_category,
+SUBSTRING_INDEX(assessment_scale_desc,'-',-1) as assessment_scale_desc, 
+trim(replace(result_item_display_txt,'Statistical Scores and comments','')) as result_item_display_txt ,
+min(result_item_row_no) as result_item_row_no,min(result_item_column_no) as result_item_column_no,
+max(result_item_ref_range_txt) result_item_ref_range_txt ,max(result_item_min_value) as result_item_min_value,max(result_item_max_value) as result_item_max_value ,
+max(case when result_item_display_txt like '%Signing Credentials%' then replace(replace(result_item_value,'<p>',''),'</p>','\n') when result_item_display_txt like '%Recommendations%' then replace(replace(replace(replace(replace(replace(result_item_value,'<div>',''),'</div>','\n'),'<ul>','\n'),'</ul>','\n'),'<li>','* '),'</li>','\n')  when result_item_display_txt not like '%Statistical Scores and comments%' then fnStripTags(result_item_value) else null end) as result_item_value,
+max(case when result_item_display_txt like '%Statistical Scores and comments%' then fnStripTags(result_item_value) else null end) as statistical_score_and_comment,
+sum(case when result_item_value REGEXP '^([0-9]*\.)?[0-9]+$' then result_item_value else null end) as numeric_result_value
+FROM healthscore_dw.fact_patient_assessments fpa
+join healthscore_dw.fact_patient_assessment_results fpar
+on fpa.patient_assmt_key=fpar.patient_assmt_key
+join healthscore_dw.hpn_patient_master_view pm
+on fpa.patient_key = pm.patient_key
+join healthscore_dw.hpn_hospital_master_view hm
+on fpa.visit_hospital_key = hm.hospital_key  
+group by fpa.patient_assmt_key,fpa.patient_key,visit_hospital_key  ,patient_visit_key,assessed_date_key,assessed_time_key,assessed_ts,hospital_dept_nm,
+assessment_scale_master_id,fpa.patient_assessment_id , assessment_scale_desc,
+SUBSTRING_INDEX(assessment_scale_desc,'-',1)  ,
+SUBSTRING_INDEX(assessment_scale_desc,'-',-1)  ,trim(replace(result_item_display_txt,'Statistical Scores and comments','')) 
+union all 
+SELECT   distinct
+fpa.patient_assmt_key,fpa.patient_key,visit_hospital_key as hospital_key,patient_visit_key,assessed_date_key,assessed_time_key,assessed_ts,hospital_dept_nm,
+assessment_scale_master_id,fpa.patient_assessment_id , 
+assessment_scale_desc as assessment_scale_full_nm,
+SUBSTRING_INDEX(assessment_scale_desc,'-',1) as assessment_category,
+SUBSTRING_INDEX(assessment_scale_desc,'-',-1) as assessment_scale_desc, 
+SUBSTRING_INDEX(assessment_scale_desc,'-',1) as result_item_display_txt ,
+null as result_item_row_no,null as result_item_column_no,
+null result_item_ref_range_txt ,
+null as result_item_min_value,null as result_item_max_value ,
+'-' as result_item_value,
+null as statistical_score_and_comment,
+null as numeric_result_value
+FROM healthscore_dw.fact_patient_assessments fpa
+join healthscore_dw.fact_patient_assessment_results fpar
+on fpa.patient_assmt_key=fpar.patient_assmt_key
+join healthscore_dw.hpn_patient_master_view pm
+on fpa.patient_key = pm.patient_key
+join healthscore_dw.hpn_hospital_master_view hm
+on fpa.visit_hospital_key = hm.hospital_key   
+group by fpa.patient_assmt_key,fpa.patient_key,visit_hospital_key  ,patient_visit_key,assessed_date_key,assessed_time_key,assessed_ts,hospital_dept_nm,
+assessment_scale_master_id,fpa.patient_assessment_id , assessment_scale_desc,
+SUBSTRING_INDEX(assessment_scale_desc,'-',1)  ,
+SUBSTRING_INDEX(assessment_scale_desc,'-',-1) 
+;
