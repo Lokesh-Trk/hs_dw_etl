@@ -1937,3 +1937,24 @@ CHANGE COLUMN `pharmacy_bill_date_key` `pharmacy_bill_date_key` DATE NULL ;
 
 ALTER TABLE `healthscore_dw`.`fact_daily_stock_transactions` 
 ADD INDEX `idx_stock_transaction` (`transaction_date_key` ASC, `hospital_key` ASC, `product_batch_key` ASC, `store_key` ASC);
+
+ALTER TABLE `healthscore_dw`.`fact_patient_consumables` 
+DROP INDEX `uk_fact_patient_consumables` ,
+ADD UNIQUE INDEX `uk_fact_patient_consumables` (`consumable_item_id` ASC, `hospital_key` ASC);
+
+
+ALTER TABLE `healthscore_dw`.`fact_daily_opening_stock` 
+CHANGE COLUMN `opening_stock_qty` `opening_stock_qty` DOUBLE NOT NULL DEFAULT '0' ;
+
+create or replace view healthscore_dw.vw_daily_stock_transaction_snapshot as
+select date(dst.transaction_date_key) as as_of_date_key , dst.hospital_key,dst.product_batch_key,dst.store_key,
+sum(CASE WHEN (transaction_type_cd in ('II') and transaction_qty > 0 ) OR transaction_type_cd in ('PO') OR adjustment_status_cd in ('FOUND','FOUND_NEW') THEN transaction_qty else 0 end) as new_qty,
+   sum(CASE WHEN transaction_type_cd in ('CON','DBILL') THEN transaction_qty else 0 end) as sold_qty,
+   sum(CASE WHEN transaction_type_cd in ('PORET','DBILLRET') THEN transaction_qty else 0 end) as return_qty,
+   sum(CASE WHEN adjustment_status_cd in ('LOST') THEN transaction_qty ELSE 0 end) as lost_qty,
+   sum(CASE WHEN adjustment_status_cd in ('USED') OR (transaction_type_cd in ('II') and transaction_qty < 0 )  THEN transaction_qty ELSE 0 end) as used_qty,
+   sum(CASE WHEN adjustment_status_cd in ('EXPIRED') THEN transaction_qty ELSE 0 end) as expired_qty,
+   dst.source_cd
+ from  healthscore_dw.fact_daily_stock_transactions dst 
+group by source_cd,as_of_date_key,dst.hospital_key,dst.product_batch_key,dst.store_key
+;
