@@ -2,13 +2,12 @@ DROP VIEW IF EXISTS healthscore_dw.suvitas_hospital_master_view;
 CREATE VIEW healthscore_dw.suvitas_hospital_master_view
 as   SELECT hospital_key, hospital_cd, hospital_nm, hospital_addr_line1, hospital_addr_line2, hospital_addr_city_nm, hospital_addr_state_nm, hospital_addr_country_nm, hospital_addr_zipcode, hospital_phone_num, hospital_email_addr, hospital_logo 
 FROM healthscore_dw.dim_hospital dh 
-where hospital_cd in ('SUVH','SUVB','SUVV','HCAH')
+where hospital_cd in ('SUVH','SUVB','SUVV','HCAH','HCGB')
 ;
 
 DROP VIEW IF EXISTS healthscore_dw.suvitas_bill_items_master_view;
 CREATE VIEW healthscore_dw.suvitas_bill_items_master_view
-as select dbi.hospital_key, bill_item_type,bill_item_category_cd,bill_item_category_nm,bill_item_category_desc,bill_item_cd,bill_item_nm,bill_item_amt,transaction_type_cd,pkg_effective_from_ts,pkg_effective_to_ts
-,renewal_item_flg,effective_from_ts,effective_to_ts,rate_category_nm,dbi.active_flg
+as select dbi.bill_item_key, dbi.hospital_key, bill_item_type,bill_item_category_cd,bill_item_category_nm,bill_item_category_desc,bill_item_cd,bill_item_nm,bill_item_amt,transaction_type_cd,effective_from_ts,effective_to_ts,rate_category_nm,dbi.active_flg
  from healthscore_dw.dim_bill_items dbi
 join healthscore_dw.suvitas_hospital_master_view dh
 on dbi.hospital_key = dh.hospital_key 
@@ -299,6 +298,56 @@ on dbi.hospital_key = dh.hospital_key
 ;
 
 
+DROP VIEW IF EXISTS healthscore_dw.suvitas_fact_patient_consumables_view;
+CREATE VIEW healthscore_dw.suvitas_fact_patient_consumables_view
+as  
+SELECT 
+pc.hospital_key, patient_visit_key, patient_key, product_key, store_key, product_batch_key, consumable_added_staff_key, 
+consumable_item_id, consumable_list_id, consumable_list_cd, consumable_item_qty, consumable_item_unit_amt, 
+consumable_item_total_concession_amt, 
+consumable_item_final_amt, comments, added_to_bill_ts, added_to_bill_by
+FROM `healthscore_dw`.`fact_patient_consumables` pc
+join healthscore_dw.suvitas_hospital_master_view dh
+on pc.hospital_key = dh.hospital_key 
+where pc.active_flg=1
+;
+ 
+DROP TABLE IF EXISTS healthscore_dw.suvitas_fact_stock_daily_snapshot_view;
+CREATE TABLE healthscore_dw.suvitas_fact_stock_daily_snapshot_view
+()
+as 
+SELECT dd.date_key as_of_date_key, dbi.hospital_key, dbi.product_batch_key,  
+sum(transaction_qty) as available_stock_qty 
+FROM `healthscore_dw`.`fact_daily_stock_transactions` dbi 
+join healthscore_dw.suvitas_hospital_master_view dh on dbi.hospital_key = dh.hospital_key  
+CROSS JOIN healthscore_dw.dim_date dd
+WHERE transaction_qty <> 0 and dd.date_key < date(now()) and transaction_date_key <= dd.date_key 
+ group by dd.date_key , dbi.hospital_key, dbi.product_batch_key;
+
+
+ DROP VIEW IF EXISTS healthscore_dw.suvitas_fact_stock_ageing_view;
+CREATE VIEW healthscore_dw.suvitas_fact_stock_ageing_view
+as  
+SELECT dd.date_key as_of_date_key, stk.hospital_key, pb.product_batch_key, 
+max(CASE WHEN datediff(dd.date_key,pb.created_date_key) <= 1    THEN available_stock_qty ELSE 0 END)  as day_1_qty , 
+max(CASE WHEN datediff(dd.date_key,pb.created_date_key) <= 30   THEN available_stock_qty ELSE 0 END) as day_30_qty, 
+max(CASE WHEN datediff(dd.date_key,pb.created_date_key) <= 60   THEN available_stock_qty ELSE 0 END) as day_60_qty, 
+max(CASE WHEN datediff(dd.date_key,pb.created_date_key) <= 90   THEN available_stock_qty ELSE 0 END) as day_90_qty, 
+max(CASE WHEN datediff(dd.date_key,pb.created_date_key) <= 120  THEN available_stock_qty ELSE 0 END) as day_120_qty, 
+max(CASE WHEN datediff(dd.date_key,pb.created_date_key) <= 180  THEN available_stock_qty ELSE 0 END) as day_180_qty, 
+max(CASE WHEN datediff(dd.date_key,pb.created_date_key) <= 210  THEN available_stock_qty ELSE 0 END) as day_210_qty, 
+max(CASE WHEN datediff(dd.date_key,pb.created_date_key) > 365   THEN available_stock_qty ELSE 0 END) as day_365_qty 
+FROM healthscore_dw.suvitas_fact_stock_daily_snapshot_view stk
+join healthscore_dw.suvitas_hospital_master_view dh
+on stk.hospital_key = dh.hospital_key  
+JOIN healthscore_dw.suvitas_product_batch_master_view pb 
+on stk.product_batch_key= pb.product_batch_key 
+CROSS JOIN healthscore_dw.dim_date dd
+WHERE  dd.date_key < date(now()) and as_of_date_key <= dd.date_key 
+and stk.hospital_key=20 and pb.product_batch_key=24623
+group by dd.date_key , stk.hospital_key, pb.product_batch_key 
+;
+
 -- CREATE USER suvitas_db_viewer@localhost IDENTIFIED BY <PWD>;
 GRANT SELECT ON healthscore_dw.suvitas_bill_items_master_view TO 'suvitas_db_viewer'@'localhost' ; 
 GRANT SELECT ON healthscore_dw.suvitas_hospital_master_view TO 'suvitas_db_viewer'@'localhost' ; 
@@ -323,3 +372,6 @@ grant select on healthscore_dw.suvitas_product_master_view to suvitas_db_viewer@
 grant select on healthscore_dw.suvitas_product_batch_master_view to suvitas_db_viewer@localhost;
 grant select on healthscore_dw.suvitas_store_master_view to suvitas_db_viewer@localhost;
 grant select on healthscore_dw.suvitas_fact_stock_transactions_view to suvitas_db_viewer@localhost;
+grant select on healthscore_dw.suvitas_fact_patient_consumables_view to suvitas_db_viewer@localhost;
+grant select on healthscore_dw.suvitas_fact_stock_ageing_view to suvitas_db_viewer@localhost;
+grant select on healthscore_dw.suvitas_fact_stock_daily_snapshot_view to suvitas_db_viewer@localhost;

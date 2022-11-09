@@ -4,3 +4,11 @@ SELECT mph.hospital_key,dp.patient_key,patient_unique_id,patient_gender,patient_
  FROM healthscore_dw.dim_patient dp
  join healthscore_dw.map_patient_hospital mph
 on mph.patient_key = dp.patient_key;
+
+
+DROP VIEW IF EXISTS healthscore_dw.all_hospital_staff_master_view;
+CREATE VIEW healthscore_dw.all_hospital_staff_master_view as
+select ds.staff_key, ds.hospital_key, dh.hospital_cd, ds.hospital_staff_cd, ds.hospital_staff_full_nm,hospital_staff_user_nm,hospital_staff_gender,hospital_staff_type_nm,hospital_staff_kmc_reg_no,hospital_staff_dept_nm,ds.active_flg
+from  healthscore_dw.dim_staff ds
+ join healthscore_dw.dim_hospital dh
+  on ds.hospital_key = dh.hospital_key;

@@ -20,7 +20,7 @@ date_format(@date, "%b") as month_nm,
 date_format(@date, "%M") as month_full_nm,
 quarter(@date) as quarter_id,
 year(@date) as year_id,
-@date as lastday_mth,
+last_day(@date) as lastday_mth,
 @date as lastday_qtr,
 @date as lastday_yr
 FROM healthscore_stg.hs_location_master
