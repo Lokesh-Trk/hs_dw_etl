@@ -87,15 +87,6 @@ JOIN healthscore_dw.uoh_bill_items_master_view bim ON fvbi.bill_item_key = bim.b
 WHERE fvbi.active_flg = 1;
 ​ 
 ​
-DROP VIEW IF EXISTS healthscore_dw.uoh_patient_diagnosis_view;
-CREATE VIEW healthscore_dw.uoh_patient_diagnosis_view AS
-SELECT fci.patient_key,patient_visit_key,clinical_info_desc as diagnosis_nm,effective_from_ts,effective_to_ts
-FROM healthscore_dw.fact_patient_clinical_info fci
-join healthscore_dw.map_patient_hospital mph
-on mph.patient_key = fci.patient_key
-join healthscore_dw.uoh_hospital_master_view  hm
-on mph.hospital_key = hm.hospital_key
-WHERE clinical_info_type_cd='diagnosis';
  
  DROP VIEW IF EXISTS healthscore_dw.uoh_consultant_appt_view;
 CREATE VIEW healthscore_dw.uoh_consultant_appt_view AS
@@ -131,6 +122,16 @@ FROM healthscore_dw.dim_patient_documents fpa
 join healthscore_dw.uoh_hospital_master_view  hm
 on fpa.hospital_key = hm.hospital_key ;
 
+DROP VIEW IF EXISTS healthscore_dw.uoh_patient_diagnosis_view;
+CREATE VIEW healthscore_dw.uoh_patient_diagnosis_view AS
+SELECT fci.patient_key,group_concat(distinct clinical_info_desc) as diagnosis_nm
+FROM healthscore_dw.fact_patient_clinical_info fci
+join healthscore_dw.map_patient_hospital mph
+on mph.patient_key = fci.patient_key
+join healthscore_dw.uoh_hospital_master_view  hm
+on mph.hospital_key = hm.hospital_key
+WHERE clinical_info_type_cd='diagnosis'
+group by fci.patient_key;
 
 -- CREATE USER uoh_db_viewer@localhost IDENTIFIED BY <PWD>;
 GRANT SELECT ON `healthscore_dw`.`uoh_bill_items_master_view` TO 'uoh_db_viewer'@'localhost' ; 
