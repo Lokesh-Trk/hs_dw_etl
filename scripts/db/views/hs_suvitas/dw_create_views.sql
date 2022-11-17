@@ -2,7 +2,7 @@ DROP VIEW IF EXISTS healthscore_dw.suvitas_hospital_master_view;
 CREATE VIEW healthscore_dw.suvitas_hospital_master_view
 as   SELECT hospital_key, hospital_cd, hospital_nm, hospital_addr_line1, hospital_addr_line2, hospital_addr_city_nm, hospital_addr_state_nm, hospital_addr_country_nm, hospital_addr_zipcode, hospital_phone_num, hospital_email_addr, hospital_logo 
 FROM healthscore_dw.dim_hospital dh 
-where hospital_cd in ('SUVH','SUVB','SUVV','HCAH')
+where hospital_cd like 'SUV%' or hospital_cd like 'HC%'
 ;
 
 DROP VIEW IF EXISTS healthscore_dw.suvitas_bill_items_master_view;
