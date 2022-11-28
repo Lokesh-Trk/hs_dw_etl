@@ -1962,5 +1962,5 @@ group by source_cd,as_of_date_key,dst.hospital_key,dst.product_batch_key,dst.sto
 /*28 Nov 2022*/
 ALTER TABLE 
     healthscore_dw.fact_patient_appointments 
-ADD COLUMN created_by_staff_key int(11) NULL,
-ADD COLUMN modified_by_staff_key int(11) NULL;
+ADD COLUMN appointment_created_by_staff_key int(11) NULL,
+ADD COLUMN appointment_modified_by_staff_key int(11) NULL;
