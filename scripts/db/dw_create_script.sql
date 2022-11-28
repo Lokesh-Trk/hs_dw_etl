@@ -1958,3 +1958,9 @@ sum(CASE WHEN (transaction_type_cd in ('II') and transaction_qty > 0 ) OR transa
  from  healthscore_dw.fact_daily_stock_transactions dst 
 group by source_cd,as_of_date_key,dst.hospital_key,dst.product_batch_key,dst.store_key
 ;
+
+/*28 Nov 2022*/
+ALTER TABLE 
+    healthscore_dw.fact_patient_appointments 
+ADD COLUMN appointment_created_by_staff_key int(11) NULL,
+ADD COLUMN appointment_modified_by_staff_key int(11) NULL;
