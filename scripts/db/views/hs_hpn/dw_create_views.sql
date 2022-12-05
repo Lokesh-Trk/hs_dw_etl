@@ -18,7 +18,7 @@ on mph.hospital_key = dh.hospital_key ;
 DROP VIEW IF EXISTS healthscore_dw.hpn_patient_assessments_view;
 CREATE VIEW healthscore_dw.hpn_patient_assessments_view as
 SELECT   
-fpa.patient_assmt_key,fpa.patient_key,visit_hospital_key as hospital_key,patient_visit_key,assessed_date_key,assessed_time_key,assessed_ts,hospital_dept_nm,
+fpa.patient_assmt_key,fpa.patient_key,visit_hospital_key as hospital_key,patient_visit_key,assessed_date_key,assessed_time_key,assessed_ts, fpa.assessment_created_by_staff_key, fpa.assessment_modified_by_staff_key, hospital_dept_nm,
 assessment_scale_master_id,fpa.patient_assessment_id , 
 assessment_scale_desc as assessment_scale_full_nm,
 SUBSTRING_INDEX(assessment_scale_desc,'-',1) as assessment_category,
