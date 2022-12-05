@@ -1964,3 +1964,9 @@ ALTER TABLE
     healthscore_dw.fact_patient_appointments 
 ADD COLUMN appointment_created_by_staff_key int(11) NULL,
 ADD COLUMN appointment_modified_by_staff_key int(11) NULL;
+
+/* 05 Dec 2022*/
+ALTER TABLE 
+    healthscore_dw.fact_patient_assessments
+ADD COLUMN assessment_created_by_staff_key int(11) NULL,
+ADD COLUMN assessment_modified_by_staff_key int(11) NULL;
