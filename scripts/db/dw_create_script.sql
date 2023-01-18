@@ -1959,6 +1959,7 @@ sum(CASE WHEN (transaction_type_cd in ('II') and transaction_qty > 0 ) OR transa
 group by source_cd,as_of_date_key,dst.hospital_key,dst.product_batch_key,dst.store_key
 ;
 
+
 /*28 Nov 2022*/
 ALTER TABLE 
     healthscore_dw.fact_patient_appointments 
@@ -1970,3 +1971,6 @@ ALTER TABLE
     healthscore_dw.fact_patient_assessments
 ADD COLUMN assessment_created_by_staff_key int(11) NULL,
 ADD COLUMN assessment_modified_by_staff_key int(11) NULL;
+
+ALTER TABLE  healthscore_dw.dim_bill_items DROP INDEX uk_bill_item_cd;
+ALTER TABLE  healthscore_dw.dim_bill_items ADD CONSTRAINT uk_bill_item_cd UNIQUE (hospital_key,bill_item_cd,effective_from_ts,bill_item_category_cd,rate_category_nm);
